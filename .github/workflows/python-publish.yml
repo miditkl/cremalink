@@ -48,7 +48,7 @@ jobs:
     permissions:
       id-token: write
     environment:
-      name: pypi
+      name: stable
       url: https://pypi.org/project/cremalink/${{ github.event.release.name }}
 
     steps:
