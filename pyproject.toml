@@ -29,7 +29,10 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Intended Audience :: Information Technology",
 
-    "Topic :: Software Development :: Libraries :: API :: Automation",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Networking :: Monitoring",
 
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
