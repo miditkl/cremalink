@@ -79,7 +79,8 @@ class Device:
         self.transport.configure()
 
     def send_command(self, command: str) -> Any:
-        return self.transport.send_command(command)
+        encoded = _encode_command(command)
+        return self.transport.send_command(encoded)
 
     def refresh_monitor(self) -> Any:
         return self.transport.refresh_monitor()
@@ -103,8 +104,7 @@ class Device:
         hex_command = self.command_map.get(key, {}).get("command")
         if not hex_command:
             raise ValueError(f"Command '{key}' not implemented; check device_map.")
-        encoded = _encode_command(hex_command)
-        return self.send_command(encoded)
+        return self.send_command(hex_command)
 
     def get_commands(self):
         return list(self.command_map.keys())
