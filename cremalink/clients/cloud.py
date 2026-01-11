@@ -108,6 +108,7 @@ class Client:
         if os.path.exists(self.token_path):
             with open(self.token_path, "r") as f:
                 data = f.read()
+                f.close()
                 if data:
                     token_data = json.loads(data)
                     return token_data.get("refresh_token", None)
@@ -126,3 +127,4 @@ class Client:
             token_data = json.loads(data) if data else {}
             token_data["refresh_token"] = refresh_token
             f.write(json.dumps(token_data, indent=2))
+            f.close()

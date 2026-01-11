@@ -166,6 +166,11 @@ def create_app(
             seq = st.seq
         return {"queued": queued, "next_payload": next_payload, "seq": seq}
 
+    @router.get("/monitor")
+    async def monitor(st: LocalServerState = Depends(get_state)):
+        async with st.lock:  # type: ignore[attr-defined]
+            return JSONResponse(st.last_monitor)
+
     # --- Device-Facing API Endpoints (called by the coffee machine) ---
 
     @router.post("/local_lan/key_exchange.json")
