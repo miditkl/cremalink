@@ -298,7 +298,6 @@ source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "ipykernel" },
     { name = "pycryptodome" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -323,7 +322,6 @@ requires-dist = [
     { name = "cremalink", extras = ["test"], marker = "extra == 'dev'" },
     { name = "fastapi", specifier = "==0.128.0" },
     { name = "httpx", specifier = "==0.28.1" },
-    { name = "ipykernel", specifier = ">=7.1.0" },
     { name = "ipykernel", marker = "extra == 'dev'", specifier = "==7.1.0" },
     { name = "notebook", marker = "extra == 'dev'", specifier = "==7.5.1" },
     { name = "pycryptodome", specifier = "==3.23.0" },
