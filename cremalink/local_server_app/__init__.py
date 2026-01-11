@@ -1,3 +1,10 @@
+"""
+This package contains the core implementation of the cremalink local proxy server,
+which is a FastAPI application.
+
+It exposes the main application factory `create_app` and the `ServerSettings`
+class for configuration.
+"""
 from cremalink.local_server_app.api import create_app
 from cremalink.local_server_app.config import ServerSettings
 

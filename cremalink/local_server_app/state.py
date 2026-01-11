@@ -1,3 +1,8 @@
+"""
+This module defines the state management for the local server application.
+It centralizes all runtime data, including device configuration, cryptographic
+keys, command queues, and the latest received device data.
+"""
 from __future__ import annotations
 
 import asyncio
@@ -16,28 +21,49 @@ if TYPE_CHECKING:
 
 
 class LocalServerState:
+    """
+    Manages the runtime state of the local server in a thread-safe manner.
+
+    This class acts as a state machine, holding all information related to the
+    device connection, including credentials, cryptographic session keys,
+    pending commands, and the most recent data snapshots (monitor and properties).
+    An asyncio.Lock is used to prevent race conditions when accessing state
+    from different asynchronous tasks.
+    """
     def __init__(self, settings: ServerSettings, logger):
+        """
+        Initializes the state with default values.
+
+        Args:
+            settings: The application's configuration settings.
+            logger: The application's logger instance.
+        """
         self.settings = settings
         self.logger = logger
+        # --- Device Configuration ---
         self.dsn: Optional[str] = None
         self.device_ip: Optional[str] = None
         self.device_scheme: str = "https"
         self.lan_key: Optional[str] = None
+        # --- Session & Command State ---
         self.seq: int = 0
         self.command_queue: Deque[str] = deque()
         self.command_payload: str = protocol.build_empty_payload(self.seq)
         self.last_command: Optional[str] = None
         self.registered: bool = False
 
+        # --- Cryptographic Keys & IVs ---
         self.app_sign_key: Optional[bytes] = None
         self.app_crypto_key: Optional[bytes] = None
         self.app_iv_seed: Optional[bytes] = None
         self.dev_crypto_key: Optional[bytes] = None
         self.dev_iv_seed: Optional[bytes] = None
 
+        # --- Key Exchange Parameters ---
         self.random_2: str = self._generate_random_2()
         self.time_2: str = self._generate_time_2()
 
+        # --- Data Snapshots ---
         self.last_monitor: Dict[str, Any] | dict = {}
         self.last_monitor_raw: Dict[str, Any] = {}
         self.last_monitor_b64: Optional[str] = None
@@ -48,15 +74,18 @@ class LocalServerState:
         self._properties_request_pending = False
         self.monitor_property_name: str = None
 
+        # --- Concurrency Control ---
         self.lock = asyncio.Lock()
 
     # --- helpers ---
     def _generate_random_2(self) -> str:
+        """Generates the server-side random value for key exchange."""
         if self.settings.fixed_random_2:
             return self.settings.fixed_random_2
         return base64.b64encode(os.urandom(12)).decode("utf-8")
 
     def _generate_time_2(self) -> str:
+        """Generates the server-side timestamp for key exchange."""
         if self.settings.fixed_time_2:
             return self.settings.fixed_time_2
         return str(int(time.time() * 1000))
@@ -70,8 +99,13 @@ class LocalServerState:
         device_scheme: str = "https",
         monitor_property_name: Optional[str] = None,
     ) -> None:
+        """
+        Configures the state with new device details and resets the session.
+        If the device details are unchanged, this is a no-op.
+        """
         resolved_monitor_property = monitor_property_name
         async with self.lock:
+            # Check if configuration is for the same device and keys are already set up.
             same_device = (
                 self.dsn == dsn
                 and self.device_ip == device_ip
@@ -84,6 +118,7 @@ class LocalServerState:
                 self.logger.info("configure noop", extra={"details": {"dsn": dsn, "device_ip": device_ip}})
                 return
 
+            # Reset the entire state for the new device configuration.
             self.dsn = dsn
             self.device_ip = device_ip
             self.device_scheme = device_scheme or "https"
@@ -111,6 +146,9 @@ class LocalServerState:
         self.logger.info("configured", extra={"details": {"dsn": dsn, "device_ip": device_ip, "scheme": device_scheme}})
 
     async def rekey(self) -> None:
+        """
+        Resets cryptographic keys and session state to force a new key exchange.
+        """
         async with self.lock:
             self.app_sign_key = None
             self.app_crypto_key = None
@@ -128,6 +166,9 @@ class LocalServerState:
         self.logger.info("rekey_reset")
 
     async def init_crypto(self, random_1: str, time_1: str | int) -> None:
+        """
+        Derives and initializes all session keys using values from the key exchange.
+        """
         if not self.lan_key:
             raise ValueError("LAN key not set; configure server first")
 
@@ -151,13 +192,16 @@ class LocalServerState:
 
     # --- state queries ---
     def is_configured(self) -> bool:
+        """Returns True if the server has been configured with device details."""
         return bool(self.dsn and self.device_ip and self.lan_key)
 
     def keys_ready(self) -> bool:
+        """Returns True if the cryptographic session keys have been derived."""
         return bool(self.app_crypto_key and self.app_iv_seed and self.app_sign_key)
 
     # --- command queue ---
     async def queue_command(self, command: str) -> None:
+        """Adds a high-level device command to the outgoing queue."""
         if not self.is_configured():
             raise ValueError("Server not configured")
         payload = {
@@ -184,6 +228,7 @@ class LocalServerState:
         self.logger.info("queue_command", extra={"details": {"command": command}})
 
     async def queue_monitor(self) -> None:
+        """Adds a request for the device's monitoring status to the queue."""
         if not self.is_configured():
             return
         monitor_cmd = {
@@ -207,6 +252,7 @@ class LocalServerState:
         self.logger.info("queue_monitor")
 
     async def queue_properties(self) -> None:
+        """Adds a request for all device properties to the queue."""
         if not self.is_configured():
             return
         properties_cmd = {
@@ -232,6 +278,10 @@ class LocalServerState:
         self.logger.info("queue_properties")
 
     async def next_command_payload(self) -> Dict[str, Any]:
+        """
+        Retrieves the next command from the queue for sending to the device.
+        If the queue is empty, it returns an empty "heartbeat" payload.
+        """
         async with self.lock:
             if self.command_queue:
                 payload = self.command_queue.popleft()
@@ -247,6 +297,10 @@ class LocalServerState:
 
     # --- datapoints ---
     async def handle_datapoint(self, decrypted_json: dict) -> None:
+        """
+        Processes a decrypted data payload from the device, updating the
+        appropriate data snapshot (properties or monitor).
+        """
         data_block = decrypted_json.get("data", {})
         async with self.lock:
             if "properties" in data_block:
@@ -274,6 +328,7 @@ class LocalServerState:
 
     # --- snapshots ---
     async def snapshot_monitor(self) -> Dict[str, Any]:
+        """Returns the latest monitoring data snapshot."""
         async with self.lock:
             monitor_payload = self.last_monitor_raw or self.last_monitor or {}
             return {
@@ -283,10 +338,12 @@ class LocalServerState:
             }
 
     async def snapshot_properties(self) -> Dict[str, Any]:
+        """Returns the latest properties data snapshot."""
         async with self.lock:
             return {"properties": self.last_properties, "received_at": self.last_properties_received_at}
 
     async def get_property_value(self, property_name: str) -> Optional[Any]:
+        """Retrieves a single property value from the last known snapshot."""
         async with self.lock:
             if property_name in self.last_properties:
                 return self.last_properties[property_name]
@@ -297,4 +354,5 @@ class LocalServerState:
 
     # --- logging helper ---
     def log(self, event: str, details: Optional[dict] = None) -> None:
+        """Convenience method for logging with redacted details."""
         self.logger.info(event, extra={"details": redact(details)})
