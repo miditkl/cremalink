@@ -44,12 +44,21 @@ classifiers = [
 [project.optional-dependencies]
 dev = [
     "cremalink[test]",
+    "cremalink[docs]",
     "ipykernel==7.1.0",
     "notebook==7.5.1",
 ]
 test = [
     "pytest==9.0.2",
     "pytest-asyncio==1.3.0",
+]
+docs = [
+    "sphinxcontrib-websupport",
+]
+
+[dependency-groups]
+docs = [
+    "sphinxcontrib-websupport",
 ]
 
 [tool.setuptools.packages.find]
