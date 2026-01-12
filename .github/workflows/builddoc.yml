@@ -50,7 +50,7 @@ jobs:
         sphinx-build -b html ./docs/source ./docs/build/html
 
     - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/documentation' # Only deploy when pushing to the main branch
+      if: github.ref == 'refs/heads/main' # Only deploy when pushing to the main branch
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
