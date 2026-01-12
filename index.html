@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink documentation &mdash; cremalink 0.1.dev1+g79bbb0aca documentation</title>
+  <title>☕ Cremalink &mdash; cremalink 0.1.dev1+g5e419aa5e documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=08e48311"></script>
+      <script src="_static/documentation_options.js?v=6f92c256"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -60,7 +60,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">cremalink documentation</li>
+      <li class="breadcrumb-item active">☕ Cremalink</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -70,11 +70,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="cremalink-documentation">
-<h1>cremalink documentation<a class="headerlink" href="#cremalink-documentation" title="Link to this heading"></a></h1>
-<p>Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
-documentation for details.</p>
+  <section id="cremalink">
+<h1>☕ Cremalink<a class="headerlink" href="#cremalink" title="Link to this heading"></a></h1>
+<p><strong>A high-performance Python library and local API server for monitoring and controlling IoT coffee machines.</strong></p>
+<p><a class="reference external" href="https://pypi.org/project/cremalink/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/cremalink.svg?style=for-the-badge&amp;color=blue" /></a> <a class="reference external" href="https://pypi.org/project/cremalink/"><img alt="Python Version" src="https://img.shields.io/pypi/pyversions/cremalink.svg?style=for-the-badge&amp;color=FFE169&amp;labelColor=3776AB" /></a> <a class="reference external" href="https://github.com/miditkl/cremalink/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/miditkl/cremalink?style=for-the-badge&amp;color=success" /></a> <a class="reference external" href="https://pypi.org/project/cremalink/"><img alt="Downloads" src="https://img.shields.io/pypi/dm/cremalink.svg?style=for-the-badge&amp;color=orange" /></a> <a class="reference external" href="https://github.com/miditkl/cremalink"><img alt="Source Code" src="https://img.shields.io/badge/Source-GitHub-black?style=for-the-badge&amp;logo=github" /></a></p>
+<hr class="docutils" />
+<section id="overview">
+<h2>✨ Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Cremalink provides a unified interface to interact with smart coffee machines via <strong>Local LAN control</strong> or <strong>Cloud API</strong>. It allows for real-time state monitoring and precise command execution.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For detailed guides, advanced configuration, and developer deep-dives, please visit our <strong>`Project Wiki &lt;https://github.com/miditkl/cremalink/wiki&gt;`_</strong>.</p>
+</div>
+</section>
+</section>
+<section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -84,6 +95,65 @@ documentation for details.</p>
 </li>
 </ul>
 </div>
+<hr class="docutils" />
+<section id="installation">
+<h2>🚀 Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Install the package via <code class="docutils literal notranslate"><span class="pre">pip</span></code> (Cremalink requires <strong>Python 3.13+</strong>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>cremalink
+</pre></div>
+</div>
+<section id="optional-dependencies">
+<h3>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h3>
+<p>To include tools for development or testing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;cremalink[dev]&quot;</span><span class="w">   </span><span class="c1"># For notebooks and kernel support</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;cremalink[test]&quot;</span><span class="w">  </span><span class="c1"># For running pytest suites</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="usage">
+<h2>🛠 Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<section id="integrated-api-server">
+<h3>Integrated API Server<a class="headerlink" href="#integrated-api-server" title="Link to this heading"></a></h3>
+<p>Cremalink includes a FastAPI-based server for headless environments:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the server (default port 10800)</span>
+cremalink-server<span class="w"> </span>--ip<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">10800</span>
+</pre></div>
+</div>
+<p>More information: <a class="reference external" href="https://github.com/miditkl/cremalink/wiki/3.-Local-Server-Setup">Local Server Setup</a></p>
+</section>
+<section id="python-api-local-control">
+<h3>Python API (Local Control)<a class="headerlink" href="#python-api-local-control" title="Link to this heading"></a></h3>
+<p>Connect to your machine directly via your local network for the lowest latency.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="development">
+<h2>🛠 Development<a class="headerlink" href="#development" title="Link to this heading"></a></h2>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
+<p>Run the comprehensive test suite using <code class="docutils literal notranslate"><span class="pre">pytest</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>tests/
+</pre></div>
+</div>
+</section>
+<section id="contributing">
+<h3>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h3>
+<p>Contributions are welcome! If you have a machine profile not yet supported, please check the <a class="reference external" href="https://github.com/miditkl/cremalink/wiki/5.-Adding-Custom-Devices">Wiki: 5. Adding Custom Devices</a> on how to add new <code class="docutils literal notranslate"><span class="pre">.json</span></code> device definitions.</p>
+<p>Currently supported devices:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">De'Longhi</span> <span class="pre">PrimaDonna</span> <span class="pre">Soul</span> <span class="pre">(AY008ESP1)</span></code></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="license">
+<h2>📄 License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p>Distributed under the <strong>AGPL-3.0-or-later</strong> License. See <a class="reference external" href="https://github.com/miditkl/cremalink/blob/main/LICENSE">LICENSE</a> for more information.</p>
+<hr class="docutils" />
+<p><em>Developed by `Midian Tekle Elfu &lt;mailto:developer&#64;midian.tekleelfu.de&gt;`_. Supported by the community.</em></p>
+</section>
 </section>
 
 
