@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cremalink.domain.device &mdash; cremalink 0.1.dev1+g8ac3a38ab documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=ce99b48e"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            cremalink
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">cremalink</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cremalink</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cremalink.domain.device</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cremalink.domain.device</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines the core `Device` class, which represents a physical coffee</span>
+<span class="sd">machine. It serves as the primary high-level interface for interacting with a</span>
+<span class="sd">device, abstracting away the underlying transport and command details.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">base64</span><span class="w"> </span><span class="kn">import</span> <span class="n">b64encode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.parsing.monitor.frame</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonitorFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.parsing.monitor.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonitorSnapshot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.parsing.monitor.profile</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonitorProfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.parsing.monitor.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonitorView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.transports.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviceTransport</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.devices</span><span class="w"> </span><span class="kn">import</span> <span class="n">device_map</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_device_map</span><span class="p">(</span><span class="n">device_map_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Loads a JSON device map from the given file path.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">device_map_path</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">device_map_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_encode_command</span><span class="p">(</span><span class="n">hex_command</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Encodes a hexadecimal command string into the base64 format expected by the device.</span>
+<span class="sd">    It prepends the command bytes with a current timestamp.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">hex_command</span><span class="p">)</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))[</span><span class="mi">2</span><span class="p">:])</span>
+    <span class="k">return</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">head</span> <span class="o">+</span> <span class="n">timestamp</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Device">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Device</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a coffee machine, providing methods to control and monitor it.</span>
+
+<span class="sd">    This class holds the device&#39;s state (e.g., IP, model) and uses a `DeviceTransport`</span>
+<span class="sd">    object to handle the actual communication. Device-specific capabilities are</span>
+<span class="sd">    loaded from a &quot;device map&quot; file.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        transport: The transport object responsible for communication.</span>
+<span class="sd">        dsn: Device Serial Number.</span>
+<span class="sd">        model: The model identifier of the device.</span>
+<span class="sd">        nickname: A user-defined name for the device.</span>
+<span class="sd">        ip: The local IP address of the device.</span>
+<span class="sd">        lan_key: The key used for LAN-based authentication.</span>
+<span class="sd">        scheme: The communication scheme (e.g., &#39;http&#39;, &#39;mqtt&#39;).</span>
+<span class="sd">        is_online: Boolean indicating if the device is currently reachable.</span>
+<span class="sd">        last_seen: Timestamp of the last communication.</span>
+<span class="sd">        firmware: The device&#39;s firmware version.</span>
+<span class="sd">        serial: The device&#39;s serial number.</span>
+<span class="sd">        coffee_count: The total number of coffees made.</span>
+<span class="sd">        command_map: A mapping of command aliases to their hex codes.</span>
+<span class="sd">        property_map: A mapping of property aliases to their technical names.</span>
+<span class="sd">        monitor_profile: Configuration for parsing monitor data.</span>
+<span class="sd">        extra: A dictionary for any other miscellaneous data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transport</span><span class="p">:</span> <span class="n">DeviceTransport</span>
+    <span class="n">dsn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nickname</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ip</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">lan_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">scheme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">is_online</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">last_seen</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">firmware</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">serial</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">coffee_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">command_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">property_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">monitor_profile</span><span class="p">:</span> <span class="n">MonitorProfile</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">MonitorProfile</span><span class="p">)</span>
+    <span class="n">extra</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Device.from_map">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.from_map">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_map</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">transport</span><span class="p">:</span> <span class="n">DeviceTransport</span><span class="p">,</span>
+        <span class="n">device_map_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Device&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Factory method to create a Device instance with a loaded device map.</span>
+
+<span class="sd">        If `device_map_path` is not provided, it attempts to find one using the</span>
+<span class="sd">        device&#39;s model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            transport: The communication transport to use.</span>
+<span class="sd">            device_map_path: Optional path to the device map JSON file.</span>
+<span class="sd">            **kwargs: Additional attributes to set on the Device instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A configured Device instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">device_map_path</span><span class="p">:</span>
+            <span class="n">device_map_path</span> <span class="o">=</span> <span class="n">device_map</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">model</span> <span class="k">else</span> <span class="kc">None</span>
+        
+        <span class="n">map_data</span> <span class="o">=</span> <span class="n">_load_device_map</span><span class="p">(</span><span class="n">device_map_path</span><span class="p">)</span>
+        <span class="n">command_map</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;command_map&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">property_map</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;property_map&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">monitor_profile_data</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor_profile&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">monitor_profile</span> <span class="o">=</span> <span class="n">MonitorProfile</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">monitor_profile_data</span><span class="p">)</span>
+
+        <span class="c1"># If the transport supports it, pass the mappings to it.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">&quot;set_mappings&quot;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">transport</span><span class="o">.</span><span class="n">set_mappings</span><span class="p">(</span><span class="n">command_map</span><span class="p">,</span> <span class="n">property_map</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># Ignore if setting mappings fails</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">transport</span><span class="o">=</span><span class="n">transport</span><span class="p">,</span>
+            <span class="n">command_map</span><span class="o">=</span><span class="n">command_map</span><span class="p">,</span>
+            <span class="n">property_map</span><span class="o">=</span><span class="n">property_map</span><span class="p">,</span>
+            <span class="n">monitor_profile</span><span class="o">=</span><span class="n">monitor_profile</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># --- Transport delegations ---</span>
+<div class="viewcode-block" id="Device.configure">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.configure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configures the underlying transport.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">configure</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Device.send_command">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.send_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Encodes and sends a raw hex command to the device via the transport.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command: The hex command string to send.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The response from the transport.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">_encode_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.refresh_monitor">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.refresh_monitor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refresh_monitor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Requests a refresh of the device&#39;s monitoring data.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">refresh_monitor</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Device.get_properties">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.get_properties">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetches all available properties from the device.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">get_properties</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Device.get_property_aliases">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.get_property_aliases">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_property_aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of all available property aliases from the device map.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="Device.get_property">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.get_property">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches a single property by its alias or technical name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The alias or name of the property to fetch.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The value of the requested property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">actual_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_property</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">actual_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.health">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.health">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks the health of the device connection.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">health</span><span class="p">()</span></div>
+
+
+    <span class="c1"># --- Command map helpers ---</span>
+<div class="viewcode-block" id="Device.do">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.do">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes a command by its friendly name (e.g., &#39;espresso&#39;).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            drink_name: The name of the command to execute, as defined in the command_map.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The response from the transport.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the command name is not found in the device map.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">drink_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">hex_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;command&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hex_command</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; not implemented; check device_map.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="n">hex_command</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.get_commands">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.get_commands">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of all available command names from the device map.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+    <span class="c1"># --- Property map helpers ---</span>
+<div class="viewcode-block" id="Device.resolve_property">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.resolve_property">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Translates a property alias to its technical name using the property_map.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            alias: The property alias to resolve.</span>
+<span class="sd">            default: A default value to return if the alias is not found.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The resolved technical name, or the alias/default if not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">default</span> <span class="ow">or</span> <span class="n">alias</span><span class="p">)</span></div>
+
+
+    <span class="c1"># --- Monitor helpers ---</span>
+<div class="viewcode-block" id="Device.get_monitor_snapshot">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.get_monitor_snapshot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_monitor_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MonitorSnapshot</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the latest raw monitoring data from the transport.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">get_monitor</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Device.get_monitor">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.get_monitor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_monitor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MonitorView</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves and parses monitoring data into a structured, human-readable view.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A `MonitorView` instance containing parsed status information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_monitor_snapshot</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">MonitorView</span><span class="p">(</span><span class="n">snapshot</span><span class="o">=</span><span class="n">snapshot</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">monitor_profile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.get_monitor_frame">
+<a class="viewcode-back" href="../../../api/cremalink.domain.device.html#cremalink.Device.get_monitor_frame">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_monitor_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MonitorFrame</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decodes the raw monitor data into a `MonitorFrame` for low-level analysis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A `MonitorFrame` if decoding is successful, otherwise None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_monitor_snapshot</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">raw_b64</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MonitorFrame</span><span class="o">.</span><span class="n">from_b64</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">raw_b64</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Midian Tekle Elfu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

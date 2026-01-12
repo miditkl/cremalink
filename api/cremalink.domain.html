@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cremalink.domain package &mdash; cremalink 0.1.dev1+g8ac3a38ab documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ce99b48e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="cremalink.domain.device module" href="cremalink.domain.device.html" />
+    <link rel="prev" title="cremalink.devices package" href="cremalink.devices.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            cremalink
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cremalink</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cremalink.html">cremalink package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.LocalServer"><code class="docutils literal notranslate"><span class="pre">LocalServer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.ServerSettings"><code class="docutils literal notranslate"><span class="pre">ServerSettings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.create_app"><code class="docutils literal notranslate"><span class="pre">create_app()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.create_cloud_device"><code class="docutils literal notranslate"><span class="pre">create_cloud_device()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.create_local_device"><code class="docutils literal notranslate"><span class="pre">create_local_device()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.device_map"><code class="docutils literal notranslate"><span class="pre">device_map()</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="cremalink.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="cremalink.clients.html">cremalink.clients package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.core.html">cremalink.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.crypto.html">cremalink.crypto package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.devices.html">cremalink.devices package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">cremalink.domain package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.local_server_app.html">cremalink.local_server_app package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.parsing.html">cremalink.parsing package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.resources.html">cremalink.resources package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.transports.html">cremalink.transports package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">cremalink</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cremalink</a></li>
+          <li class="breadcrumb-item"><a href="cremalink.html">cremalink package</a></li>
+      <li class="breadcrumb-item active">cremalink.domain package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/cremalink.domain.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-cremalink.domain">
+<span id="cremalink-domain-package"></span><h1>cremalink.domain package<a class="headerlink" href="#module-cremalink.domain" title="Link to this heading"></a></h1>
+<p>This package defines the core domain models for the cremalink library,
+representing the main entities like the coffee machine itself.</p>
+<p>It exposes the primary <cite>Device</cite> class and factory functions for creating
+device instances, abstracting away the underlying implementation details.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cremalink.domain.Device">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cremalink.domain.</span></span><span class="sig-name descname"><span class="pre">Device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transport:</span> <span class="pre">~cremalink.transports.base.DeviceTransport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsn:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lan_key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_online:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_seen:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">firmware:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serial:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coffee_count:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_map:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_map:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitor_profile:</span> <span class="pre">~cremalink.parsing.monitor.profile.MonitorProfile</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra:</span> <span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Represents a coffee machine, providing methods to control and monitor it.</p>
+<p>This class holds the device’s state (e.g., IP, model) and uses a <cite>DeviceTransport</cite>
+object to handle the actual communication. Device-specific capabilities are
+loaded from a “device map” file.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.transport">
+<span class="sig-name descname"><span class="pre">transport</span></span><a class="headerlink" href="#cremalink.domain.Device.transport" title="Link to this definition"></a></dt>
+<dd><p>The transport object responsible for communication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="cremalink.transports.base.html#cremalink.transports.base.DeviceTransport" title="cremalink.transports.base.DeviceTransport">cremalink.transports.base.DeviceTransport</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.dsn">
+<span class="sig-name descname"><span class="pre">dsn</span></span><a class="headerlink" href="#cremalink.domain.Device.dsn" title="Link to this definition"></a></dt>
+<dd><p>Device Serial Number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#cremalink.domain.Device.model" title="Link to this definition"></a></dt>
+<dd><p>The model identifier of the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.nickname">
+<span class="sig-name descname"><span class="pre">nickname</span></span><a class="headerlink" href="#cremalink.domain.Device.nickname" title="Link to this definition"></a></dt>
+<dd><p>A user-defined name for the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.ip">
+<span class="sig-name descname"><span class="pre">ip</span></span><a class="headerlink" href="#cremalink.domain.Device.ip" title="Link to this definition"></a></dt>
+<dd><p>The local IP address of the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.lan_key">
+<span class="sig-name descname"><span class="pre">lan_key</span></span><a class="headerlink" href="#cremalink.domain.Device.lan_key" title="Link to this definition"></a></dt>
+<dd><p>The key used for LAN-based authentication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.scheme">
+<span class="sig-name descname"><span class="pre">scheme</span></span><a class="headerlink" href="#cremalink.domain.Device.scheme" title="Link to this definition"></a></dt>
+<dd><p>The communication scheme (e.g., ‘http’, ‘mqtt’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.is_online">
+<span class="sig-name descname"><span class="pre">is_online</span></span><a class="headerlink" href="#cremalink.domain.Device.is_online" title="Link to this definition"></a></dt>
+<dd><p>Boolean indicating if the device is currently reachable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.last_seen">
+<span class="sig-name descname"><span class="pre">last_seen</span></span><a class="headerlink" href="#cremalink.domain.Device.last_seen" title="Link to this definition"></a></dt>
+<dd><p>Timestamp of the last communication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.firmware">
+<span class="sig-name descname"><span class="pre">firmware</span></span><a class="headerlink" href="#cremalink.domain.Device.firmware" title="Link to this definition"></a></dt>
+<dd><p>The device’s firmware version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.serial">
+<span class="sig-name descname"><span class="pre">serial</span></span><a class="headerlink" href="#cremalink.domain.Device.serial" title="Link to this definition"></a></dt>
+<dd><p>The device’s serial number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.coffee_count">
+<span class="sig-name descname"><span class="pre">coffee_count</span></span><a class="headerlink" href="#cremalink.domain.Device.coffee_count" title="Link to this definition"></a></dt>
+<dd><p>The total number of coffees made.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.command_map">
+<span class="sig-name descname"><span class="pre">command_map</span></span><a class="headerlink" href="#cremalink.domain.Device.command_map" title="Link to this definition"></a></dt>
+<dd><p>A mapping of command aliases to their hex codes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.property_map">
+<span class="sig-name descname"><span class="pre">property_map</span></span><a class="headerlink" href="#cremalink.domain.Device.property_map" title="Link to this definition"></a></dt>
+<dd><p>A mapping of property aliases to their technical names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.monitor_profile">
+<span class="sig-name descname"><span class="pre">monitor_profile</span></span><a class="headerlink" href="#cremalink.domain.Device.monitor_profile" title="Link to this definition"></a></dt>
+<dd><p>Configuration for parsing monitor data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile" title="cremalink.parsing.monitor.profile.MonitorProfile">cremalink.parsing.monitor.profile.MonitorProfile</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.domain.Device.extra">
+<span class="sig-name descname"><span class="pre">extra</span></span><a class="headerlink" href="#cremalink.domain.Device.extra" title="Link to this definition"></a></dt>
+<dd><p>A dictionary for any other miscellaneous data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">coffee_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">command_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.configure" title="Link to this definition"></a></dt>
+<dd><p>Configures the underlying transport.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.do">
+<span class="sig-name descname"><span class="pre">do</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drink_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.do"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.do" title="Link to this definition"></a></dt>
+<dd><p>Executes a command by its friendly name (e.g., ‘espresso’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>drink_name</strong> – The name of the command to execute, as defined in the command_map.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The response from the transport.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the command name is not found in the device map.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">dsn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">extra</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">firmware</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.from_map">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transport</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cremalink.transports.base.html#cremalink.transports.base.DeviceTransport" title="cremalink.transports.base.DeviceTransport"><span class="pre">DeviceTransport</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_map_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device" title="cremalink.domain.device.Device"><span class="pre">Device</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.from_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.from_map" title="Link to this definition"></a></dt>
+<dd><p>Factory method to create a Device instance with a loaded device map.</p>
+<p>If <cite>device_map_path</cite> is not provided, it attempts to find one using the
+device’s model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transport</strong> – The communication transport to use.</p></li>
+<li><p><strong>device_map_path</strong> – Optional path to the device map JSON file.</p></li>
+<li><p><strong>**kwargs</strong> – Additional attributes to set on the Device instance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A configured Device instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.get_commands">
+<span class="sig-name descname"><span class="pre">get_commands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.get_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.get_commands" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of all available command names from the device map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.get_monitor">
+<span class="sig-name descname"><span class="pre">get_monitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView" title="cremalink.parsing.monitor.view.MonitorView"><span class="pre">MonitorView</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.get_monitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.get_monitor" title="Link to this definition"></a></dt>
+<dd><p>Retrieves and parses monitoring data into a structured, human-readable view.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <cite>MonitorView</cite> instance containing parsed status information.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.get_monitor_frame">
+<span class="sig-name descname"><span class="pre">get_monitor_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame" title="cremalink.parsing.monitor.frame.MonitorFrame"><span class="pre">MonitorFrame</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.get_monitor_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.get_monitor_frame" title="Link to this definition"></a></dt>
+<dd><p>Decodes the raw monitor data into a <cite>MonitorFrame</cite> for low-level analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <cite>MonitorFrame</cite> if decoding is successful, otherwise None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.get_monitor_snapshot">
+<span class="sig-name descname"><span class="pre">get_monitor_snapshot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot" title="cremalink.parsing.monitor.model.MonitorSnapshot"><span class="pre">MonitorSnapshot</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.get_monitor_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.get_monitor_snapshot" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the latest raw monitoring data from the transport.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.get_properties">
+<span class="sig-name descname"><span class="pre">get_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.get_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.get_properties" title="Link to this definition"></a></dt>
+<dd><p>Fetches all available properties from the device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.get_property">
+<span class="sig-name descname"><span class="pre">get_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.get_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.get_property" title="Link to this definition"></a></dt>
+<dd><p>Fetches a single property by its alias or technical name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – The alias or name of the property to fetch.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value of the requested property.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.get_property_aliases">
+<span class="sig-name descname"><span class="pre">get_property_aliases</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.get_property_aliases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.get_property_aliases" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of all available property aliases from the device map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.health">
+<span class="sig-name descname"><span class="pre">health</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.health"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.health" title="Link to this definition"></a></dt>
+<dd><p>Checks the health of the device connection.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">ip</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">is_online</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">lan_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">last_seen</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id9" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">monitor_profile</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile" title="cremalink.parsing.monitor.profile.MonitorProfile"><span class="pre">MonitorProfile</span></a></em><a class="headerlink" href="#id10" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">nickname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id11" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">property_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id12" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.refresh_monitor">
+<span class="sig-name descname"><span class="pre">refresh_monitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.refresh_monitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.refresh_monitor" title="Link to this definition"></a></dt>
+<dd><p>Requests a refresh of the device’s monitoring data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.resolve_property">
+<span class="sig-name descname"><span class="pre">resolve_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.resolve_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.resolve_property" title="Link to this definition"></a></dt>
+<dd><p>Translates a property alias to its technical name using the property_map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alias</strong> – The property alias to resolve.</p></li>
+<li><p><strong>default</strong> – A default value to return if the alias is not found.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The resolved technical name, or the alias/default if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">scheme</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id13" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.domain.Device.send_command">
+<span class="sig-name descname"><span class="pre">send_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/device.html#Device.send_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.Device.send_command" title="Link to this definition"></a></dt>
+<dd><p>Encodes and sends a raw hex command to the device via the transport.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> – The hex command string to send.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The response from the transport.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">serial</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id14" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">transport</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="cremalink.transports.base.html#cremalink.transports.base.DeviceTransport" title="cremalink.transports.base.DeviceTransport"><span class="pre">DeviceTransport</span></a></em><a class="headerlink" href="#id15" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cremalink.domain.create_cloud_device">
+<span class="sig-prename descclassname"><span class="pre">cremalink.domain.</span></span><span class="sig-name descname"><span class="pre">create_cloud_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_map_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device" title="cremalink.domain.device.Device"><span class="pre">Device</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/factory.html#create_cloud_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.create_cloud_device" title="Link to this definition"></a></dt>
+<dd><p>Creates a <cite>Device</cite> instance configured for cloud-based communication.</p>
+<p>This factory sets up a <cite>CloudTransport</cite>, which communicates with the device
+via the manufacturer’s cloud services, requiring an access token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dsn</strong> – The Device Serial Number.</p></li>
+<li><p><strong>access_token</strong> – The authentication token for the cloud service.</p></li>
+<li><p><strong>device_map_path</strong> – Optional path to a device-specific command map file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>Device</cite> instance configured with a <cite>CloudTransport</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cremalink.domain.create_local_device">
+<span class="sig-prename descclassname"><span class="pre">cremalink.domain.</span></span><span class="sig-name descname"><span class="pre">create_local_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lan_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10280</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_scheme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'http'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_configure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_map_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device" title="cremalink.domain.device.Device"><span class="pre">Device</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/factory.html#create_local_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.create_local_device" title="Link to this definition"></a></dt>
+<dd><p>Creates a <cite>Device</cite> instance configured for local network communication.</p>
+<p>This factory sets up a <cite>LocalTransport</cite> which requires details about the
+local network environment, including the device’s IP and the local server’s
+address.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dsn</strong> – The Device Serial Number.</p></li>
+<li><p><strong>lan_key</strong> – The key for authenticating on the local network.</p></li>
+<li><p><strong>device_ip</strong> – The IP address of the coffee machine.</p></li>
+<li><p><strong>server_host</strong> – The hostname or IP address of the local proxy server.</p></li>
+<li><p><strong>server_port</strong> – The port of the local proxy server.</p></li>
+<li><p><strong>device_scheme</strong> – The communication protocol to use with the device (e.g., ‘http’).</p></li>
+<li><p><strong>auto_configure</strong> – If True, the transport will be configured automatically.</p></li>
+<li><p><strong>device_map_path</strong> – Optional path to a device-specific command map file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>Device</cite> instance configured with a <cite>LocalTransport</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.domain.device.html">cremalink.domain.device module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.transport"><code class="docutils literal notranslate"><span class="pre">Device.transport</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.dsn"><code class="docutils literal notranslate"><span class="pre">Device.dsn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.model"><code class="docutils literal notranslate"><span class="pre">Device.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.nickname"><code class="docutils literal notranslate"><span class="pre">Device.nickname</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.ip"><code class="docutils literal notranslate"><span class="pre">Device.ip</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.lan_key"><code class="docutils literal notranslate"><span class="pre">Device.lan_key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.scheme"><code class="docutils literal notranslate"><span class="pre">Device.scheme</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.is_online"><code class="docutils literal notranslate"><span class="pre">Device.is_online</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.last_seen"><code class="docutils literal notranslate"><span class="pre">Device.last_seen</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.firmware"><code class="docutils literal notranslate"><span class="pre">Device.firmware</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.serial"><code class="docutils literal notranslate"><span class="pre">Device.serial</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.coffee_count"><code class="docutils literal notranslate"><span class="pre">Device.coffee_count</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.command_map"><code class="docutils literal notranslate"><span class="pre">Device.command_map</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.property_map"><code class="docutils literal notranslate"><span class="pre">Device.property_map</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.monitor_profile"><code class="docutils literal notranslate"><span class="pre">Device.monitor_profile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.extra"><code class="docutils literal notranslate"><span class="pre">Device.extra</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id0"><code class="docutils literal notranslate"><span class="pre">Device.coffee_count</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id1"><code class="docutils literal notranslate"><span class="pre">Device.command_map</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.configure"><code class="docutils literal notranslate"><span class="pre">Device.configure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.do"><code class="docutils literal notranslate"><span class="pre">Device.do()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id2"><code class="docutils literal notranslate"><span class="pre">Device.dsn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id3"><code class="docutils literal notranslate"><span class="pre">Device.extra</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id4"><code class="docutils literal notranslate"><span class="pre">Device.firmware</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.from_map"><code class="docutils literal notranslate"><span class="pre">Device.from_map()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.get_commands"><code class="docutils literal notranslate"><span class="pre">Device.get_commands()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.get_monitor"><code class="docutils literal notranslate"><span class="pre">Device.get_monitor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.get_monitor_frame"><code class="docutils literal notranslate"><span class="pre">Device.get_monitor_frame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.get_monitor_snapshot"><code class="docutils literal notranslate"><span class="pre">Device.get_monitor_snapshot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.get_properties"><code class="docutils literal notranslate"><span class="pre">Device.get_properties()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.get_property"><code class="docutils literal notranslate"><span class="pre">Device.get_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.get_property_aliases"><code class="docutils literal notranslate"><span class="pre">Device.get_property_aliases()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.health"><code class="docutils literal notranslate"><span class="pre">Device.health()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id5"><code class="docutils literal notranslate"><span class="pre">Device.ip</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id6"><code class="docutils literal notranslate"><span class="pre">Device.is_online</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id7"><code class="docutils literal notranslate"><span class="pre">Device.lan_key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id8"><code class="docutils literal notranslate"><span class="pre">Device.last_seen</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id9"><code class="docutils literal notranslate"><span class="pre">Device.model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id10"><code class="docutils literal notranslate"><span class="pre">Device.monitor_profile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id11"><code class="docutils literal notranslate"><span class="pre">Device.nickname</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id12"><code class="docutils literal notranslate"><span class="pre">Device.property_map</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.refresh_monitor"><code class="docutils literal notranslate"><span class="pre">Device.refresh_monitor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.resolve_property"><code class="docutils literal notranslate"><span class="pre">Device.resolve_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id13"><code class="docutils literal notranslate"><span class="pre">Device.scheme</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#cremalink.domain.device.Device.send_command"><code class="docutils literal notranslate"><span class="pre">Device.send_command()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id14"><code class="docutils literal notranslate"><span class="pre">Device.serial</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.domain.device.html#id15"><code class="docutils literal notranslate"><span class="pre">Device.transport</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.domain.factory.html">cremalink.domain.factory module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.domain.factory.html#cremalink.domain.factory.create_cloud_device"><code class="docutils literal notranslate"><span class="pre">create_cloud_device()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.domain.factory.html#cremalink.domain.factory.create_local_device"><code class="docutils literal notranslate"><span class="pre">create_local_device()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cremalink.devices.html" class="btn btn-neutral float-left" title="cremalink.devices package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cremalink.domain.device.html" class="btn btn-neutral float-right" title="cremalink.domain.device module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Midian Tekle Elfu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

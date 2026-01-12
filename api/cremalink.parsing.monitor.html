@@ -1,0 +1,684 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cremalink.parsing.monitor package &mdash; cremalink 0.1.dev1+g8ac3a38ab documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ce99b48e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="cremalink.parsing.monitor.decode module" href="cremalink.parsing.monitor.decode.html" />
+    <link rel="prev" title="cremalink.parsing package" href="cremalink.parsing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            cremalink
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cremalink</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cremalink.html">cremalink package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.LocalServer"><code class="docutils literal notranslate"><span class="pre">LocalServer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.ServerSettings"><code class="docutils literal notranslate"><span class="pre">ServerSettings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.create_app"><code class="docutils literal notranslate"><span class="pre">create_app()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.create_cloud_device"><code class="docutils literal notranslate"><span class="pre">create_cloud_device()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.create_local_device"><code class="docutils literal notranslate"><span class="pre">create_local_device()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#cremalink.device_map"><code class="docutils literal notranslate"><span class="pre">device_map()</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="cremalink.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="cremalink.clients.html">cremalink.clients package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.core.html">cremalink.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.crypto.html">cremalink.crypto package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.devices.html">cremalink.devices package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.domain.html">cremalink.domain package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.local_server_app.html">cremalink.local_server_app package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="cremalink.parsing.html">cremalink.parsing package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.resources.html">cremalink.resources package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cremalink.transports.html">cremalink.transports package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">cremalink</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cremalink</a></li>
+          <li class="breadcrumb-item"><a href="cremalink.html">cremalink package</a></li>
+          <li class="breadcrumb-item"><a href="cremalink.parsing.html">cremalink.parsing package</a></li>
+      <li class="breadcrumb-item active">cremalink.parsing.monitor package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/cremalink.parsing.monitor.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-cremalink.parsing.monitor">
+<span id="cremalink-parsing-monitor-package"></span><h1>cremalink.parsing.monitor package<a class="headerlink" href="#module-cremalink.parsing.monitor" title="Link to this heading"></a></h1>
+<p>This package handles the parsing and decoding of the device’s ‘monitor’ data.</p>
+<p>The monitor data is a compact binary payload that represents the real-time
+status of the coffee machine, including its current state, any active alarms,
+and the progress of ongoing actions. This package provides the tools to decode
+this binary data into a structured and human-readable format.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cremalink.parsing.monitor.</span></span><span class="sig-name descname"><span class="pre">MonitorFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">answer_required</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">accessory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">switches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alarms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_b64</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/frame.html#MonitorFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Represents the decoded, low-level structure of a monitor data frame.</p>
+<p>This class takes the raw bytes from a monitor update and parses them into
+their fundamental components according to the device’s binary protocol.
+This includes separating headers, payload, checksums, and timestamps.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.accessory">
+<span class="sig-name descname"><span class="pre">accessory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.accessory" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.action">
+<span class="sig-name descname"><span class="pre">action</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.alarms">
+<span class="sig-name descname"><span class="pre">alarms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.alarms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.answer_required">
+<span class="sig-name descname"><span class="pre">answer_required</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.answer_required" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/frame.html#MonitorFrame.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.as_dict" title="Link to this definition"></a></dt>
+<dd><p>Returns a dictionary representation of the frame’s contents.
+This is useful for serialization or debugging.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.direction">
+<span class="sig-name descname"><span class="pre">direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.direction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.extra">
+<span class="sig-name descname"><span class="pre">extra</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.extra" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.from_b64">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_b64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_b64</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame" title="cremalink.parsing.monitor.frame.MonitorFrame"><span class="pre">MonitorFrame</span></a></span></span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/frame.html#MonitorFrame.from_b64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.from_b64" title="Link to this definition"></a></dt>
+<dd><p>Decodes a base64 string into a structured MonitorFrame.</p>
+<p>This factory method performs the primary byte-level parsing, including:
+- Base64 decoding.
+- Length validation.
+- CRC-16 checksum verification.
+- Splitting the raw bytes into their respective fields (header, payload, etc.).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>raw_b64</strong> – The base64-encoded monitor data string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A populated MonitorFrame instance.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the data is malformed, too short, or fails the CRC check.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.progress">
+<span class="sig-name descname"><span class="pre">progress</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.progress" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.raw">
+<span class="sig-name descname"><span class="pre">raw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.raw" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.raw_b64">
+<span class="sig-name descname"><span class="pre">raw_b64</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.raw_b64" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.request_id">
+<span class="sig-name descname"><span class="pre">request_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.request_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.status">
+<span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.switches">
+<span class="sig-name descname"><span class="pre">switches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.switches" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorFrame.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorFrame.timestamp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorProfile">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cremalink.parsing.monitor.</span></span><span class="sig-name descname"><span class="pre">MonitorProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~cremalink.parsing.monitor.profile.FlagDefinition]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enums:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Dict[int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicates:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~cremalink.parsing.monitor.profile.PredicateDefinition]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/profile.html#MonitorProfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorProfile" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A complete profile for parsing a device’s monitor frame.</p>
+<p>This class holds all the definitions needed to translate the raw bytes of a
+monitor frame into meaningful, human-readable data. It is typically loaded
+from a device-specific JSON file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorProfile.available_fields">
+<span class="sig-name descname"><span class="pre">available_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/profile.html#MonitorProfile.available_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorProfile.available_fields" title="Link to this definition"></a></dt>
+<dd><p>Returns a sorted list of all defined flag and predicate names.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorProfile.enums">
+<span class="sig-name descname"><span class="pre">enums</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorProfile.enums" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorProfile.flags">
+<span class="sig-name descname"><span class="pre">flags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.FlagDefinition" title="cremalink.parsing.monitor.profile.FlagDefinition"><span class="pre">FlagDefinition</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorProfile.flags" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorProfile.from_dict">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile" title="cremalink.parsing.monitor.profile.MonitorProfile"><span class="pre">MonitorProfile</span></a></span></span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/profile.html#MonitorProfile.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorProfile.from_dict" title="Link to this definition"></a></dt>
+<dd><p>Constructs a MonitorProfile from a dictionary (e.g., from a JSON file).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorProfile.predicates">
+<span class="sig-name descname"><span class="pre">predicates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition" title="cremalink.parsing.monitor.profile.PredicateDefinition"><span class="pre">PredicateDefinition</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorProfile.predicates" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorProfile.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/profile.html#MonitorProfile.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorProfile.summary" title="Link to this definition"></a></dt>
+<dd><p>Provides a brief summary of the profile’s contents.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cremalink.parsing.monitor.</span></span><span class="sig-name descname"><span class="pre">MonitorSnapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw:</span> <span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_b64:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">received_at:</span> <span class="pre">~datetime.datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsed:</span> <span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warnings:</span> <span class="pre">list[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors:</span> <span class="pre">list[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'local'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame:</span> <span class="pre">~cremalink.parsing.monitor.frame.MonitorFrame</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/model.html#MonitorSnapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Represents a single snapshot of the device’s monitoring status.</p>
+<p>This dataclass acts as a container for all information related to a single
+monitor update from the device. It holds the raw data, timestamps, any
+parsed values, and metadata about the decoding process.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.raw">
+<span class="sig-name descname"><span class="pre">raw</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.raw" title="Link to this definition"></a></dt>
+<dd><p>The raw bytes of the monitor data payload.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)">bytes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.raw_b64">
+<span class="sig-name descname"><span class="pre">raw_b64</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.raw_b64" title="Link to this definition"></a></dt>
+<dd><p>The base64-encoded string representation of the raw data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.received_at">
+<span class="sig-name descname"><span class="pre">received_at</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.received_at" title="Link to this definition"></a></dt>
+<dd><p>The timestamp when this snapshot was received.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)">datetime.datetime</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.parsed">
+<span class="sig-name descname"><span class="pre">parsed</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.parsed" title="Link to this definition"></a></dt>
+<dd><p>A dictionary to hold the successfully parsed key-value data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.warnings">
+<span class="sig-name descname"><span class="pre">warnings</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.warnings" title="Link to this definition"></a></dt>
+<dd><p>A list of any warnings generated during parsing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.errors">
+<span class="sig-name descname"><span class="pre">errors</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.errors" title="Link to this definition"></a></dt>
+<dd><p>A list of any errors encountered during parsing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.source" title="Link to this definition"></a></dt>
+<dd><p>The origin of the data (e.g., ‘local’ or ‘cloud’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.device_id">
+<span class="sig-name descname"><span class="pre">device_id</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.device_id" title="Link to this definition"></a></dt>
+<dd><p>The identifier of the device that sent the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorSnapshot.frame">
+<span class="sig-name descname"><span class="pre">frame</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorSnapshot.frame" title="Link to this definition"></a></dt>
+<dd><p>A <cite>MonitorFrame</cite> instance if the raw bytes were successfully
+decoded into a low-level frame structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame" title="cremalink.parsing.monitor.frame.MonitorFrame">cremalink.parsing.monitor.frame.MonitorFrame</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">device_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">errors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame" title="cremalink.parsing.monitor.frame.MonitorFrame"><span class="pre">MonitorFrame</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">parsed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">raw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">raw_b64</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">received_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></em><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">source</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'local'</span></em><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">warnings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cremalink.parsing.monitor.</span></span><span class="sig-name descname"><span class="pre">MonitorView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot" title="cremalink.parsing.monitor.model.MonitorSnapshot"><span class="pre">MonitorSnapshot</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile" title="cremalink.parsing.monitor.profile.MonitorProfile"><span class="pre">MonitorProfile</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/view.html#MonitorView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A user-friendly view of a <cite>MonitorSnapshot</cite>, powered by a <cite>MonitorProfile</cite>.</p>
+<p>This class acts as a wrapper around a <cite>MonitorSnapshot</cite>. It uses a given
+<cite>MonitorProfile</cite> to translate raw, low-level data (like integer codes and
+bit flags) into human-readable values (like enum names and boolean predicates).</p>
+<p>It provides dynamic attribute access (<cite>__getattr__</cite>) to resolve flags and
+predicates from the profile on the fly. For example, <cite>view.is_on</cite> or
+<cite>view.has_descaling_alarm</cite>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.accessory_code">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accessory_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.accessory_code" title="Link to this definition"></a></dt>
+<dd><p>The raw integer code for the currently detected accessory.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.accessory_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accessory_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.accessory_name" title="Link to this definition"></a></dt>
+<dd><p>The human-readable name of the accessory (e.g., ‘Milk Carafe’).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.action_code">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">action_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.action_code" title="Link to this definition"></a></dt>
+<dd><p>The raw integer code for the device’s current action.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.action_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">action_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.action_name" title="Link to this definition"></a></dt>
+<dd><p>The human-readable name of the device’s action (e.g., ‘Brewing’).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.available_fields">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">available_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.available_fields" title="Link to this definition"></a></dt>
+<dd><p>A list of all available dynamic fields (flags and predicates).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.parsed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parsed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.parsed" title="Link to this definition"></a></dt>
+<dd><p>The dictionary of initially parsed, low-level fields.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.profile_summary">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">profile_summary</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.profile_summary" title="Link to this definition"></a></dt>
+<dd><p>A summary of the loaded profile.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.progress_percent">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">progress_percent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.progress_percent" title="Link to this definition"></a></dt>
+<dd><p>The progress percentage (0-100) of the current action.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.raw">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">raw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.raw" title="Link to this definition"></a></dt>
+<dd><p>The raw bytes of the monitor payload.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.raw_b64">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">raw_b64</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.raw_b64" title="Link to this definition"></a></dt>
+<dd><p>The base64-encoded string of the monitor payload.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.received_at">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">received_at</span></span><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.received_at" title="Link to this definition"></a></dt>
+<dd><p>The timestamp when the snapshot was received.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.status_code">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.status_code" title="Link to this definition"></a></dt>
+<dd><p>The raw integer code for the device’s main status.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.MonitorView.status_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#cremalink.parsing.monitor.MonitorView.status_name" title="Link to this definition"></a></dt>
+<dd><p>The human-readable name of the device’s status (e.g., ‘Standby’).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.build_monitor_snapshot">
+<span class="sig-prename descclassname"><span class="pre">cremalink.parsing.monitor.</span></span><span class="sig-name descname"><span class="pre">build_monitor_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'local'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot" title="cremalink.parsing.monitor.model.MonitorSnapshot"><span class="pre">MonitorSnapshot</span></a></span></span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/decode.html#build_monitor_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.build_monitor_snapshot" title="Link to this definition"></a></dt>
+<dd><p>Constructs a <cite>MonitorSnapshot</cite> from a raw payload dictionary.</p>
+<p>This function orchestrates the decoding process:
+1. It extracts the base64-encoded monitor string from the input payload.
+2. It decodes the base64 string into raw bytes.
+3. It calls <cite>extract_fields_from_b64</cite> to parse the raw bytes into a</p>
+<blockquote>
+<div><p>low-level dictionary and a <cite>MonitorFrame</cite>.</p>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>It bundles all this information into a <cite>MonitorSnapshot</cite> object.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payload</strong> – The raw dictionary payload, typically from the local server or cloud API.</p></li>
+<li><p><strong>source</strong> – The origin of the data (e.g., ‘local’, ‘cloud’).</p></li>
+<li><p><strong>device_id</strong> – The identifier of the device.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A populated <cite>MonitorSnapshot</cite> instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cremalink.parsing.monitor.decode_monitor_b64">
+<span class="sig-prename descclassname"><span class="pre">cremalink.parsing.monitor.</span></span><span class="sig-name descname"><span class="pre">decode_monitor_b64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_b64</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></span><a class="reference internal" href="../_modules/cremalink/parsing/monitor/decode.html#decode_monitor_b64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.parsing.monitor.decode_monitor_b64" title="Link to this definition"></a></dt>
+<dd><p>A simple wrapper for base64 decoding that provides a more specific error message.</p>
+</dd></dl>
+
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.parsing.monitor.decode.html">cremalink.parsing.monitor.decode module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.decode.html#cremalink.parsing.monitor.decode.build_monitor_snapshot"><code class="docutils literal notranslate"><span class="pre">build_monitor_snapshot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.decode.html#cremalink.parsing.monitor.decode.decode_monitor_b64"><code class="docutils literal notranslate"><span class="pre">decode_monitor_b64()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.parsing.monitor.extractors.html">cremalink.parsing.monitor.extractors module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.extractors.html#cremalink.parsing.monitor.extractors.extract_fields_from_b64"><code class="docutils literal notranslate"><span class="pre">extract_fields_from_b64()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.parsing.monitor.frame.html">cremalink.parsing.monitor.frame module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame"><code class="docutils literal notranslate"><span class="pre">MonitorFrame</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.accessory"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.accessory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.action"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.action</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.alarms"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.alarms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.answer_required"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.answer_required</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.as_dict"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.as_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.direction"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.direction</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.extra"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.extra</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.from_b64"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.from_b64()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.progress"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.progress</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.raw"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.raw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.raw_b64"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.raw_b64</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.request_id"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.request_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.status"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.status</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.switches"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.switches</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.frame.MonitorFrame.timestamp"><code class="docutils literal notranslate"><span class="pre">MonitorFrame.timestamp</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.parsing.monitor.model.html">cremalink.parsing.monitor.model module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.raw"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.raw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.raw_b64"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.raw_b64</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.received_at"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.received_at</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.parsed"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.parsed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.warnings"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.warnings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.errors"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.errors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.source"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.source</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.device_id"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.device_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#cremalink.parsing.monitor.model.MonitorSnapshot.frame"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.frame</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id0"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.device_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id1"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.errors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id2"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.frame</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id3"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.parsed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id4"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.raw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id5"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.raw_b64</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id6"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.received_at</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id7"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.source</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.model.html#id8"><code class="docutils literal notranslate"><span class="pre">MonitorSnapshot.warnings</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.parsing.monitor.profile.html">cremalink.parsing.monitor.profile module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.FlagDefinition"><code class="docutils literal notranslate"><span class="pre">FlagDefinition</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.FlagDefinition.bit"><code class="docutils literal notranslate"><span class="pre">FlagDefinition.bit</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.FlagDefinition.byte"><code class="docutils literal notranslate"><span class="pre">FlagDefinition.byte</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.FlagDefinition.description"><code class="docutils literal notranslate"><span class="pre">FlagDefinition.description</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.FlagDefinition.invert"><code class="docutils literal notranslate"><span class="pre">FlagDefinition.invert</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.FlagDefinition.source"><code class="docutils literal notranslate"><span class="pre">FlagDefinition.source</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.FlagDefinition.validate"><code class="docutils literal notranslate"><span class="pre">FlagDefinition.validate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile"><code class="docutils literal notranslate"><span class="pre">MonitorProfile</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile.available_fields"><code class="docutils literal notranslate"><span class="pre">MonitorProfile.available_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile.enums"><code class="docutils literal notranslate"><span class="pre">MonitorProfile.enums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile.flags"><code class="docutils literal notranslate"><span class="pre">MonitorProfile.flags</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile.from_dict"><code class="docutils literal notranslate"><span class="pre">MonitorProfile.from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile.predicates"><code class="docutils literal notranslate"><span class="pre">MonitorProfile.predicates</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.MonitorProfile.summary"><code class="docutils literal notranslate"><span class="pre">MonitorProfile.summary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.bit"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.bit</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.byte"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.byte</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.flag"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.flag</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.kind"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.kind</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.source"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.source</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.uses_bit_address"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.uses_bit_address()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.uses_flag"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.uses_flag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.validate"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.validate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.value"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.profile.html#cremalink.parsing.monitor.profile.PredicateDefinition.values"><code class="docutils literal notranslate"><span class="pre">PredicateDefinition.values</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.parsing.monitor.view.html">cremalink.parsing.monitor.view module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView"><code class="docutils literal notranslate"><span class="pre">MonitorView</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.accessory_code"><code class="docutils literal notranslate"><span class="pre">MonitorView.accessory_code</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.accessory_name"><code class="docutils literal notranslate"><span class="pre">MonitorView.accessory_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.action_code"><code class="docutils literal notranslate"><span class="pre">MonitorView.action_code</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.action_name"><code class="docutils literal notranslate"><span class="pre">MonitorView.action_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.available_fields"><code class="docutils literal notranslate"><span class="pre">MonitorView.available_fields</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.parsed"><code class="docutils literal notranslate"><span class="pre">MonitorView.parsed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.profile_summary"><code class="docutils literal notranslate"><span class="pre">MonitorView.profile_summary</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.progress_percent"><code class="docutils literal notranslate"><span class="pre">MonitorView.progress_percent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.raw"><code class="docutils literal notranslate"><span class="pre">MonitorView.raw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.raw_b64"><code class="docutils literal notranslate"><span class="pre">MonitorView.raw_b64</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.received_at"><code class="docutils literal notranslate"><span class="pre">MonitorView.received_at</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.status_code"><code class="docutils literal notranslate"><span class="pre">MonitorView.status_code</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.view.MonitorView.status_name"><code class="docutils literal notranslate"><span class="pre">MonitorView.status_name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cremalink.parsing.html" class="btn btn-neutral float-left" title="cremalink.parsing package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cremalink.parsing.monitor.decode.html" class="btn btn-neutral float-right" title="cremalink.parsing.monitor.decode module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Midian Tekle Elfu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cremalink.core.binary &mdash; cremalink 0.1.dev1+g8ac3a38ab documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=ce99b48e"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            cremalink
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">cremalink</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cremalink</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cremalink.core.binary</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cremalink.core.binary</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides binary utility functions for handling data conversions,</span>
+<span class="sd">checksum calculations, and bitwise operations, often required for communication</span>
+<span class="sd">with hardware devices.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+
+<span class="c1"># Polynomial for CRC-16 CCITT calculation.</span>
+<span class="n">CRC16_POLY</span> <span class="o">=</span> <span class="mh">0x1021</span>
+
+
+<div class="viewcode-block" id="crc16_ccitt">
+<a class="viewcode-back" href="../../../api/cremalink.core.binary.html#cremalink.core.binary.crc16_ccitt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">crc16_ccitt</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the CRC-16 CCITT checksum for the given data.</span>
+
+<span class="sd">    This implementation uses a specific initial value (0x1D0F) and polynomial (0x1021).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data: The input bytes to checksum.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A 2-byte sequence representing the calculated CRC in big-endian format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">crc</span> <span class="o">=</span> <span class="mh">0x1D0F</span>  <span class="c1"># Initial CRC value.</span>
+    <span class="k">for</span> <span class="n">byte</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">crc</span> <span class="o">^=</span> <span class="n">byte</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">crc</span> <span class="o">&amp;</span> <span class="mh">0x8000</span><span class="p">:</span>
+                <span class="n">crc</span> <span class="o">=</span> <span class="p">(</span><span class="n">crc</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">^</span> <span class="n">CRC16_POLY</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">crc</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">crc</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;big&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="b64_to_cmd_hex">
+<a class="viewcode-back" href="../../../api/cremalink.core.binary.html#cremalink.core.binary.b64_to_cmd_hex">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">b64_to_cmd_hex</span><span class="p">(</span><span class="n">b64_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decodes a base64 string, extracts a command frame, and returns it as a hex string.</span>
+
+<span class="sd">    The function cleans the input base64 string, decodes it, and then uses the</span>
+<span class="sd">    second byte of the decoded data as a length specifier to extract the</span>
+<span class="sd">    relevant command frame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        b64_data: The base64 encoded data string.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The extracted command frame as a hexadecimal string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Remove whitespace and add padding if necessary.</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">b64_data</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">cleaned</span> <span class="o">+=</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># Decode the base64 string.</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span>
+
+    <span class="c1"># The second byte (index 1) is the length of the command frame.</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">cmd_frame</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[:</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Return the command frame as a hex string.</span>
+    <span class="k">return</span> <span class="n">cmd_frame</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_bit">
+<a class="viewcode-back" href="../../../api/cremalink.core.binary.html#cremalink.core.binary.get_bit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_bit</span><span class="p">(</span><span class="n">byte_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bit_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the value of a specific bit in a byte.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        byte_value: The integer representation of the byte.</span>
+<span class="sd">        bit_index: The index of the bit to retrieve (0-7).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if the bit is 1, False if it is 0.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If bit_index is not between 0 and 7.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">bit_index</span> <span class="o">&lt;=</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bit_index must be between 0 and 7&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">byte_value</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bit_index</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="safe_byte_at">
+<a class="viewcode-back" href="../../../api/cremalink.core.binary.html#cremalink.core.binary.safe_byte_at">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_byte_at</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Safely retrieves a byte from a sequence or iterable at a given index.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data: The data to access, can be bytes or an iterable of integers.</span>
+<span class="sd">        index: The index of the byte to retrieve.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The byte as an integer if the index is valid, otherwise None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Convert to list to handle various iterable types and access by index.</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="n">index</span><span class="p">]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="c1"># Return None if index is out of bounds or type is not subscriptable.</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Midian Tekle Elfu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

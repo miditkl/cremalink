@@ -1,0 +1,223 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cremalink.local_server_app.jobs &mdash; cremalink 0.1.dev1+g8ac3a38ab documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=ce99b48e"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            cremalink
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">cremalink</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cremalink</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cremalink.local_server_app.jobs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cremalink.local_server_app.jobs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines and manages the background jobs for the local server.</span>
+<span class="sd">These jobs run periodically in asyncio tasks to handle keep-alive, status</span>
+<span class="sd">monitoring, and re-keying operations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.local_server_app.device_adapter</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviceAdapter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.local_server_app.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalServerState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.local_server_app.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServerSettings</span>
+
+
+<div class="viewcode-block" id="JobManager">
+<a class="viewcode-back" href="../../../api/cremalink.local_server_app.jobs.html#cremalink.local_server_app.jobs.JobManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JobManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A simple manager for starting and stopping asyncio background tasks.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="JobManager.start">
+<a class="viewcode-back" href="../../../api/cremalink.local_server_app.jobs.html#cremalink.local_server_app.jobs.JobManager.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coro</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an asyncio task from a coroutine and adds it to the manager.&quot;&quot;&quot;</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">coro</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JobManager.stop">
+<a class="viewcode-back" href="../../../api/cremalink.local_server_app.jobs.html#cremalink.local_server_app.jobs.JobManager.stop">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancels and cleans up all managed tasks.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="c1"># Wait for all tasks to acknowledge cancellation</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="n">return_exceptions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="nudger_job">
+<a class="viewcode-back" href="../../../api/cremalink.local_server_app.jobs.html#cremalink.local_server_app.jobs.nudger_job">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">nudger_job</span><span class="p">(</span><span class="n">st</span><span class="p">:</span> <span class="n">LocalServerState</span><span class="p">,</span> <span class="n">adapter</span><span class="p">:</span> <span class="n">DeviceAdapter</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="n">ServerSettings</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Periodically &quot;nudges&quot; the device by sending a registration request.</span>
+
+<span class="sd">    This is a key part of the protocol. The device often needs to be prompted</span>
+<span class="sd">    to send data. This job ensures that registration is maintained, especially</span>
+<span class="sd">    if there are pending commands in the queue.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">nudger_poll_interval</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Nudge if there are commands waiting or if we aren&#39;t registered.</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+                <span class="n">should_nudge</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">command_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">st</span><span class="o">.</span><span class="n">registered</span>
+            <span class="k">if</span> <span class="n">should_nudge</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">adapter</span><span class="o">.</span><span class="n">register_with_device</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;local_reg_nudge_failed&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span>
+            <span class="c1"># If nudging fails, it might be a key issue, so trigger a rekey.</span>
+            <span class="k">await</span> <span class="n">st</span><span class="o">.</span><span class="n">rekey</span><span class="p">()</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Wait for the specified interval or until the stop event is set.</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">stop_event</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="k">continue</span></div>
+
+
+
+<div class="viewcode-block" id="monitor_job">
+<a class="viewcode-back" href="../../../api/cremalink.local_server_app.jobs.html#cremalink.local_server_app.jobs.monitor_job">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">monitor_job</span><span class="p">(</span><span class="n">st</span><span class="p">:</span> <span class="n">LocalServerState</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="n">ServerSettings</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Periodically queues a request to fetch the device&#39;s monitoring status.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">monitor_poll_interval</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Only queue a request if the server is configured and another request isn&#39;t already pending.</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+                <span class="n">ready</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">is_configured</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">st</span><span class="o">.</span><span class="n">_monitor_request_pending</span>
+            <span class="k">if</span> <span class="n">ready</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">st</span><span class="o">.</span><span class="n">queue_monitor</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;monitor_poll_failed&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">stop_event</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="k">continue</span></div>
+
+
+
+<div class="viewcode-block" id="rekey_job">
+<a class="viewcode-back" href="../../../api/cremalink.local_server_app.jobs.html#cremalink.local_server_app.jobs.rekey_job">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">rekey_job</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">LocalServerState</span><span class="p">,</span> <span class="n">adapter</span><span class="p">:</span> <span class="n">DeviceAdapter</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="n">ServerSettings</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Periodically triggers a full cryptographic re-keying process.</span>
+
+<span class="sd">    This enhances security by ensuring session keys are not long-lived.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">rekey_interval_seconds</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Wait for the rekey interval.</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">stop_event</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="c1"># Interval elapsed, proceed with re-keying.</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;rekey_triggered&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="n">interval</span><span class="p">})</span>
+            <span class="c1"># Reset keys and re-register with the device.</span>
+            <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">rekey</span><span class="p">()</span>
+            <span class="k">await</span> <span class="n">adapter</span><span class="o">.</span><span class="n">register_with_device</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;rekey_failed&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Midian Tekle Elfu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

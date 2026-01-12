@@ -1,0 +1,242 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cremalink.parsing.monitor.frame &mdash; cremalink 0.1.dev1+g8ac3a38ab documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=ce99b48e"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            cremalink
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/modules.html">cremalink</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">cremalink</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cremalink.parsing.monitor.frame</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cremalink.parsing.monitor.frame</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines the low-level structure of a &quot;monitor&quot; data frame.</span>
+<span class="sd">It handles the byte-level decoding of the raw payload from the device.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.core.binary</span><span class="w"> </span><span class="kn">import</span> <span class="n">crc16_ccitt</span>
+
+
+<div class="viewcode-block" id="MonitorFrame">
+<a class="viewcode-back" href="../../../../api/cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.MonitorFrame">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MonitorFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the decoded, low-level structure of a monitor data frame.</span>
+
+<span class="sd">    This class takes the raw bytes from a monitor update and parses them into</span>
+<span class="sd">    their fundamental components according to the device&#39;s binary protocol.</span>
+<span class="sd">    This includes separating headers, payload, checksums, and timestamps.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># --- Frame Header/Metadata ---</span>
+    <span class="n">direction</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">request_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">answer_required</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="c1"># --- Core Payload Fields ---</span>
+    <span class="n">accessory</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">switches</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">alarms</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">progress</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="c1"># --- Frame Footer/Extra Data ---</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">extra</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="c1"># --- Raw Data ---</span>
+    <span class="n">raw</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">raw_b64</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="MonitorFrame.from_b64">
+<a class="viewcode-back" href="../../../../api/cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.MonitorFrame.from_b64">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_b64</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">raw_b64</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MonitorFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decodes a base64 string into a structured MonitorFrame.</span>
+
+<span class="sd">        This factory method performs the primary byte-level parsing, including:</span>
+<span class="sd">        - Base64 decoding.</span>
+<span class="sd">        - Length validation.</span>
+<span class="sd">        - CRC-16 checksum verification.</span>
+<span class="sd">        - Splitting the raw bytes into their respective fields (header, payload, etc.).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            raw_b64: The base64-encoded monitor data string.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A populated MonitorFrame instance.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the data is malformed, too short, or fails the CRC check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">raw_b64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Raw data is too short to contain a monitor frame&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># --- Unpack the outer frame ---</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Length byte inconsistent with payload&quot;</span><span class="p">)</span>
+        
+        <span class="n">data</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">crc</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        
+        <span class="c1"># --- Verify CRC ---</span>
+        <span class="k">if</span> <span class="n">crc</span> <span class="o">!=</span> <span class="n">crc16_ccitt</span><span class="p">(</span><span class="n">raw</span><span class="p">[:</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;CRC check failed&quot;</span><span class="p">)</span>
+        
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">5</span><span class="p">]</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="n">length</span> <span class="o">+</span> <span class="mi">5</span><span class="p">:]</span>
+
+        <span class="c1"># --- Unpack the inner monitor data payload ---</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Monitor payload too short&quot;</span><span class="p">)</span>
+        <span class="n">request_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">answer_required</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+        
+        <span class="c1"># This implementation assumes a &quot;V2&quot; frame structure with 13 bytes of contents.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">13</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Monitor contents expected to be 13 bytes for V2 frames&quot;</span><span class="p">)</span>
+        
+        <span class="n">accessory</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">switches</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># Alarms are non-contiguous in the payload, so they are concatenated here.</span>
+        <span class="n">alarms</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">+</span> <span class="n">contents</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span>
+            <span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span>
+            <span class="n">answer_required</span><span class="o">=</span><span class="n">answer_required</span><span class="p">,</span>
+            <span class="n">accessory</span><span class="o">=</span><span class="n">accessory</span><span class="p">,</span>
+            <span class="n">switches</span><span class="o">=</span><span class="n">switches</span><span class="p">,</span>
+            <span class="n">alarms</span><span class="o">=</span><span class="n">alarms</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+            <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+            <span class="n">extra</span><span class="o">=</span><span class="n">extra</span><span class="p">,</span>
+            <span class="n">raw</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span>
+            <span class="n">raw_b64</span><span class="o">=</span><span class="n">raw_b64</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MonitorFrame.as_dict">
+<a class="viewcode-back" href="../../../../api/cremalink.parsing.monitor.frame.html#cremalink.parsing.monitor.MonitorFrame.as_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary representation of the frame&#39;s contents.</span>
+<span class="sd">        This is useful for serialization or debugging.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span>
+            <span class="s2">&quot;request_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">,</span>
+            <span class="s2">&quot;answer_required&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">answer_required</span><span class="p">,</span>
+            <span class="s2">&quot;accessory&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">accessory</span><span class="p">,</span>
+            <span class="s2">&quot;switches&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">switches</span><span class="p">),</span>
+            <span class="s2">&quot;alarms&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alarms</span><span class="p">),</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Midian Tekle Elfu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
