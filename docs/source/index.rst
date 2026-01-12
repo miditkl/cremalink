@@ -25,7 +25,7 @@ Cremalink provides a unified interface to interact with smart coffee machines vi
 
 .. tip::
 
-   For detailed guides, advanced configuration, and developer deep-dives, please visit our **`Project Wiki <https://github.com/miditkl/cremalink/wiki>`_**.
+   For detailed guides, advanced configuration, and developer deep-dives, please visit our `Project Wiki <https://github.com/miditkl/cremalink/wiki>`_.
 
 API Reference
 =============
