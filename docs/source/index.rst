@@ -112,4 +112,4 @@ Distributed under the **AGPL-3.0-or-later** License. See `LICENSE <https://githu
 
 ----
 
-*Developed by `Midian Tekle Elfu <mailto:developer@midian.tekleelfu.de>`_. Supported by the community.*
+*Developed by* `Midian Tekle Elfu <mailto:developer@midian.tekleelfu.de>`_. *Supported by the community.*
