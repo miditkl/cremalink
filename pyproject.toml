@@ -53,12 +53,16 @@ test = [
     "pytest-asyncio==1.3.0",
 ]
 docs = [
-    "sphinxcontrib-websupport",
+    "sphinx==8.2.3",
+    "sphinxcontrib-websupport==2.0.0",
+    "sphinx-rtd-theme==3.0.2",
 ]
 
 [dependency-groups]
 docs = [
-    "sphinxcontrib-websupport",
+    "sphinx==8.2.3",
+    "sphinxcontrib-websupport==2.0.0",
+    "sphinx-rtd-theme==3.0.2"
 ]
 
 [tool.setuptools.packages.find]
