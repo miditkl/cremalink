@@ -1,3 +1,14 @@
+"""
+This script is the main entry point for running the local proxy server.
+
+The local server acts as an intermediary between the `cremalink` library and a
+coffee machine on the local network. It exposes a simple HTTP API that the
+`LocalTransport` can use, and it handles the complexities of direct device
+communication, including authentication and command formatting.
+
+This script can be run directly from the command line, for example:
+`cremalink-server --ip 127.0.0.1 --port 10280`
+"""
 import argparse
 import sys
 
@@ -7,27 +18,59 @@ from cremalink.local_server_app import create_app, ServerSettings
 
 
 class LocalServer:
+    """A wrapper class that encapsulates the Uvicorn server and the web application."""
+
     def __init__(self, settings: ServerSettings) -> None:
+        """
+        Initializes the server.
+
+        Args:
+            settings: A `ServerSettings` object containing configuration like
+                      host and port.
+        """
         self.settings = settings
         self.app = create_app(settings=self.settings)
 
     def start(self) -> None:
-        uvicorn.run(self.app, host=self.settings.server_ip, port=self.settings.server_port, log_level="info")
+        """Starts the Uvicorn server to serve the application."""
+        uvicorn.run(
+            self.app,
+            host=self.settings.server_ip,
+            port=self.settings.server_port,
+            log_level="info"
+        )
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Start the local server.")
-    parser.add_argument("--ip", type=str, default="127.0.0.1", help="IP address to bind the local server to.")
-    parser.add_argument("--port", type=int, default=10800, help="Port to run the local server on.")
+    """
+    Parses command-line arguments and starts the local server.
+    """
+    parser = argparse.ArgumentParser(description="Start the cremalink local proxy server.")
+    parser.add_argument(
+        "--ip",
+        type=str,
+        default="127.0.0.1",
+        help="IP address to bind the local server to."
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=10280,
+        help="Port to run the local server on."
+    )
 
-    if "--help" in parser.parse_known_args()[0]:
+    # Manually handle --help to avoid argument parsing errors with unknown args.
+    if "--help" in sys.argv:
         parser.print_help()
-        exit(0)
+        sys.exit(0)
 
     args = parser.parse_args()
-    server = LocalServer(ServerSettings(server_ip=args.ip, server_port=args.port))
+    settings = ServerSettings(server_ip=args.ip, server_port=args.port)
+    server = LocalServer(settings)
+    print(f"Starting cremalink local server on http://{args.ip}:{args.port}...")
     server.start()
 
 
 if __name__ == "__main__":
+    # This allows the script to be executed directly.
     sys.exit(main())

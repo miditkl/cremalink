@@ -1,16 +1,25 @@
 import base64
 
+from requests import Response
+
 from cremalink.transports.local.transport import LocalTransport
 
 
-class DummyResponse:
+class DummyResponse(Response):
     def __init__(self, status_code=200, json_data=None, text=""):
+        super().__init__()
         self.status_code = status_code
         self._json_data = json_data
-        self.text = text
+        self._text = text
 
-    def json(self):
+        # self.text(text)
+
+    def json(self, **kwargs):
         return self._json_data
+
+    @property
+    def text(self):
+        return self._text
 
 
 class DummyLocalTransport(LocalTransport):
