@@ -55,14 +55,14 @@ test = [
 docs = [
     "sphinx==8.2.3",
     "sphinxcontrib-websupport==2.0.0",
-    "sphinx-rtd-theme==3.0.2",
+    "sphinx-rtd-theme==3.1.0",
 ]
 
 [dependency-groups]
 docs = [
     "sphinx==8.2.3",
     "sphinxcontrib-websupport==2.0.0",
-    "sphinx-rtd-theme==3.0.2"
+    "sphinx-rtd-theme==3.1.0"
 ]
 
 [tool.setuptools.packages.find]
