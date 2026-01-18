@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.local_server_app.state &mdash; cremalink 0.1.dev1+gca3819694 documentation</title>
+  <title>cremalink.local_server_app.state &mdash; cremalink 0.1.dev1+g5a1f9cff4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f46500b4"></script>
+      <script src="../../../_static/documentation_options.js?v=6b95465f"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -150,6 +150,8 @@
         <span class="c1"># --- Concurrency Control ---</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_server_settings</span><span class="p">()</span>
+
     <span class="c1"># --- helpers ---</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_generate_random_2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates the server-side random value for key exchange.&quot;&quot;&quot;</span>
@@ -178,14 +180,13 @@
 <span class="sd">        Configures the state with new device details and resets the session.</span>
 <span class="sd">        If the device details are unchanged, this is a no-op.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resolved_monitor_property</span> <span class="o">=</span> <span class="n">monitor_property_name</span>
         <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
             <span class="c1"># Check if configuration is for the same device and keys are already set up.</span>
             <span class="n">same_device</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dsn</span> <span class="o">==</span> <span class="n">dsn</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_ip</span> <span class="o">==</span> <span class="n">device_ip</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">lan_key</span> <span class="o">==</span> <span class="n">lan_key</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitor_property_name</span> <span class="o">==</span> <span class="n">resolved_monitor_property</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitor_property_name</span> <span class="o">==</span> <span class="n">monitor_property_name</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_crypto_key</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dev_crypto_key</span>
             <span class="p">)</span>
@@ -198,7 +199,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">device_ip</span> <span class="o">=</span> <span class="n">device_ip</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">device_scheme</span> <span class="o">=</span> <span class="n">device_scheme</span> <span class="ow">or</span> <span class="s2">&quot;https&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lan_key</span> <span class="o">=</span> <span class="n">lan_key</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">monitor_property_name</span> <span class="o">=</span> <span class="n">resolved_monitor_property</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">monitor_property_name</span> <span class="o">=</span> <span class="n">monitor_property_name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">command_queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">command_payload</span> <span class="o">=</span> <span class="n">protocol</span><span class="o">.</span><span class="n">build_empty_payload</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
@@ -218,8 +219,44 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">last_properties</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">last_properties_received_at</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_properties_request_pending</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;configured&quot;</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;dsn&quot;</span><span class="p">:</span> <span class="n">dsn</span><span class="p">,</span> <span class="s2">&quot;device_ip&quot;</span><span class="p">:</span> <span class="n">device_ip</span><span class="p">,</span> <span class="s2">&quot;scheme&quot;</span><span class="p">:</span> <span class="n">device_scheme</span><span class="p">}})</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;configured&quot;</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;dsn&quot;</span><span class="p">:</span> <span class="n">dsn</span><span class="p">,</span> <span class="s2">&quot;device_ip&quot;</span><span class="p">:</span> <span class="n">device_ip</span><span class="p">,</span> <span class="s2">&quot;scheme&quot;</span><span class="p">:</span> <span class="n">device_scheme</span><span class="p">}})</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_server_settings</span><span class="p">(</span><span class="n">dsn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dsn</span><span class="p">,</span> <span class="n">device_ip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device_ip</span><span class="p">,</span> <span class="n">lan_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lan_key</span><span class="p">,</span> <span class="n">device_scheme</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device_scheme</span><span class="p">,</span> <span class="n">monitor_property_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">monitor_property_name</span><span class="p">)</span></div>
 
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_save_server_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lan_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">monitor_property_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_settings_path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;dsn&quot;</span><span class="p">:</span> <span class="n">dsn</span><span class="p">,</span>
+            <span class="s2">&quot;device_ip&quot;</span><span class="p">:</span> <span class="n">device_ip</span><span class="p">,</span>
+            <span class="s2">&quot;lan_key&quot;</span><span class="p">:</span> <span class="n">lan_key</span><span class="p">,</span>
+            <span class="s2">&quot;device_scheme&quot;</span><span class="p">:</span> <span class="n">device_scheme</span><span class="p">,</span>
+            <span class="s2">&quot;monitor_property_name&quot;</span><span class="p">:</span> <span class="n">monitor_property_name</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_settings_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;State saved to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_settings_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error saving state: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_server_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_settings_path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_settings_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dsn</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dsn&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device_ip</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;device_ip&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lan_key</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lan_key&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device_scheme</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;device_scheme&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">monitor_property_name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor_property_name&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;State loaded from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_settings_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading state: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LocalServerState.rekey">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.state.html#cremalink.local_server_app.state.LocalServerState.rekey">[docs]</a>

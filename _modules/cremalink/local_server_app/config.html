@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.local_server_app.config &mdash; cremalink 0.1.dev1+gca3819694 documentation</title>
+  <title>cremalink.local_server_app.config &mdash; cremalink 0.1.dev1+g5a1f9cff4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f46500b4"></script>
+      <script src="../../../_static/documentation_options.js?v=6b95465f"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -88,6 +88,8 @@
 <span class="sd">    variables or a .env file. This provides a centralized and type-safe way</span>
 <span class="sd">    to configure the server&#39;s behavior.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">server_settings_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">validation_alias</span><span class="o">=</span><span class="s2">&quot;SERVER_SETTINGS_PATH&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Path to the configuration file, with device credentials.&quot;</span><span class="p">)</span>
+
     <span class="c1"># --- Server Network Settings ---</span>
     <span class="n">server_ip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">validation_alias</span><span class="o">=</span><span class="s2">&quot;SERVER_IP&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;IP address for the server to bind to.&quot;</span><span class="p">)</span>
     <span class="n">server_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="mi">10280</span><span class="p">,</span> <span class="n">validation_alias</span><span class="o">=</span><span class="s2">&quot;SERVER_PORT&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Port for the server to listen on.&quot;</span><span class="p">)</span>
