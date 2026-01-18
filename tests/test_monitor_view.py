@@ -98,6 +98,7 @@ def test_queue_monitor_uses_configured_property_name():
         log_ring_size = 10
         fixed_random_2 = None
         fixed_time_2 = None
+        server_settings_path = ""
 
     class DummyLogger:
         def info(self, *args, **kwargs):
