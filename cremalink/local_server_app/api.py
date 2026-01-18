@@ -58,6 +58,9 @@ def create_app(
     stop_event = asyncio.Event()
     jobs = JobManager()
 
+    print(f"Starting cremalink local server on http://{settings.server_ip}:{settings.server_port}...")
+    print(f"IP address advertised to the coffee machine: {settings.advertised_ip}")
+
     # Define the application lifespan context manager for startup/shutdown events.
     @asynccontextmanager
     async def lifespan(app_: FastAPI) -> AsyncIterator[None]:

@@ -7,10 +7,11 @@ coffee machine on the local network. It exposes a simple HTTP API that the
 communication, including authentication and command formatting.
 
 This script can be run directly from the command line, for example:
-`cremalink-server --ip 127.0.0.1 --port 10280`
+`cremalink-server --ip 0.0.0.0 --port 10280`
 """
 import argparse
 import sys
+from logging import Logger
 
 import uvicorn
 
@@ -28,13 +29,12 @@ class LocalServer:
             settings: A `ServerSettings` object containing configuration like
                       host and port.
         """
+        self.logger = None
         self.settings = settings
         self.app = create_app(settings=self.settings)
 
     def start(self) -> None:
         """Starts the Uvicorn server to serve the application."""
-        print(f"Starting cremalink local server on http://{self.settings.server_ip}:{self.settings.server_port}...")
-        print(f"IP address advertised to the coffee machine: {self.settings.advertised_ip}")
         uvicorn.run(
             self.app,
             host=self.settings.server_ip,
@@ -79,7 +79,7 @@ def main():
         sys.exit(0)
 
     args = parser.parse_args()
-    settings = ServerSettings(server_settings_path=args.settings_path, server_ip=args.ip, server_port=args.port)
+    settings = ServerSettings(server_settings_path=args.settings_path, server_ip=args.ip, server_port=args.port, advertised_ip=args.advertised_ip)
     server = LocalServer(settings)
     server.start()
 
