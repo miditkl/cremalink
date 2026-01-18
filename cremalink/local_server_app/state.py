@@ -77,6 +77,8 @@ class LocalServerState:
         # --- Concurrency Control ---
         self.lock = asyncio.Lock()
 
+        self._load_server_settings()
+
     # --- helpers ---
     def _generate_random_2(self) -> str:
         """Generates the server-side random value for key exchange."""
@@ -103,14 +105,13 @@ class LocalServerState:
         Configures the state with new device details and resets the session.
         If the device details are unchanged, this is a no-op.
         """
-        resolved_monitor_property = monitor_property_name
         async with self.lock:
             # Check if configuration is for the same device and keys are already set up.
             same_device = (
                 self.dsn == dsn
                 and self.device_ip == device_ip
                 and self.lan_key == lan_key
-                and self.monitor_property_name == resolved_monitor_property
+                and self.monitor_property_name == monitor_property_name
                 and self.app_crypto_key
                 and self.dev_crypto_key
             )
@@ -123,7 +124,7 @@ class LocalServerState:
             self.device_ip = device_ip
             self.device_scheme = device_scheme or "https"
             self.lan_key = lan_key
-            self.monitor_property_name = resolved_monitor_property
+            self.monitor_property_name = monitor_property_name
             self.seq = 0
             self.command_queue = deque()
             self.command_payload = protocol.build_empty_payload(self.seq)
@@ -144,6 +145,42 @@ class LocalServerState:
             self.last_properties_received_at = None
             self._properties_request_pending = False
         self.logger.info("configured", extra={"details": {"dsn": dsn, "device_ip": device_ip, "scheme": device_scheme}})
+        await self._save_server_settings(dsn=self.dsn, device_ip=self.device_ip, lan_key=self.lan_key, device_scheme=self.device_scheme, monitor_property_name=self.monitor_property_name)
+
+    async def _save_server_settings(self, dsn: str, device_ip: str, lan_key: str, device_scheme: str, monitor_property_name: str):
+        if self.settings.server_settings_path == "":
+            return
+        data = {
+            "dsn": dsn,
+            "device_ip": device_ip,
+            "lan_key": lan_key,
+            "device_scheme": device_scheme,
+            "monitor_property_name": monitor_property_name
+        }
+        try:
+            with open(self.settings.server_settings_path, "w") as f:
+                json.dump(data, f, indent=4)
+                f.close()
+            self.logger.info(f"State saved to {self.settings.server_settings_path}")
+        except Exception as e:
+            self.logger.error(f"Error saving state: {e}")
+
+    def _load_server_settings(self):
+        if self.settings.server_settings_path == "":
+            return
+        try:
+            with open(self.settings.server_settings_path, "r") as f:
+                data = json.load(f)
+                f.close()
+            self.dsn = data.get("dsn")
+            self.device_ip = data.get("device_ip")
+            self.lan_key = data.get("lan_key")
+            self.device_scheme = data.get("device_scheme")
+            self.monitor_property_name = data.get("monitor_property_name")
+
+            self.logger.info(f"State loaded from {self.settings.server_settings_path}")
+        except Exception as e:
+            self.logger.error(f"Error loading state: {e}")
 
     async def rekey(self) -> None:
         """

@@ -15,6 +15,8 @@ class ServerSettings(BaseSettings):
     variables or a .env file. This provides a centralized and type-safe way
     to configure the server's behavior.
     """
+    server_settings_path: str = Field("", validation_alias="SERVER_SETTINGS_PATH", description="Path to the configuration file, with device credentials.")
+
     # --- Server Network Settings ---
     server_ip: str = Field("127.0.0.1", validation_alias="SERVER_IP", description="IP address for the server to bind to.")
     server_port: int = Field(10280, validation_alias="SERVER_PORT", description="Port for the server to listen on.")

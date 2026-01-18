@@ -58,6 +58,12 @@ def main():
         default=10280,
         help="Port to run the local server on."
     )
+    parser.add_argument(
+        "--settings_path",
+        type=str,
+        default="",
+        help="Path to the configuration file, with device credentials."
+    )
 
     # Manually handle --help to avoid argument parsing errors with unknown args.
     if "--help" in sys.argv:
@@ -65,7 +71,7 @@ def main():
         sys.exit(0)
 
     args = parser.parse_args()
-    settings = ServerSettings(server_ip=args.ip, server_port=args.port)
+    settings = ServerSettings(server_settings_path=args.settings_path, server_ip=args.ip, server_port=args.port)
     server = LocalServer(settings)
     print(f"Starting cremalink local server on http://{args.ip}:{args.port}...")
     server.start()
