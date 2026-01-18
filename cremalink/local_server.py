@@ -49,7 +49,7 @@ def main():
     parser.add_argument(
         "--ip",
         type=str,
-        default="127.0.0.1",
+        default="0.0.0.0",
         help="IP address to bind the local server to."
     )
     parser.add_argument(
@@ -57,6 +57,12 @@ def main():
         type=int,
         default=10280,
         help="Port to run the local server on."
+    )
+    parser.add_argument(
+        "--advertised_ip",
+        type=str,
+        default=None,
+        help="IP address to advertise to the coffee machine."
     )
     parser.add_argument(
         "--settings_path",

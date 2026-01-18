@@ -20,6 +20,7 @@ class ServerSettings(BaseSettings):
     # --- Server Network Settings ---
     server_ip: str = Field("127.0.0.1", validation_alias="SERVER_IP", description="IP address for the server to bind to.")
     server_port: int = Field(10280, validation_alias="SERVER_PORT", description="Port for the server to listen on.")
+    advertised_ip: Optional[str] = Field(None, validation_alias="ADVERTISED_IP", description="IP address sent to the device for callbacks.")
 
     # --- Job Interval Settings ---
     nudger_poll_interval: float = Field(1.0, validation_alias="NUDGER_POLL_INTERVAL", description="Interval in seconds for the 'nudger' job to poll for command responses.")

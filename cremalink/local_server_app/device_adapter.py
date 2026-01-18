@@ -71,7 +71,7 @@ class DeviceAdapter:
         # The payload tells the device this server's IP, port, and notification endpoint.
         payload = {
             "local_reg": {
-                "ip": self.settings.server_ip,
+                "ip": self.settings.advertised_ip or self.settings.server_ip,
                 "notify": 1,
                 "port": self.settings.server_port,
                 "uri": "/local_lan",
