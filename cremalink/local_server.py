@@ -33,6 +33,8 @@ class LocalServer:
 
     def start(self) -> None:
         """Starts the Uvicorn server to serve the application."""
+        print(f"Starting cremalink local server on http://{self.settings.server_ip}:{self.settings.server_port}...")
+        print(f"IP address advertised to the coffee machine: {self.settings.advertised_ip}")
         uvicorn.run(
             self.app,
             host=self.settings.server_ip,
@@ -79,7 +81,6 @@ def main():
     args = parser.parse_args()
     settings = ServerSettings(server_settings_path=args.settings_path, server_ip=args.ip, server_port=args.port)
     server = LocalServer(settings)
-    print(f"Starting cremalink local server on http://{args.ip}:{args.port}...")
     server.start()
 
 
