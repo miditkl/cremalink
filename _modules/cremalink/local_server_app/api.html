@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.local_server_app.api &mdash; cremalink 0.1.dev1+g33bbaaeb8 documentation</title>
+  <title>cremalink.local_server_app.api &mdash; cremalink 0.1.dev1+gb1bbc45e3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=a334dffe"></script>
+      <script src="../../../_static/documentation_options.js?v=64d2ae79"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -130,6 +130,9 @@
     <span class="n">adapter</span> <span class="o">=</span> <span class="n">device_adapter</span> <span class="ow">or</span> <span class="n">DeviceAdapter</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
     <span class="n">stop_event</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
     <span class="n">jobs</span> <span class="o">=</span> <span class="n">JobManager</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting cremalink local server on http://</span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">server_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">server_port</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IP address advertised to the coffee machine: </span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">advertised_ip</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Define the application lifespan context manager for startup/shutdown events.</span>
     <span class="nd">@asynccontextmanager</span>
