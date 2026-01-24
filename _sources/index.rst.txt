@@ -1,5 +1,9 @@
-☕ Cremalink
-===========
+.. |logo| image:: ../../cremalink/resources/cremalink.png
+   :height: 45px
+   :valign: middle
+
+|logo| cremalink
+=================
 
 **A high-performance Python library and local API server for monitoring and controlling IoT coffee machines.**
 
