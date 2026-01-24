@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.local_server &mdash; cremalink 0.1.dev1+g7303beee6 documentation</title>
+  <title>cremalink.local_server &mdash; cremalink 0.1.dev1+gc860aa39c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=892e918a"></script>
+      <script src="../../_static/documentation_options.js?v=f3251128"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -41,7 +41,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">cremalink</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/cremalink.html">cremalink package</a></li>
 </ul>
 
         </div>
@@ -77,8 +81,11 @@
 <span class="sd">`LocalTransport` can use, and it handles the complexities of direct device</span>
 <span class="sd">communication, including authentication and command formatting.</span>
 
-<span class="sd">This script can be run directly from the command line, for example:</span>
-<span class="sd">`cremalink-server --ip 0.0.0.0 --port 10280`</span>
+<span class="sd">This script can be run directly from the command line. It requires a settings</span>
+<span class="sd">file for device credentials and can be configured with a specific IP and port.</span>
+
+<span class="sd">Example:</span>
+<span class="sd">`cremalink-server --settings_path /path/to/your/conf.json --ip 0.0.0.0 --port 10280`</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
@@ -143,13 +150,13 @@
         <span class="s2">&quot;--advertised_ip&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;IP address to advertise to the coffee machine.&quot;</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;IP address to advertise to the coffee machine. If not set, the server&#39;s IP is used.&quot;</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--settings_path&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the configuration file, with device credentials.&quot;</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the JSON configuration file containing device credentials (DSN, LAN key, etc.).&quot;</span>
     <span class="p">)</span>
 
     <span class="c1"># Manually handle --help to avoid argument parsing errors with unknown args.</span>
