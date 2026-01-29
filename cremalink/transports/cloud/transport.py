@@ -55,8 +55,11 @@ class CloudTransport(DeviceTransport):
         self.ip = device.get("lan_ip")
 
         # Fetch LAN key, which might be needed for other operations.
-        lan = self._get("/lan.json") or {}
-        self.lan_key = lan.get("lanip", {}).get("lanip_key")
+        try:
+            lan = self._get("/lan.json") or {}
+            self.lan_key = lan.get("lanip", {}).get("lanip_key")
+        except requests.HTTPError:
+            self.lan_key = None
 
     def configure(self) -> None:
         """Configuration is handled during __init__, so this is a no-op."""
