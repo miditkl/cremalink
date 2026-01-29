@@ -92,7 +92,8 @@ Contributions are welcome! If you have a machine profile not yet supported, plea
 
 Currently supported devices:
 
-* De'Longhi PrimaDonna Soul (AY008ESP1)
+* De'Longhi PrimaDonna Soul (ECAM612)
+* De'Longhi Eletta Explore (ECAM452) (not tested yet)
 
 ----
 
