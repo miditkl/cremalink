@@ -1,5 +1,5 @@
 {
-  "device_type": "AY008ESP1",
+  "device_type": "ECAM452",
   "command_map": {
     "americano": {
       "command": "0d1483f006010100280f006e1b010203040006ecfe",
@@ -51,7 +51,7 @@
     }
   },
   "property_map": {
-    "monitor": "d302_monitor"
+    "monitor": "d302_monitor_machine"
   },
   "monitor_profile": {
     "enums": {

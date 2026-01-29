@@ -78,7 +78,7 @@ def test_monitor_view_and_profile_flags():
     snapshot = build_monitor_snapshot({"monitor_b64": monitor_b64, "received_at": 1.0}, source="local", device_id="dsn1")
     transport = StubTransport(snapshot)
     device = Device.from_map(
-        transport=transport, device_map_path=device_map("AY008ESP1"), dsn="dsn1", nickname="test"
+        transport=transport, device_map_path=device_map("ECAM612"), dsn="dsn1", nickname="test"
     )
 
     view = device.get_monitor()
@@ -127,7 +127,7 @@ def test_monitor_profile_predicates_and_enums():
     snapshot = build_monitor_snapshot({"monitor_b64": monitor_b64, "received_at": 1.0}, source="local", device_id="dsn1")
     transport = StubTransport(snapshot)
     device = Device.from_map(
-        transport=transport, device_map_path=device_map("AY008ESP1"), dsn="dsn1", nickname="test"
+        transport=transport, device_map_path=device_map("ECAM612"), dsn="dsn1", nickname="test"
     )
     view = device.get_monitor()
 

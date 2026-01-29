@@ -1,0 +1,119 @@
+{
+  "device_type": "ECAM612",
+  "command_map": {
+    "americano": {
+      "command": "0d1483f006010100280f006e1b010203040006ecfe",
+      "name": "Americano"
+    },
+    "coffee": {
+      "command": "0d1183f002011b040100f002030400060ab7",
+      "name": "Coffee"
+    },
+    "doppio_plus": {
+      "command": "0d0f83f005020100601b00040006138e",
+      "name": "Doppio Plus"
+    },
+    "double_espresso": {
+      "command": "0d0883f00401062342",
+      "name": "Double Espresso"
+    },
+    "espresso": {
+      "command": "0d1183f0010101007e1b030202040006afe2",
+      "name": "Espresso"
+    },
+    "espresso_soul": {
+      "command": "0d0d83f0c80101003c1b04064270",
+      "name": "Espresso Soul"
+    },
+    "hot_water": {
+      "command": "0d0d83f010010f00fa1b01068124",
+      "name": "Hot Water"
+    },
+    "long_coffee": {
+      "command": "0d1183f003010100a01b010203040006fc08",
+      "name": "Long Coffee"
+    },
+    "refresh": {
+      "command": "0d07840f03025640",
+      "name": "Refresh Status"
+    },
+    "standby": {
+      "command": "0d07840f01010041",
+      "name": "Turn Off"
+    },
+    "stop": {
+      "command": "0d0d83f010020f00fa1b010659a6",
+      "name": "Stop"
+    },
+    "wakeup": {
+      "command": "0d07840f02015512",
+      "name": "Turn On"
+    }
+  },
+  "property_map": {
+    "monitor": "d302_monitor"
+  },
+  "monitor_profile": {
+    "enums": {
+      "accessory": {
+        "0": "none",
+        "1": "hot_water_spout",
+        "2": "latte_crema_hot",
+        "3": "chocolate",
+        "4": "latte_crema_hot_clean",
+        "6": "latte_crema_cool",
+        "7": "latte_crema_cool_clean"
+      },
+      "status": {
+        "0": "in_standby",
+        "1": "waking_up",
+        "2": "going_to_sleep",
+        "4": "descaling",
+        "5": "preparing_steam",
+        "7": "ready",
+        "8": "rinsing",
+        "10": "preparing_milk",
+        "11": "dispensing_hot_water",
+        "12": "cleaning_milk",
+        "16": "preparing_chocolate",
+        "17": "preparing_milk_alt",
+        "29": "unknown_29"
+      },
+      "action": {}
+    },
+    "flags": {
+      "is_watertank_open": {
+        "source": "alarms",
+        "byte": 1,
+        "bit": 5
+      },
+      "is_watertank_empty": {
+        "source": "alarms",
+        "byte": 0,
+        "bit": 0
+      },
+      "is_waste_container_full": {
+        "source": "alarms",
+        "byte": 0,
+        "bit": 1
+      },
+      "is_waste_container_missing": {
+        "source": "switches",
+        "byte": 0,
+        "bit": 3
+      }
+    },
+    "predicates": {
+      "is_busy": {
+        "kind": "not_equals",
+        "source": "action",
+        "value": 0
+      },
+      "is_idle": {
+        "kind": "equals",
+        "source": "action",
+        "value": 0
+      }
+    }
+  }
+}
