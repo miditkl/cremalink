@@ -85,6 +85,23 @@ Currently supported devices:
 - `De'Longhi Eletta Explore (ECAM452) (not tested yet)`
 ---
 
+## ☕ Credits
+
+This project stands on the shoulders of giants. The reverse engineering and implementation is a community effort. A special thanks to the following projects and individuals for their pioneering work and documentation:
+
+### Technical Foundations, Protocol Research & Inspiration
+* **[ECAMpy](https://github.com/duckwc/ECAMpy)**
+* **[delonghi-comfort-client](https://github.com/rtfpessoa/delonghi-comfort-client)**
+* **[Hacking Bluetooth to Brew Coffee](https://grack.com/blog/2022/12/02/hacking-bluetooth-to-brew-coffee-on-github-actions-part-2/)**
+* **[delonghi-coffee-link-python](https://github.com/otto-dev/delonghi-coffee-link-python.git)**
+* **[DlghIoT](https://framagit.org/mattgk/dlghiot)**
+* **[home_assistant_delonghi_primadonna](https://github.com/Arbuzov/home_assistant_delonghi_primadonna)**
+* **[longshot](https://github.com/mmastrac/longshot)**
+
+*Is a project missing or do you have suggestions for improvement? Feel free to open a PR or an issue!*
+
+---
+
 ## 📄 License
 
 Distributed under the **AGPL-3.0-or-later** License. See `LICENSE` for more information.
