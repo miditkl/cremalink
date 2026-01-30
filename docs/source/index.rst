@@ -97,6 +97,25 @@ Currently supported devices:
 
 ----
 
+☕ Credits
+=========
+
+This project stands on the shoulders of giants. The reverse engineering and implementation is a community effort. A special thanks to the following projects and individuals for their pioneering work and documentation:
+
+Technical Foundations, Protocol Research & Inspiration
+------------------------------------------------------
+
+* `ECAMpy <https://github.com/duckwc/ECAMpy>`_
+* `delonghi-comfort-client <https://github.com/rtfpessoa/delonghi-comfort-client>`_
+* `Hacking Bluetooth to Brew Coffee <https://grack.com/blog/2022/12/02/hacking-bluetooth-to-brew-coffee-on-github-actions-part-2/>`_
+* `delonghi-coffee-link-python <https://github.com/otto-dev/delonghi-coffee-link-python.git>`_
+* `DlghIoT <https://framagit.org/mattgk/dlghiot>`_
+* `home_assistant_delonghi_primadonna <https://github.com/Arbuzov/home_assistant_delonghi_primadonna>`_
+* `longshot <https://github.com/mmastrac/longshot>`_
+
+*Is a project missing or do you have suggestions for improvement? Feel free to open a PR or an issue!*
+
+
 📄 License
 ---------
 
