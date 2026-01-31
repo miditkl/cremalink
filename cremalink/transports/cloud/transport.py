@@ -12,10 +12,12 @@ import requests
 from cremalink.parsing.monitor.decode import build_monitor_snapshot
 from cremalink.transports.base import DeviceTransport
 from cremalink.resources import load_api_config
+from cremalink.crypto import encode_command
 
 API_USER_AGENT = "datatransport/3.1.2 android/"
 TOKEN_USER_AGENT = "DeLonghiComfort/3 CFNetwork/1568.300.101 Darwin/24.2.0"
-
+APP_ID_HEX = "C0FFEEEE"
+APP_ID_DECIMAL_SIGNED2 = "-1056968978"
 
 class CloudTransport(DeviceTransport):
     """
@@ -110,8 +112,16 @@ class CloudTransport(DeviceTransport):
     # ---- DeviceTransport Implementation ----
     def send_command(self, command: str) -> Any:
         """Sends a command to the device by creating a new 'datapoint' via the cloud API."""
-        payload = {"datapoint": {"value": command}}
-        return self._post(path="/properties/data_request/datapoints.json", data=payload)
+
+        app_id_set = self.ensure_app_id()
+
+        # if the app id could not be set, there is no point to send the command
+        if app_id_set == False:
+            raise ConnectionError("Device in use by another app / integration")
+
+        encoded_command = encode_command(command, APP_ID_HEX)
+        payload = {"datapoint": {"value": encoded_command}}
+        return self._post(path="/properties/app_data_request/datapoints.json", data=payload)
 
     def set_mappings(self, command_map: dict[str, Any], property_map: dict[str, Any]) -> None:
         """Stores the provided command and property maps on the instance."""
@@ -153,6 +163,43 @@ class CloudTransport(DeviceTransport):
             "received_at": received_ts,
         }
         return build_monitor_snapshot(payload, source="cloud", device_id=self.dsn or self.id)
+
+    def ensure_app_id(self) -> bool:
+        """Check the app_id matches the cremalink app id and try to set it"""
+        app_id = self.get_property("app_id") or {}
+        value = app_id.get("value")
+
+        if value == "0":
+            self.register_app_id()
+
+            # sleep for a bit to allow the app id to get set
+            time.sleep(7)
+
+            return True
+        elif value == APP_ID_DECIMAL_SIGNED2:
+            self.refresh_app_id()
+
+            return True
+
+        return False
+
+    def register_app_id(self) -> Any:
+        """
+        Sends a command to register the app id with the cloud.
+        The register command is just the timestamp + app_id.
+        """
+        command = encode_command("", APP_ID_HEX)
+
+        payload = {"datapoint": {"value": command}}
+        return self._post(path="/properties/app_device_connected/datapoints.json", data=payload)
+
+    def refresh_app_id(self) -> Any:
+        """Sends a command to refresh the registered app id with the cloud."""
+        hex_command = self.command_map.get("refresh", {}).get("command")
+        command = encode_command(hex_command, APP_ID_HEX)
+
+        payload = {"datapoint": {"value": command}}
+        return self._post(path="/properties/app_data_request/datapoints.json", data=payload)
 
     def refresh_monitor(self) -> Any:
         """
