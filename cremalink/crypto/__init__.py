@@ -6,6 +6,7 @@ encryption, decryption, and hashing, primarily using AES and HMAC.
 import base64
 import hashlib
 import hmac
+import time
 
 from Crypto.Cipher import AES
 
@@ -129,6 +130,17 @@ def rotate_iv_from_ciphertext(enc: str) -> bytes:
     # The last 16 bytes are the last 32 characters of the hex string.
     return bytearray.fromhex(decoded_hex[-32:])
 
+def encode_command(hex_command: str, app_id: str = None) -> str:
+    """
+    Encodes a hexadecimal command string into the base64 format expected by the device.
+    It appends the command bytes with a current timestamp.
+    If an app id is provided, it is also appended it
+    """
+    byte_command = bytearray.fromhex(hex_command)
+    byte_command += bytearray.fromhex(hex(int(time.time()))[2:])
+    if app_id != None:
+        byte_command += bytearray.fromhex(app_id)
+    return base64.b64encode(byte_command).decode("utf-8")
 
 # Specifies the public API of this module.
 __all__ = [
@@ -139,4 +151,5 @@ __all__ = [
     "pad_zero",
     "rotate_iv_from_ciphertext",
     "unpad_zero",
+    "encode_command"
 ]

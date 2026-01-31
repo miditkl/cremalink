@@ -6,9 +6,7 @@ device, abstracting away the underlying transport and command details.
 from __future__ import annotations
 
 import json
-import time
 from dataclasses import dataclass, field
-from base64 import b64encode
 from typing import Any, Dict, Optional
 
 from cremalink.parsing.monitor.frame import MonitorFrame
@@ -26,17 +24,6 @@ def _load_device_map(device_map_path: Optional[str]) -> Dict[str, Any]:
     with open(device_map_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data if isinstance(data, dict) else {}
-
-
-def _encode_command(hex_command: str) -> str:
-    """
-    Encodes a hexadecimal command string into the base64 format expected by the device.
-    It prepends the command bytes with a current timestamp.
-    """
-    head = bytearray.fromhex(hex_command)
-    timestamp = bytearray.fromhex(hex(int(time.time()))[2:])
-    return b64encode(head + timestamp).decode("utf-8")
-
 
 @dataclass
 class Device:
@@ -105,7 +92,7 @@ class Device:
         """
         if not device_map_path:
             device_map_path = device_map(cls.model) if cls.model else None
-        
+
         map_data = _load_device_map(device_map_path)
         command_map = map_data.get("command_map", {}) if isinstance(map_data, dict) else {}
         property_map = map_data.get("property_map", {}) if isinstance(map_data, dict) else {}
@@ -134,7 +121,7 @@ class Device:
 
     def send_command(self, command: str) -> Any:
         """
-        Encodes and sends a raw hex command to the device via the transport.
+        Sends a command to the device via the transport.
 
         Args:
             command: The hex command string to send.
@@ -142,8 +129,7 @@ class Device:
         Returns:
             The response from the transport.
         """
-        encoded = _encode_command(command)
-        return self.transport.send_command(encoded)
+        return self.transport.send_command(command)
 
     def refresh_monitor(self) -> Any:
         """Requests a refresh of the device's monitoring data."""

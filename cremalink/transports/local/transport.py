@@ -13,7 +13,7 @@ import requests
 from cremalink.parsing.monitor.decode import build_monitor_snapshot
 from cremalink.parsing.properties.decode import PropertiesSnapshot
 from cremalink.transports.base import DeviceTransport
-
+from cremalink.crypto import encode_command
 
 class LocalTransport(DeviceTransport):
     """
@@ -107,7 +107,8 @@ class LocalTransport(DeviceTransport):
         """Sends a command to the device via the local proxy server."""
         if not self._configured:
             self.configure()
-        resp = self._post_server("/command", {"command": command})
+        encoded_command = encode_command(command)
+        resp = self._post_server("/command", {"command": encoded_command})
         resp.raise_for_status()
         return resp.json()
 
