@@ -67,7 +67,7 @@ def test_local_transport_flow():
     assert ("POST", "/configure") in transport.calls
     assert transport.configure_payloads[-1]["monitor_property_name"] == "d302_monitor_machine"
 
-    result = transport.send_command("brew")
+    result = transport.send_command("0d07840f02015512")
     assert result["status"] == "queued"
 
     props = transport.get_properties()
