@@ -51,7 +51,8 @@
     }
   },
   "property_map": {
-    "monitor": "d302_monitor"
+    "monitor": "d302_monitor",
+    "data_request": "data_request"
   },
   "monitor_profile": {
     "enums": {

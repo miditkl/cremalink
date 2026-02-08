@@ -21,6 +21,7 @@ class ConfigureRequest(BaseModel):
     lan_key: str
     device_scheme: str = Field("https", description="The protocol scheme, e.g., 'http' or 'https'.")
     monitor_property_name: str | None = None
+    data_request_property_name: str | None = None
 
 
 class CommandRequest(BaseModel):

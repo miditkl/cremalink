@@ -73,6 +73,7 @@ class LocalServerState:
         self._monitor_request_pending = False
         self._properties_request_pending = False
         self.monitor_property_name: str = None
+        self.data_request_property_name: str = None
 
         # --- Concurrency Control ---
         self.lock = asyncio.Lock()
@@ -100,6 +101,7 @@ class LocalServerState:
         lan_key: str,
         device_scheme: str = "https",
         monitor_property_name: Optional[str] = None,
+        data_request_property_name: Optional[str] = None,
     ) -> None:
         """
         Configures the state with new device details and resets the session.
@@ -112,6 +114,7 @@ class LocalServerState:
                 and self.device_ip == device_ip
                 and self.lan_key == lan_key
                 and self.monitor_property_name == monitor_property_name
+                and self.data_request_property_name == data_request_property_name
                 and self.app_crypto_key
                 and self.dev_crypto_key
             )
@@ -125,6 +128,7 @@ class LocalServerState:
             self.device_scheme = device_scheme or "https"
             self.lan_key = lan_key
             self.monitor_property_name = monitor_property_name
+            self.data_request_property_name = data_request_property_name
             self.seq = 0
             self.command_queue = deque()
             self.command_payload = protocol.build_empty_payload(self.seq)
@@ -177,6 +181,7 @@ class LocalServerState:
             self.lan_key = data.get("lan_key")
             self.device_scheme = data.get("device_scheme")
             self.monitor_property_name = data.get("monitor_property_name")
+            self.data_request_property_name = data.get("data_request_property_name")
 
             self.logger.info(f"State loaded from {self.settings.server_settings_path}")
         except Exception as e:
@@ -249,7 +254,7 @@ class LocalServerState:
                         "property": {
                             "base_type": "string",
                             "dsn": self.dsn,
-                            "name": "data_request",
+                            "name": self.data_request_property_name,
                             "value": f"{command}\n",
                         }
                     }

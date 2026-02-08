@@ -51,7 +51,8 @@
     }
   },
   "property_map": {
-    "monitor": "d302_monitor_machine"
+    "monitor": "d302_monitor_machine",
+    "data_request": "app_data_request"
   },
   "monitor_profile": {
     "enums": {

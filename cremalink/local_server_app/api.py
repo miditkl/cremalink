@@ -96,6 +96,7 @@ def create_app(
             lan_key=req.lan_key,
             device_scheme=req.device_scheme,
             monitor_property_name=req.monitor_property_name,
+            data_request_property_name=req.data_request_property_name
         )
         # Attempt an initial registration with the device.
         try:
