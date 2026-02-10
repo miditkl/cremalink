@@ -347,7 +347,7 @@ requires-dist = [
     { name = "cremalink", extras = ["test"], marker = "extra == 'dev'" },
     { name = "fastapi", specifier = ">=0.128.0" },
     { name = "httpx", specifier = ">=0.28.0" },
-    { name = "ipykernel", marker = "extra == 'dev'", specifier = "==7.1.0" },
+    { name = "ipykernel", marker = "extra == 'dev'", specifier = "==7.2.0" },
     { name = "notebook", marker = "extra == 'dev'", specifier = "==7.5.3" },
     { name = "pycryptodome", specifier = ">=3.20.0" },
     { name = "pydantic", specifier = ">=2.12.0" },
@@ -424,17 +424,18 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.128.1"
+version = "0.128.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
     { name = "pydantic" },
     { name = "starlette" },
     { name = "typing-extensions" },
+    { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f6/59/28bde150415783ff084334e3de106eb7461a57864cf69f343950ad5a5ddd/fastapi-0.128.1.tar.gz", hash = "sha256:ce5be4fa26d4ce6f54debcc873d1fb8e0e248f5c48d7502ba6c61457ab2dc766", size = 374260, upload-time = "2026-02-04T17:35:10.542Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/83/d1/195005b5e45b443e305136df47ee7df4493d782e0c039dd0d97065580324/fastapi-0.128.6.tar.gz", hash = "sha256:0cb3946557e792d731b26a42b04912f16367e3c3135ea8290f620e234f2b604f", size = 374757, upload-time = "2026-02-09T17:27:03.541Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1a/08/3953db1979ea131c68279b997c6465080118b407f0800445b843f8e164b3/fastapi-0.128.1-py3-none-any.whl", hash = "sha256:ee82146bbf91ea5bbf2bb8629e4c6e056c4fbd997ea6068501b11b15260b50fb", size = 103810, upload-time = "2026-02-04T17:35:08.02Z" },
+    { url = "https://files.pythonhosted.org/packages/24/58/a2c4f6b240eeb148fb88cdac48f50a194aba760c1ca4988c6031c66a20ee/fastapi-0.128.6-py3-none-any.whl", hash = "sha256:bb1c1ef87d6086a7132d0ab60869d6f1ee67283b20fbf84ec0003bd335099509", size = 103674, upload-time = "2026-02-09T17:27:02.355Z" },
 ]
 
 [[package]]
@@ -521,7 +522,7 @@ wheels = [
 
 [[package]]
 name = "ipykernel"
-version = "7.1.0"
+version = "7.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "appnope", marker = "sys_platform == 'darwin'" },
@@ -538,9 +539,9 @@ dependencies = [
     { name = "tornado" },
     { name = "traitlets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b9/a4/4948be6eb88628505b83a1f2f40d90254cab66abf2043b3c40fa07dfce0f/ipykernel-7.1.0.tar.gz", hash = "sha256:58a3fc88533d5930c3546dc7eac66c6d288acde4f801e2001e65edc5dc9cf0db", size = 174579, upload-time = "2025-10-27T09:46:39.471Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/8d/b68b728e2d06b9e0051019640a40a9eb7a88fcd82c2e1b5ce70bef5ff044/ipykernel-7.2.0.tar.gz", hash = "sha256:18ed160b6dee2cbb16e5f3575858bc19d8f1fe6046a9a680c708494ce31d909e", size = 176046, upload-time = "2026-02-06T16:43:27.403Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/17/20c2552266728ceba271967b87919664ecc0e33efca29c3efc6baf88c5f9/ipykernel-7.1.0-py3-none-any.whl", hash = "sha256:763b5ec6c5b7776f6a8d7ce09b267693b4e5ce75cb50ae696aaefb3c85e1ea4c", size = 117968, upload-time = "2025-10-27T09:46:37.805Z" },
+    { url = "https://files.pythonhosted.org/packages/82/b9/e73d5d9f405cba7706c539aa8b311b49d4c2f3d698d9c12f815231169c71/ipykernel-7.2.0-py3-none-any.whl", hash = "sha256:3bbd4420d2b3cc105cbdf3756bfc04500b1e52f090a90716851f3916c62e1661", size = 118788, upload-time = "2026-02-06T16:43:25.149Z" },
 ]
 
 [[package]]
