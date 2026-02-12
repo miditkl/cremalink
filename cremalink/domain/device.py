@@ -6,6 +6,7 @@ device, abstracting away the underlying transport and command details.
 from __future__ import annotations
 
 import json
+import logging
 import time
 from dataclasses import dataclass, field
 from base64 import b64encode
@@ -17,6 +18,11 @@ from cremalink.parsing.monitor.profile import MonitorProfile
 from cremalink.parsing.monitor.view import MonitorView
 from cremalink.transports.base import DeviceTransport
 from cremalink.devices import device_map
+from cremalink.core.binary import hex_to_signed_decimal
+
+logger = logging.getLogger(__name__)
+
+APP_ID_HEX = "C0FFEEEE"
 
 
 def _load_device_map(device_map_path: Optional[str]) -> Dict[str, Any]:
@@ -28,14 +34,15 @@ def _load_device_map(device_map_path: Optional[str]) -> Dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
-def _encode_command(hex_command: str) -> str:
+def _encode_command(hex_command: str, app_id: Optional[str] = None) -> str:
     """
     Encodes a hexadecimal command string into the base64 format expected by the device.
     It prepends the command bytes with a current timestamp.
     """
     head = bytearray.fromhex(hex_command)
     timestamp = bytearray.fromhex(hex(int(time.time()))[2:])
-    return b64encode(head + timestamp).decode("utf-8")
+    app_id_bytes = bytearray.fromhex(app_id) if app_id else b""
+    return b64encode(head + timestamp + app_id_bytes).decode("utf-8")
 
 
 @dataclass
@@ -107,6 +114,15 @@ class Device:
             device_map_path = device_map(cls.model) if cls.model else None
         
         map_data = _load_device_map(device_map_path)
+
+        support = map_data.get("support", {})
+        transport_name = transport.__class__.__name__
+
+        if transport_name == "CloudTransport" and support.get("cloud") is False:
+            logger.warning("The device map indicates that CloudTransport is not supported for this device.")
+        elif transport_name == "LocalTransport" and support.get("local") is False:
+            logger.warning("The device map indicates that LocalTransport is not supported for this device.")
+
         command_map = map_data.get("command_map", {}) if isinstance(map_data, dict) else {}
         property_map = map_data.get("property_map", {}) if isinstance(map_data, dict) else {}
         monitor_profile_data = map_data.get("monitor_profile", {}) if isinstance(map_data, dict) else {}
@@ -142,7 +158,14 @@ class Device:
         Returns:
             The response from the transport.
         """
-        encoded = _encode_command(command)
+        if self.property_map.get('app_id', None):
+            if not self._ensure_app_id():
+                raise ConnectionError("Could not set app_id, so cannot send command.")
+                # Todo: get the currently used app_id, to mock
+            encoded = _encode_command(command, APP_ID_HEX)
+        else:
+            encoded = _encode_command(command)
+
         return self.transport.send_command(encoded)
 
     def refresh_monitor(self) -> Any:
@@ -243,3 +266,32 @@ class Device:
             return MonitorFrame.from_b64(snapshot.raw_b64)
         except Exception:
             return None
+
+    def _ensure_app_id(self) -> bool:
+        """Check the app_id matches the cremalink app id and try to set it"""
+        app_id = self.get_property(self.property_map.get("app_id", "app_id")) or {}
+        value = app_id.get("value")
+        if value == "0":
+            self._register_app_id()
+            # sleep for a bit to allow the app id to get set
+            time.sleep(7)
+            return True
+        elif value == hex_to_signed_decimal(APP_ID_HEX):
+            self._refresh_app_id()
+            return True
+        else:
+            return False
+
+    def _register_app_id(self) -> Any:
+        """
+        Sends a command to register the app id with the cloud.
+        The register command is just the timestamp + app_id.
+        """
+        command = _encode_command("", APP_ID_HEX)
+        return self.transport.send_command(command, self.property_map.get("device_connected", "app_device_connected"))
+
+    def _refresh_app_id(self) -> Any:
+        """Sends a command to refresh the registered app id with the cloud."""
+        hex_command = self.command_map.get("refresh", {}).get("command")
+        command = _encode_command(hex_command, APP_ID_HEX)
+        return self.transport.send_command(command)

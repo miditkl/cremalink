@@ -100,3 +100,23 @@ def safe_byte_at(data: Iterable[int] | bytes, index: int) -> int | None:
     except (IndexError, TypeError):
         # Return None if index is out of bounds or type is not subscriptable.
         return None
+
+
+def hex_to_signed_decimal(hex_str: str) -> str:
+    """
+    Converts a hexadecimal string to a signed decimal string using 32-bit two's complement.
+    Example: "C0FFEEEE" -> "-1056968978"
+    """
+    value = int(hex_str, 16)
+    if value >= 2**31:
+        value -= 2**32
+    return str(value)
+
+
+def signed_decimal_to_hex(decimal_str: str) -> str:
+    """
+    Converts a signed decimal string to a hexadecimal string using 32-bit two's complement.
+    Example: "-1056968978" -> "C0FFEEEE"
+    """
+    value = int(decimal_str)
+    return f"{(value & 0xFFFFFFFF):08X}"

@@ -103,7 +103,7 @@ class LocalTransport(DeviceTransport):
             raise ValueError(f"Failed to configure server: {resp.status_code} {resp.text}")
         self._configured = True
 
-    def send_command(self, command: str) -> dict[str, Any]:
+    def send_command(self, command: str, alternative_property: str = None) -> dict[str, Any]:
         """Sends a command to the device via the local proxy server."""
         if not self._configured:
             self.configure()

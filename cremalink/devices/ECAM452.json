@@ -1,5 +1,9 @@
 {
   "device_type": "ECAM452",
+  "support": {
+    "cloud": true,
+    "local": false
+  },
   "command_map": {
     "americano": {
       "command": "0d1483f006010100280f006e1b010203040006ecfe",
@@ -35,7 +39,7 @@
     },
     "refresh": {
       "command": "0d07840f03025640",
-      "name": "Refresh Status"
+      "name": "Refresh App ID"
     },
     "standby": {
       "command": "0d07840f01010041",
@@ -51,7 +55,10 @@
     }
   },
   "property_map": {
-    "monitor": "d302_monitor_machine"
+    "monitor": "d302_monitor_machine",
+    "data_request": "app_data_request",
+    "app_id": "app_id",
+    "device_connected": "app_device_connected"
   },
   "monitor_profile": {
     "enums": {
