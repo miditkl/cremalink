@@ -1,5 +1,9 @@
 {
   "device_type": "ECAM612",
+  "support": {
+    "cloud": true,
+    "local": true
+  },
   "command_map": {
     "americano": {
       "command": "0d1483f006010100280f006e1b010203040006ecfe",
@@ -32,10 +36,6 @@
     "long_coffee": {
       "command": "0d1183f003010100a01b010203040006fc08",
       "name": "Long Coffee"
-    },
-    "refresh": {
-      "command": "0d07840f03025640",
-      "name": "Refresh Status"
     },
     "standby": {
       "command": "0d07840f01010041",

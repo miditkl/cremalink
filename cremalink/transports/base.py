@@ -23,12 +23,13 @@ class DeviceTransport(Protocol):
         """
         ...
 
-    def send_command(self, command: str) -> Any:
+    def send_command(self, command: str, alternative_property: str = None) -> Any:
         """
         Sends a command to the device.
 
         Args:
             command: The command payload to be sent.
+            alternative_property: The property used, alternatively to the value of "data_request"
 
         Returns:
             The response from the device, with the format depending on the

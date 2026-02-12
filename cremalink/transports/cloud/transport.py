@@ -108,11 +108,11 @@ class CloudTransport(DeviceTransport):
         return response.json()
 
     # ---- DeviceTransport Implementation ----
-    def send_command(self, command: str) -> Any:
+    def send_command(self, command: str, alternative_property: str = None) -> Any:
         """Sends a command to the device by creating a new 'datapoint' via the cloud API."""
         payload = {"datapoint": {"value": command}}
-
-        return self._post(path=f"/properties/{self.property_map.get('data_request', 'data_request')}/datapoints.json", data=payload)
+        data_request = alternative_property or self.property_map.get('data_request', 'data_request')
+        return self._post(path=f"/properties/{data_request}/datapoints.json", data=payload)
 
     def set_mappings(self, command_map: dict[str, Any], property_map: dict[str, Any]) -> None:
         """Stores the provided command and property maps on the instance."""
