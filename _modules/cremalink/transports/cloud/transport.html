@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.transports.cloud.transport &mdash; cremalink 0.1.dev1+g31d6d7eb8 documentation</title>
+  <title>cremalink.transports.cloud.transport &mdash; cremalink 0.1.dev1+g350a55347 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=f6563cd5"></script>
+      <script src="../../../../_static/documentation_options.js?v=cc8695c9"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -191,10 +191,11 @@
     <span class="c1"># ---- DeviceTransport Implementation ----</span>
 <div class="viewcode-block" id="CloudTransport.send_command">
 <a class="viewcode-back" href="../../../../api/cremalink.transports.cloud.transport.html#cremalink.transports.cloud.CloudTransport.send_command">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">send_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">alternative_property</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sends a command to the device by creating a new &#39;datapoint&#39; via the cloud API.&quot;&quot;&quot;</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;datapoint&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">command</span><span class="p">}}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/properties/data_request/datapoints.json&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span></div>
+        <span class="n">data_request</span> <span class="o">=</span> <span class="n">alternative_property</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_request&#39;</span><span class="p">,</span> <span class="s1">&#39;data_request&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/properties/</span><span class="si">{</span><span class="n">data_request</span><span class="si">}</span><span class="s2">/datapoints.json&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CloudTransport.set_mappings">

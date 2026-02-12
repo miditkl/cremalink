@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.core.binary &mdash; cremalink 0.1.dev1+g31d6d7eb8 documentation</title>
+  <title>cremalink.core.binary &mdash; cremalink 0.1.dev1+g350a55347 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f6563cd5"></script>
+      <script src="../../../_static/documentation_options.js?v=cc8695c9"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -187,6 +187,32 @@
     <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
         <span class="c1"># Return None if index is out of bounds or type is not subscriptable.</span>
         <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="hex_to_signed_decimal">
+<a class="viewcode-back" href="../../../api/cremalink.core.binary.html#cremalink.core.binary.hex_to_signed_decimal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">hex_to_signed_decimal</span><span class="p">(</span><span class="n">hex_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a hexadecimal string to a signed decimal string using 32-bit two&#39;s complement.</span>
+<span class="sd">    Example: &quot;C0FFEEEE&quot; -&gt; &quot;-1056968978&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hex_str</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">-=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">32</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="signed_decimal_to_hex">
+<a class="viewcode-back" href="../../../api/cremalink.core.binary.html#cremalink.core.binary.signed_decimal_to_hex">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">signed_decimal_to_hex</span><span class="p">(</span><span class="n">decimal_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a signed decimal string to a hexadecimal string using 32-bit two&#39;s complement.</span>
+<span class="sd">    Example: &quot;-1056968978&quot; -&gt; &quot;C0FFEEEE&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">decimal_str</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFFFFFFFF</span><span class="p">)</span><span class="si">:</span><span class="s2">08X</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 </pre></div>
 

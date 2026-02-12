@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.domain.device &mdash; cremalink 0.1.dev1+g31d6d7eb8 documentation</title>
+  <title>cremalink.domain.device &mdash; cremalink 0.1.dev1+g350a55347 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f6563cd5"></script>
+      <script src="../../../_static/documentation_options.js?v=cc8695c9"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -82,6 +82,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">base64</span><span class="w"> </span><span class="kn">import</span> <span class="n">b64encode</span>
@@ -93,6 +94,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.parsing.monitor.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonitorView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.transports.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviceTransport</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.devices</span><span class="w"> </span><span class="kn">import</span> <span class="n">device_map</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.core.binary</span><span class="w"> </span><span class="kn">import</span> <span class="n">hex_to_signed_decimal</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">APP_ID_HEX</span> <span class="o">=</span> <span class="s2">&quot;C0FFEEEE&quot;</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_load_device_map</span><span class="p">(</span><span class="n">device_map_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
@@ -104,14 +110,15 @@
     <span class="k">return</span> <span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_command</span><span class="p">(</span><span class="n">hex_command</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_encode_command</span><span class="p">(</span><span class="n">hex_command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">app_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Encodes a hexadecimal command string into the base64 format expected by the device.</span>
 <span class="sd">    It prepends the command bytes with a current timestamp.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">head</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">hex_command</span><span class="p">)</span>
     <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))[</span><span class="mi">2</span><span class="p">:])</span>
-    <span class="k">return</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">head</span> <span class="o">+</span> <span class="n">timestamp</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="n">app_id_bytes</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">app_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">app_id</span> <span class="k">else</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">head</span> <span class="o">+</span> <span class="n">timestamp</span> <span class="o">+</span> <span class="n">app_id_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Device">
@@ -187,6 +194,15 @@
             <span class="n">device_map_path</span> <span class="o">=</span> <span class="n">device_map</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">model</span> <span class="k">else</span> <span class="kc">None</span>
         
         <span class="n">map_data</span> <span class="o">=</span> <span class="n">_load_device_map</span><span class="p">(</span><span class="n">device_map_path</span><span class="p">)</span>
+
+        <span class="n">support</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;support&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">transport_name</span> <span class="o">=</span> <span class="n">transport</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="k">if</span> <span class="n">transport_name</span> <span class="o">==</span> <span class="s2">&quot;CloudTransport&quot;</span> <span class="ow">and</span> <span class="n">support</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cloud&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The device map indicates that CloudTransport is not supported for this device.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">transport_name</span> <span class="o">==</span> <span class="s2">&quot;LocalTransport&quot;</span> <span class="ow">and</span> <span class="n">support</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The device map indicates that LocalTransport is not supported for this device.&quot;</span><span class="p">)</span>
+
         <span class="n">command_map</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;command_map&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="n">property_map</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;property_map&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="n">monitor_profile_data</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor_profile&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
@@ -228,7 +244,14 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            The response from the transport.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">encoded</span> <span class="o">=</span> <span class="n">_encode_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_app_id</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s2">&quot;Could not set app_id, so cannot send command.&quot;</span><span class="p">)</span>
+                <span class="c1"># Todo: get the currently used app_id, to mock</span>
+            <span class="n">encoded</span> <span class="o">=</span> <span class="n">_encode_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">APP_ID_HEX</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">encoded</span> <span class="o">=</span> <span class="n">_encode_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span></div>
 
 
@@ -362,7 +385,36 @@
             <span class="k">return</span> <span class="n">MonitorFrame</span><span class="o">.</span><span class="n">from_b64</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">raw_b64</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
-</div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_app_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the app_id matches the cremalink app id and try to set it&quot;&quot;&quot;</span>
+        <span class="n">app_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;app_id&quot;</span><span class="p">,</span> <span class="s2">&quot;app_id&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">app_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_register_app_id</span><span class="p">()</span>
+            <span class="c1"># sleep for a bit to allow the app id to get set</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="n">hex_to_signed_decimal</span><span class="p">(</span><span class="n">APP_ID_HEX</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_app_id</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register_app_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends a command to register the app id with the cloud.</span>
+<span class="sd">        The register command is just the timestamp + app_id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">_encode_command</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">APP_ID_HEX</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;device_connected&quot;</span><span class="p">,</span> <span class="s2">&quot;app_device_connected&quot;</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_refresh_app_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sends a command to refresh the registered app id with the cloud.&quot;&quot;&quot;</span>
+        <span class="n">hex_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;refresh&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;command&quot;</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">_encode_command</span><span class="p">(</span><span class="n">hex_command</span><span class="p">,</span> <span class="n">APP_ID_HEX</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div>
 
 </pre></div>
 

@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.transports.base &mdash; cremalink 0.1.dev1+g31d6d7eb8 documentation</title>
+  <title>cremalink.transports.base &mdash; cremalink 0.1.dev1+g350a55347 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f6563cd5"></script>
+      <script src="../../../_static/documentation_options.js?v=cc8695c9"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -106,12 +106,13 @@
 
 <div class="viewcode-block" id="DeviceTransport.send_command">
 <a class="viewcode-back" href="../../../api/cremalink.transports.base.html#cremalink.transports.base.DeviceTransport.send_command">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">send_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">alternative_property</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sends a command to the device.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            command: The command payload to be sent.</span>
+<span class="sd">            alternative_property: The property used, alternatively to the value of &quot;data_request&quot;</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The response from the device, with the format depending on the</span>
