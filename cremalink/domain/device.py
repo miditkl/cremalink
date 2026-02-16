@@ -18,7 +18,7 @@ from cremalink.parsing.monitor.profile import MonitorProfile
 from cremalink.parsing.monitor.view import MonitorView
 from cremalink.transports.base import DeviceTransport
 from cremalink.devices import device_map
-from cremalink.core.binary import hex_to_signed_decimal
+from cremalink.core.binary import hex_to_signed_decimal, signed_decimal_to_hex
 
 logger = logging.getLogger(__name__)
 
@@ -159,10 +159,10 @@ class Device:
             The response from the transport.
         """
         if self.property_map.get('app_id', None):
-            if not self._ensure_app_id():
+            app_id_hex = self._ensure_app_id()
+            if not app_id_hex:
                 raise ConnectionError("Could not set app_id, so cannot send command.")
-                # Todo: get the currently used app_id, to mock
-            encoded = _encode_command(command, APP_ID_HEX)
+            encoded = _encode_command(command, app_id_hex)
         else:
             encoded = _encode_command(command)
 
@@ -272,22 +272,21 @@ class Device:
         app_id = self.get_property(self.property_map.get("app_id", "app_id")) or {}
         value = app_id.get("value")
         if value == "0":
-            self._register_app_id()
+            self._register_app_id(APP_ID_HEX)
             # sleep for a bit to allow the app id to get set
             time.sleep(7)
-            return True
+            return APP_ID_HEX
         elif value == hex_to_signed_decimal(APP_ID_HEX):
             self._refresh_app_id()
-            return True
-        else:
-            return False
+            return APP_ID_HEX
+        return signed_decimal_to_hex(value)
 
-    def _register_app_id(self) -> Any:
+    def _register_app_id(self, app_id_hex: str) -> Any:
         """
         Sends a command to register the app id with the cloud.
         The register command is just the timestamp + app_id.
         """
-        command = _encode_command("", APP_ID_HEX)
+        command = _encode_command("", app_id_hex)
         return self.transport.send_command(command, self.property_map.get("device_connected", "app_device_connected"))
 
     def _refresh_app_id(self) -> Any:
