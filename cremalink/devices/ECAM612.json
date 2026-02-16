@@ -1,37 +1,12 @@
 {
-  "device_type": "ECAM612",
-  "support": {
-    "cloud": true,
-    "local": true
-  },
   "command_map": {
-    "cortado": {
-      "command": "0d1883f018010c011c020100301b0202030900300400060a84",
-      "name": "Cortado"
-    },
-    "cappuccino_plus": {
-      "command": "0d1483f00d011c020100781b020900b40400067a44",
-      "name": "Cappuccino+"
-    },
-    "hot_milk": {
-      "command": "0d0f83f00c011c020901201b00061de5",
-      "name": "Hot Milk"
-    },
-    "espresso_macchiato": {
-      "command": "0d1683f00b011c0201001e1b0102030900280400065a08",
-      "name": "Espresso Macchiato"
-    },
-    "flat_white": {
-      "command": "0d1883f00a010c011c0201003c1b0102030900dc0400068393",
-      "name": "Flat White"
+    "americano": {
+      "command": "0d1483f006010100280f006e1b010203040006ecfe",
+      "name": "Americano"
     },
     "caffe_latte": {
       "command": "0d1683f009011c0201003c1b01020309017c040006649e",
       "name": "Caffé Latte"
-    },
-    "latte_macchiato": {
-      "command": "0d1683f008011c020100481b02020209015c0400063cc2",
-      "name": "Latte Macchiato"
     },
     "cappuccino": {
       "command": "0d1683f007011c0201004e1b0202040900cc040006f563",
@@ -41,13 +16,17 @@
       "command": "0d1883f00f010c011c020100321b0402030900f704000ad9f8",
       "name": "Cappuccino Mix"
     },
-    "americano": {
-      "command": "0d1483f006010100280f006e1b010203040006ecfe",
-      "name": "Americano"
+    "cappuccino_plus": {
+      "command": "0d1483f00d011c020100781b020900b40400067a44",
+      "name": "Cappuccino+"
     },
     "coffee": {
       "command": "0d1183f002011b040100f002030400060ab7",
       "name": "Coffee"
+    },
+    "cortado": {
+      "command": "0d1883f018010c011c020100301b0202030900300400060a84",
+      "name": "Cortado"
     },
     "doppio_plus": {
       "command": "0d0f83f005020100601b00040006138e",
@@ -61,13 +40,29 @@
       "command": "0d1183f0010101007e1b030202040006afe2",
       "name": "Espresso"
     },
+    "espresso_macchiato": {
+      "command": "0d1683f00b011c0201001e1b0102030900280400065a08",
+      "name": "Espresso Macchiato"
+    },
     "espresso_soul": {
       "command": "0d0d83f0c80101003c1b04064270",
       "name": "Espresso Soul"
     },
+    "flat_white": {
+      "command": "0d1883f00a010c011c0201003c1b0102030900dc0400068393",
+      "name": "Flat White"
+    },
+    "hot_milk": {
+      "command": "0d0f83f00c011c020901201b00061de5",
+      "name": "Hot Milk"
+    },
     "hot_water": {
       "command": "0d0d83f010010f00fa1b01068124",
       "name": "Hot Water"
+    },
+    "latte_macchiato": {
+      "command": "0d1683f008011c020100481b02020209015c0400063cc2",
+      "name": "Latte Macchiato"
     },
     "long_coffee": {
       "command": "0d1183f003010100a01b010203040006fc08",
@@ -86,10 +81,7 @@
       "name": "Turn On"
     }
   },
-  "property_map": {
-    "monitor": "d302_monitor",
-    "data_request": "data_request"
-  },
+  "device_type": "ECAM612",
   "monitor_profile": {
     "enums": {
       "accessory": {
@@ -101,43 +93,48 @@
         "6": "latte_crema_cool",
         "7": "latte_crema_cool_clean"
       },
+      "action": {},
       "status": {
         "0": "in_standby",
         "1": "waking_up",
-        "2": "going_to_sleep",
-        "4": "descaling",
-        "5": "preparing_steam",
-        "7": "ready",
-        "8": "rinsing",
         "10": "preparing_milk",
         "11": "dispensing_hot_water",
         "12": "cleaning_milk",
         "16": "preparing_chocolate",
         "17": "preparing_milk_alt",
-        "29": "unknown_29"
-      },
-      "action": {}
+        "2": "going_to_sleep",
+        "29": "unknown_29",
+        "4": "descaling",
+        "5": "preparing_steam",
+        "7": "ready",
+        "8": "rinsing"
+      }
     },
     "flags": {
-      "is_watertank_open": {
-        "source": "alarms",
+      "is_milk_fridge_warning": {
+        "bit": 0,
         "byte": 1,
-        "bit": 5
-      },
-      "is_watertank_empty": {
-        "source": "alarms",
-        "byte": 0,
-        "bit": 0
+        "source": "switches"
       },
       "is_waste_container_full": {
-        "source": "alarms",
+        "bit": 1,
         "byte": 0,
-        "bit": 1
+        "source": "alarms"
       },
       "is_waste_container_missing": {
-        "source": "switches",
+        "bit": 3,
         "byte": 0,
-        "bit": 3
+        "source": "switches"
+      },
+      "is_watertank_empty": {
+        "bit": 0,
+        "byte": 0,
+        "source": "alarms"
+      },
+      "is_watertank_open": {
+        "bit": 5,
+        "byte": 1,
+        "source": "alarms"
       }
     },
     "predicates": {
@@ -152,5 +149,13 @@
         "value": 0
       }
     }
+  },
+  "property_map": {
+    "data_request": "data_request",
+    "monitor": "d302_monitor"
+  },
+  "support": {
+    "cloud": true,
+    "local": true
   }
 }
