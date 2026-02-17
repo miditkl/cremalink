@@ -102,6 +102,10 @@ This project stands on the shoulders of giants. The reverse engineering and impl
 
 ---
 
+## 💫 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=miditkl/cremalink&type=date&logscale&legend=top-left)](https://www.star-history.com/#miditkl/cremalink&type=date&logscale&legend=top-left)
+
 ## 📄 License
 
 Distributed under the **AGPL-3.0-or-later** License. See `LICENSE` for more information.
