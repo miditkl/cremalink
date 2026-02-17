@@ -83,13 +83,15 @@ class LocalTransport(DeviceTransport):
         Configures the local proxy server with the device's connection details.
         This must be called before other methods can be used.
         """
-        monitor_prop_name = self.property_map.get("monitor", "d302_monitor")
+        monitor_prop_name = self.property_map.get("monitor")
+        data_request_prop_name = self.property_map.get("data_request")
         payload = {
             "dsn": self.dsn,
             "device_ip": self.device_ip,
             "lan_key": self.lan_key,
             "device_scheme": self.device_scheme,
             "monitor_property_name": monitor_prop_name,
+            "data_request_property_name": data_request_prop_name
         }
         try:
             resp = self._post_server("/configure", payload)
@@ -156,9 +158,11 @@ class LocalTransport(DeviceTransport):
         Sets the command and property maps and re-configures the server if needed.
         If the name of the monitoring property changes, the server is reconfigured.
         """
-        previous_monitor = self.property_map.get("monitor", "d302_monitor")
+        previous_monitor = self.property_map.get("monitor")
+        previous_data_request = self.property_map.get("data_request")
         self.command_map = command_map
         self.property_map = property_map
-        updated_monitor = self.property_map.get("monitor", "d302_monitor")
-        if self._auto_configure and (not self._configured or previous_monitor != updated_monitor):
+        updated_monitor = self.property_map.get("monitor")
+        updated_data_request = self.property_map.get("data_request")
+        if self._auto_configure and (not self._configured or previous_monitor != updated_monitor or previous_data_request != updated_data_request):
             self.configure()

@@ -111,7 +111,7 @@ class CloudTransport(DeviceTransport):
     def send_command(self, command: str, alternative_property: str = None) -> Any:
         """Sends a command to the device by creating a new 'datapoint' via the cloud API."""
         payload = {"datapoint": {"value": command}}
-        data_request = alternative_property or self.property_map.get('data_request', 'data_request')
+        data_request = alternative_property or self.property_map.get("data_request")
         return self._post(path=f"/properties/{data_request}/datapoints.json", data=payload)
 
     def set_mappings(self, command_map: dict[str, Any], property_map: dict[str, Any]) -> None:
@@ -138,7 +138,7 @@ class CloudTransport(DeviceTransport):
         This works by fetching the specific 'monitor' property, extracting its
         base64 value, and then decoding it into a structured snapshot.
         """
-        property_name = self.property_map.get("monitor", "d302_monitor")
+        property_name = self.property_map.get("monitor")
         prop = self.get_property(property_name) or {}
         raw_b64 = prop.get("value")
         received_at = prop.get("updated_at")

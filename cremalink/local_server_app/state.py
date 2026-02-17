@@ -149,9 +149,9 @@ class LocalServerState:
             self.last_properties_received_at = None
             self._properties_request_pending = False
         self.logger.info("configured", extra={"details": {"dsn": dsn, "device_ip": device_ip, "scheme": device_scheme}})
-        await self._save_server_settings(dsn=self.dsn, device_ip=self.device_ip, lan_key=self.lan_key, device_scheme=self.device_scheme, monitor_property_name=self.monitor_property_name)
+        await self._save_server_settings(dsn=self.dsn, device_ip=self.device_ip, lan_key=self.lan_key, device_scheme=self.device_scheme, monitor_property_name=self.monitor_property_name, data_request_property_name=self.data_request_property_name)
 
-    async def _save_server_settings(self, dsn: str, device_ip: str, lan_key: str, device_scheme: str, monitor_property_name: str):
+    async def _save_server_settings(self, dsn: str, device_ip: str, lan_key: str, device_scheme: str, monitor_property_name: str, data_request_property_name: str):
         if self.settings.server_settings_path == "":
             return
         data = {
@@ -159,7 +159,8 @@ class LocalServerState:
             "device_ip": device_ip,
             "lan_key": lan_key,
             "device_scheme": device_scheme,
-            "monitor_property_name": monitor_property_name
+            "monitor_property_name": monitor_property_name,
+            "data_request_property_name": data_request_property_name
         }
         try:
             with open(self.settings.server_settings_path, "w") as f:
