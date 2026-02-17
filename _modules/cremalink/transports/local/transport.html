@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.transports.local.transport &mdash; cremalink 0.1.dev1+gf5a7948d5 documentation</title>
+  <title>cremalink.transports.local.transport &mdash; cremalink 0.1.dev1+g012fcb8ff documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=8a388f47"></script>
+      <script src="../../../../_static/documentation_options.js?v=76d05f3c"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -163,13 +163,15 @@
 <span class="sd">        Configures the local proxy server with the device&#39;s connection details.</span>
 <span class="sd">        This must be called before other methods can be used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">monitor_prop_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor&quot;</span><span class="p">,</span> <span class="s2">&quot;d302_monitor&quot;</span><span class="p">)</span>
+        <span class="n">monitor_prop_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor&quot;</span><span class="p">)</span>
+        <span class="n">data_request_prop_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_request&quot;</span><span class="p">)</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;dsn&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsn</span><span class="p">,</span>
             <span class="s2">&quot;device_ip&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_ip</span><span class="p">,</span>
             <span class="s2">&quot;lan_key&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lan_key</span><span class="p">,</span>
             <span class="s2">&quot;device_scheme&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_scheme</span><span class="p">,</span>
             <span class="s2">&quot;monitor_property_name&quot;</span><span class="p">:</span> <span class="n">monitor_prop_name</span><span class="p">,</span>
+            <span class="s2">&quot;data_request_property_name&quot;</span><span class="p">:</span> <span class="n">data_request_prop_name</span>
         <span class="p">}</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_server</span><span class="p">(</span><span class="s2">&quot;/configure&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
@@ -257,11 +259,13 @@
 <span class="sd">        Sets the command and property maps and re-configures the server if needed.</span>
 <span class="sd">        If the name of the monitoring property changes, the server is reconfigured.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">previous_monitor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor&quot;</span><span class="p">,</span> <span class="s2">&quot;d302_monitor&quot;</span><span class="p">)</span>
+        <span class="n">previous_monitor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor&quot;</span><span class="p">)</span>
+        <span class="n">previous_data_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_request&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_map</span> <span class="o">=</span> <span class="n">command_map</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span> <span class="o">=</span> <span class="n">property_map</span>
-        <span class="n">updated_monitor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor&quot;</span><span class="p">,</span> <span class="s2">&quot;d302_monitor&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auto_configure</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configured</span> <span class="ow">or</span> <span class="n">previous_monitor</span> <span class="o">!=</span> <span class="n">updated_monitor</span><span class="p">):</span>
+        <span class="n">updated_monitor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor&quot;</span><span class="p">)</span>
+        <span class="n">updated_data_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_request&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auto_configure</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configured</span> <span class="ow">or</span> <span class="n">previous_monitor</span> <span class="o">!=</span> <span class="n">updated_monitor</span> <span class="ow">or</span> <span class="n">previous_data_request</span> <span class="o">!=</span> <span class="n">updated_data_request</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">configure</span><span class="p">()</span></div>
 </div>
 

@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.local_server_app.state &mdash; cremalink 0.1.dev1+gf5a7948d5 documentation</title>
+  <title>cremalink.local_server_app.state &mdash; cremalink 0.1.dev1+g012fcb8ff documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8a388f47"></script>
+      <script src="../../../_static/documentation_options.js?v=76d05f3c"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -229,10 +229,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">last_properties_received_at</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_properties_request_pending</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;configured&quot;</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;dsn&quot;</span><span class="p">:</span> <span class="n">dsn</span><span class="p">,</span> <span class="s2">&quot;device_ip&quot;</span><span class="p">:</span> <span class="n">device_ip</span><span class="p">,</span> <span class="s2">&quot;scheme&quot;</span><span class="p">:</span> <span class="n">device_scheme</span><span class="p">}})</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_server_settings</span><span class="p">(</span><span class="n">dsn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dsn</span><span class="p">,</span> <span class="n">device_ip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device_ip</span><span class="p">,</span> <span class="n">lan_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lan_key</span><span class="p">,</span> <span class="n">device_scheme</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device_scheme</span><span class="p">,</span> <span class="n">monitor_property_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">monitor_property_name</span><span class="p">)</span></div>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_server_settings</span><span class="p">(</span><span class="n">dsn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dsn</span><span class="p">,</span> <span class="n">device_ip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device_ip</span><span class="p">,</span> <span class="n">lan_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lan_key</span><span class="p">,</span> <span class="n">device_scheme</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device_scheme</span><span class="p">,</span> <span class="n">monitor_property_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">monitor_property_name</span><span class="p">,</span> <span class="n">data_request_property_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_request_property_name</span><span class="p">)</span></div>
 
 
-    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_save_server_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lan_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">monitor_property_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_save_server_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lan_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">monitor_property_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_request_property_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_settings_path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
@@ -240,7 +240,8 @@
             <span class="s2">&quot;device_ip&quot;</span><span class="p">:</span> <span class="n">device_ip</span><span class="p">,</span>
             <span class="s2">&quot;lan_key&quot;</span><span class="p">:</span> <span class="n">lan_key</span><span class="p">,</span>
             <span class="s2">&quot;device_scheme&quot;</span><span class="p">:</span> <span class="n">device_scheme</span><span class="p">,</span>
-            <span class="s2">&quot;monitor_property_name&quot;</span><span class="p">:</span> <span class="n">monitor_property_name</span>
+            <span class="s2">&quot;monitor_property_name&quot;</span><span class="p">:</span> <span class="n">monitor_property_name</span><span class="p">,</span>
+            <span class="s2">&quot;data_request_property_name&quot;</span><span class="p">:</span> <span class="n">data_request_property_name</span>
         <span class="p">}</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_settings_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
