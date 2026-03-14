@@ -104,6 +104,7 @@
         "10": "preparing_milk",
         "11": "dispensing_hot_water",
         "12": "cleaning_milk",
+        "14": "rinsing_water_filter",
         "16": "preparing_chocolate",
         "17": "preparing_milk_alt",
         "2": "going_to_sleep",
