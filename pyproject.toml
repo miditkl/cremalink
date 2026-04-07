@@ -11,13 +11,14 @@ maintainers = [{ name = "Midian Tekle Elfu", email = "developer@midian.tekleelfu
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "requests>=2.32.0",
-    "pycryptodome>=3.20.0",
-    "fastapi>=0.128.0",
-    "uvicorn>=0.40.0",
-    "httpx>=0.28.0",
-    "pydantic>=2.12.0",
-    "pydantic-settings>=2.10.0",
+    "requests==2.33.1",
+    "pycryptodome==3.23.0",
+    "fastapi==0.135.3",
+    "uvicorn==0.44.0",
+    "httpx==0.28.1",
+    "pydantic==2.12.5",
+    "pydantic-settings==2.13.1",
+    "starlette==0.52.1",
 ]
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
