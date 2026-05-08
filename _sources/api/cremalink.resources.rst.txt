@@ -13,3 +13,4 @@ Submodules
    :maxdepth: 4
 
    cremalink.resources.api_config
+   cremalink.resources.lang

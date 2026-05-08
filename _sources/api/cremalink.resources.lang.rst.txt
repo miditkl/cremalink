@@ -1,0 +1,7 @@
+cremalink.resources.lang module
+===============================
+
+.. automodule:: cremalink.resources.lang
+   :members:
+   :show-inheritance:
+   :undoc-members:

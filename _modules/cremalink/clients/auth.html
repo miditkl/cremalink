@@ -1,0 +1,353 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cremalink.clients.auth &mdash; cremalink 0.1.dev1+gd1cc753d0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=fc110800"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/cremalink.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/cremalink.html">cremalink package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cremalink</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cremalink.clients.auth</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cremalink.clients.auth</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib.parse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.resources.api_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_api_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.resources.lang</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_lang_config</span>
+
+<div class="viewcode-block" id="CloudToken">
+<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.clients.auth.CloudToken">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CloudToken</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Responsible for handling authentication with the Ayla IoT cloud platform.</span>
+<span class="sd">    This module implements the multi-step authentication flow required to obtain a refresh token, which can be used for API interactions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">refresh_token</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves the refresh token to a JSON file at the specified path. The file will contain a single key &quot;refresh_token&quot; with the token value. If the file already exists, it will be overwritten.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The file path where the token should be saved. Defaults to &quot;token.json&quot;.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The absolute path to the saved token file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CloudToken.save">
+<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.clients.auth.CloudToken.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;token.json&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">abs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">},</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">abs_path</span></div>
+
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a string representation of the CloudToken instance, which is the refresh token itself. This allows for easy printing or logging of the token value when the instance is converted to a string.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The refresh token contained in the CloudToken instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_query_param</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">query</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">parse_qs</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="authenticate_cloud">
+<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.clients.auth.authenticate_cloud">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">authenticate_cloud</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudToken</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Performs the multi-step authentication flow to obtain a refresh token for the Ayla IoT cloud platform.</span>
+
+<span class="sd">    This function executes the following steps:</span>
+<span class="sd">    1. Authorize: Initiates the authorization process to obtain a context parameter.</span>
+<span class="sd">    2. Get IDs: Retrieves necessary IDs (ucid, gmid, gmid_ticket) for the login process.</span>
+<span class="sd">    3. Login: Authenticates the user with their email and password, along with risk context information, to obtain a login token.</span>
+<span class="sd">    4. Get User Info: Fetches user information using the login token to obtain UID, UIDSignature, and signatureTimestamp.</span>
+<span class="sd">    5. Consent: Simulates the user consent process to obtain a signature for the authorization continue step.</span>
+<span class="sd">    6. Authorization Continue: Continues the authorization process using the context, login token, and consent signature to obtain an authorization code.</span>
+<span class="sd">    7. IDP Token: Exchanges the authorization code for an IDP token.</span>
+<span class="sd">    8. Exchange for Ayla: Uses the IDP token to sign in to the Ayla cloud and obtain a refresh token.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        email (str): The user&#39;s email address for authentication.</span>
+<span class="sd">        password (str): The user&#39;s password for authentication.</span>
+<span class="sd">        language (str): The preferred language for the authentication process (default is &quot;en&quot;).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        CloudToken: An instance of CloudToken containing the obtained refresh token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">api_conf</span> <span class="o">=</span> <span class="n">load_api_config</span><span class="p">()</span>
+    <span class="n">gigya_key</span> <span class="o">=</span> <span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;GIGYA&quot;</span><span class="p">][</span><span class="s2">&quot;API_KEY&quot;</span><span class="p">]</span>
+    <span class="n">client_id</span> <span class="o">=</span> <span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;GIGYA&quot;</span><span class="p">][</span><span class="s2">&quot;CLIENT_ID&quot;</span><span class="p">]</span>
+    <span class="n">client_secret</span> <span class="o">=</span> <span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;GIGYA&quot;</span><span class="p">][</span><span class="s2">&quot;CLIENT_SECRET&quot;</span><span class="p">]</span>
+    <span class="n">sdk_build</span> <span class="o">=</span> <span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;GIGYA&quot;</span><span class="p">][</span><span class="s2">&quot;SDK_BUILD&quot;</span><span class="p">]</span>
+    <span class="n">app_id</span> <span class="o">=</span> <span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;AYLA&quot;</span><span class="p">][</span><span class="s2">&quot;APP_ID&quot;</span><span class="p">]</span>
+    <span class="n">app_secret</span> <span class="o">=</span> <span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;AYLA&quot;</span><span class="p">][</span><span class="s2">&quot;APP_SECRET&quot;</span><span class="p">]</span>
+
+    <span class="n">browser_agent</span> <span class="o">=</span> <span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;USER_AGENT&quot;</span><span class="p">][</span><span class="s2">&quot;BROWSER&quot;</span><span class="p">]</span>
+    <span class="n">token_agent</span> <span class="o">=</span> <span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;USER_AGENT&quot;</span><span class="p">][</span><span class="s2">&quot;TOKEN&quot;</span><span class="p">]</span>
+
+    <span class="n">auth_header</span> <span class="o">=</span> <span class="s2">&quot;Basic &quot;</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">client_id</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">client_secret</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+    <span class="n">lang_conf</span> <span class="o">=</span> <span class="n">load_lang_config</span><span class="p">()</span>
+    <span class="n">supported_langs</span> <span class="o">=</span> <span class="n">lang_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;languages&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">if</span> <span class="n">language</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_langs</span><span class="p">:</span>
+        <span class="n">language</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span>
+
+    <span class="c1"># Step 1: Authorize</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;https://fidm.eu1.gigya.com/oidc/op/v1.0/</span><span class="si">{</span><span class="n">gigya_key</span><span class="si">}</span><span class="s2">/authorize&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">browser_agent</span><span class="p">},</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">client_id</span><span class="p">,</span>
+            <span class="s2">&quot;response_type&quot;</span><span class="p">:</span> <span class="s2">&quot;code&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;redirect_uri&quot;</span><span class="p">:</span> <span class="s2">&quot;https://google.it&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;openid email profile UID comfort en alexa&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nonce&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())),</span>
+        <span class="p">},</span>
+        <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">_get_query_param</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Location&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="s2">&quot;context&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 2: Get IDs</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s2">&quot;https://socialize.eu1.gigya.com/socialize.getIDs&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">browser_agent</span><span class="p">},</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;APIKey&quot;</span><span class="p">:</span> <span class="n">gigya_key</span><span class="p">,</span>
+            <span class="s2">&quot;includeTicket&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;pageURL&quot;</span><span class="p">:</span> <span class="s2">&quot;https://aylaopenid.delonghigroup.com/&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sdk&quot;</span><span class="p">:</span> <span class="s2">&quot;js_latest&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sdkBuild&quot;</span><span class="p">:</span> <span class="n">sdk_build</span><span class="p">,</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">ucid</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ucid&quot;</span><span class="p">)</span>
+    <span class="n">gmid</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gmid&quot;</span><span class="p">)</span>
+    <span class="n">gmid_ticket</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gmidTicket&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 3: Login</span>
+    <span class="n">risk_context_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="s2">&quot;b0&quot;</span><span class="p">:</span> <span class="mi">4494</span><span class="p">,</span> <span class="s2">&quot;b1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;b2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;b3&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;b4&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;b5&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;b6&quot;</span><span class="p">:</span> <span class="n">browser_agent</span><span class="p">,</span>
+        <span class="s2">&quot;b7&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;PDF Viewer&quot;</span><span class="p">,</span> <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;internal-pdf-viewer&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}],</span>
+        <span class="s2">&quot;b8&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M:%S&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;b9&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;b10&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;denied&quot;</span><span class="p">},</span> <span class="s2">&quot;b11&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;b13&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;440|956|24&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+    <span class="p">})</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;https://accounts.eu1.gigya.com/accounts.login&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">browser_agent</span><span class="p">},</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;loginID&quot;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
+            <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">password</span><span class="p">,</span>
+            <span class="s2">&quot;sessionExpiration&quot;</span><span class="p">:</span> <span class="mi">7884009</span><span class="p">,</span>
+            <span class="s2">&quot;targetEnv&quot;</span><span class="p">:</span> <span class="s2">&quot;jssdk&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="s2">&quot;profile,data,emails,subscriptions,preferences&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;includeUserInfo&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;loginMode&quot;</span><span class="p">:</span> <span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lang&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;riskContext&quot;</span><span class="p">:</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">risk_context_json</span><span class="p">),</span>
+            <span class="s2">&quot;APIKey&quot;</span><span class="p">:</span> <span class="n">gigya_key</span><span class="p">,</span>
+            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;showScreenSet&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sdk&quot;</span><span class="p">:</span> <span class="s2">&quot;js_latest&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;authMode&quot;</span><span class="p">:</span> <span class="s2">&quot;cookie&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pageURL&quot;</span><span class="p">:</span> <span class="s2">&quot;https://aylaopenid.delonghigroup.com/&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;gmid&quot;</span><span class="p">:</span> <span class="n">gmid</span><span class="p">,</span>
+            <span class="s2">&quot;ucid&quot;</span><span class="p">:</span> <span class="n">ucid</span><span class="p">,</span>
+            <span class="s2">&quot;sdkBuild&quot;</span><span class="p">:</span> <span class="n">sdk_build</span><span class="p">,</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s2">&quot;sessionInfo&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Gigya Login failed: </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">login_token</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;sessionInfo&quot;</span><span class="p">][</span><span class="s2">&quot;login_token&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Step 4: Get User Info</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;https://socialize.eu1.gigya.com/socialize.getUserInfo&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">browser_agent</span><span class="p">},</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;enabledProviders&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;APIKey&quot;</span><span class="p">:</span> <span class="n">gigya_key</span><span class="p">,</span>
+            <span class="s2">&quot;sdk&quot;</span><span class="p">:</span> <span class="s2">&quot;js_latest&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;login_token&quot;</span><span class="p">:</span> <span class="n">login_token</span><span class="p">,</span>
+            <span class="s2">&quot;authMode&quot;</span><span class="p">:</span> <span class="s2">&quot;cookie&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pageURL&quot;</span><span class="p">:</span> <span class="s2">&quot;https://aylaopenid.delonghigroup.com/&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;gmid&quot;</span><span class="p">:</span> <span class="n">gmid</span><span class="p">,</span>
+            <span class="s2">&quot;ucid&quot;</span><span class="p">:</span> <span class="n">ucid</span><span class="p">,</span>
+            <span class="s2">&quot;sdkBuild&quot;</span><span class="p">:</span> <span class="n">sdk_build</span><span class="p">,</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">user_uid</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">]</span>
+    <span class="n">user_uid_sig</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;UIDSignature&quot;</span><span class="p">]</span>
+    <span class="n">user_sig_ts</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;signatureTimestamp&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Step 5: Consent</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s2">&quot;https://aylaopenid.delonghigroup.com/OIDCConsentPage.php&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">browser_agent</span><span class="p">},</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;lang&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">,</span>
+            <span class="s2">&quot;clientID&quot;</span><span class="p">:</span> <span class="n">client_id</span><span class="p">,</span>
+            <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;openid+email+profile+UID+comfort+en+alexa&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;UID&quot;</span><span class="p">:</span> <span class="n">user_uid</span><span class="p">,</span>
+            <span class="s2">&quot;UIDSignature&quot;</span><span class="p">:</span> <span class="n">user_uid_sig</span><span class="p">,</span>
+            <span class="s2">&quot;signatureTimestamp&quot;</span><span class="p">:</span> <span class="n">user_sig_ts</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">signature</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;const consentObj2Sig = &#39;&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Step 6: Authorization Continue</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;https://fidm.eu1.gigya.com/oidc/op/v1.0/</span><span class="si">{</span><span class="n">gigya_key</span><span class="si">}</span><span class="s2">/authorize/continue&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">browser_agent</span><span class="p">},</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">,</span>
+            <span class="s2">&quot;login_token&quot;</span><span class="p">:</span> <span class="n">login_token</span><span class="p">,</span>
+            <span class="s2">&quot;consent&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;openid email profile UID comfort en alexa&quot;</span><span class="p">,</span> <span class="s2">&quot;clientID&quot;</span><span class="p">:</span> <span class="n">client_id</span><span class="p">,</span> <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">,</span>
+                 <span class="s2">&quot;UID&quot;</span><span class="p">:</span> <span class="n">user_uid</span><span class="p">,</span> <span class="s2">&quot;consent&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;sig&quot;</span><span class="p">:</span> <span class="n">signature</span><span class="p">,</span>
+            <span class="s2">&quot;gmidTicket&quot;</span><span class="p">:</span> <span class="n">gmid_ticket</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">_get_query_param</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Location&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="s2">&quot;code&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 7: IDP Token</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;https://fidm.eu1.gigya.com/oidc/op/v1.0/</span><span class="si">{</span><span class="n">gigya_key</span><span class="si">}</span><span class="s2">/token&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">token_agent</span><span class="p">,</span>
+            <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">auth_header</span><span class="p">,</span>
+            <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span> <span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;authorization_code&quot;</span><span class="p">,</span> <span class="s2">&quot;redirect_uri&quot;</span><span class="p">:</span> <span class="s2">&quot;https://google.it&quot;</span><span class="p">},</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">idp_token</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;access_token&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Step 8: Exchange for Ayla</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;https://user-field-eu.aylanetworks.com/api/v1/token_sign_in&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">token_agent</span><span class="p">},</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;app_id&quot;</span><span class="p">:</span> <span class="n">app_id</span><span class="p">,</span> <span class="s2">&quot;app_secret&quot;</span><span class="p">:</span> <span class="n">app_secret</span><span class="p">,</span> <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">idp_token</span><span class="p">},</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">CloudToken</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">])</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Midian Tekle Elfu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

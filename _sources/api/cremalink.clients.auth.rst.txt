@@ -1,0 +1,7 @@
+cremalink.clients.auth module
+=============================
+
+.. automodule:: cremalink.clients.auth
+   :members:
+   :show-inheritance:
+   :undoc-members:

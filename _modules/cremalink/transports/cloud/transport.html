@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.transports.cloud.transport &mdash; cremalink 0.1.dev1+gbbddbc4c3 documentation</title>
+  <title>cremalink.transports.cloud.transport &mdash; cremalink 0.1.dev1+gd1cc753d0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=d14e3a12"></script>
+      <script src="../../../../_static/documentation_options.js?v=fc110800"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -89,9 +89,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.transports.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviceTransport</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_api_config</span>
 
-<span class="n">API_USER_AGENT</span> <span class="o">=</span> <span class="s2">&quot;datatransport/3.1.2 android/&quot;</span>
-<span class="n">TOKEN_USER_AGENT</span> <span class="o">=</span> <span class="s2">&quot;DeLonghiComfort/3 CFNetwork/1568.300.101 Darwin/24.2.0&quot;</span>
-
 
 <div class="viewcode-block" id="CloudTransport">
 <a class="viewcode-back" href="../../../../api/cremalink.transports.cloud.transport.html#cremalink.transports.cloud.CloudTransport">[docs]</a>
@@ -116,6 +113,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">api_conf</span> <span class="o">=</span> <span class="n">load_api_config</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gigya_api</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GIGYA&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AYLA&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_conf</span><span class="p">[</span><span class="s2">&quot;USER_AGENT&quot;</span><span class="p">][</span><span class="s2">&quot;API&quot;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dsn</span> <span class="o">=</span> <span class="n">dsn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">access_token</span>
@@ -152,7 +151,7 @@
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;API_URL&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/dsns/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dsn</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">API_USER_AGENT</span><span class="p">,</span>
+                <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span><span class="p">,</span>
                 <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;auth_token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
             <span class="p">},</span>
@@ -165,7 +164,7 @@
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;API_URL&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/devices/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">API_USER_AGENT</span><span class="p">,</span>
+                <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span><span class="p">,</span>
                 <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;auth_token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
             <span class="p">},</span>
@@ -178,7 +177,7 @@
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;API_URL&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/dsns/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dsn</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="n">API_USER_AGENT</span><span class="p">,</span>
+                <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span><span class="p">,</span>
                 <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;auth_token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
