@@ -5,7 +5,6 @@ import os
 
 import requests
 
-from cremalink import Device
 from cremalink.domain import create_cloud_device
 from cremalink.resources import load_api_config
 
@@ -52,7 +51,7 @@ class Client:
             devices.append(device["device"]["dsn"])
         return devices
 
-    def get_device(self, dsn: str, device_map_path: dict | None = None) -> Device | None:
+    def get_device(self, dsn: str, device_map_path: dict | None = None):
         """
         Retrieves a specific cloud device by its DSN.
 
