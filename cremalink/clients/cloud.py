@@ -8,16 +8,11 @@ import requests
 from cremalink.domain import create_cloud_device
 from cremalink.resources import load_api_config
 
-API_USER_AGENT = "datatransport/3.1.2 android/"
-TOKEN_USER_AGENT = "DeLonghiComfort/3 CFNetwork/1568.300.101 Darwin/24.2.0"
-
-
 class Client:
     """
     Client for interacting with the Ayla IoT cloud platform.
     Manages authentication (access and refresh tokens) and device discovery.
     """
-
     def __init__(self, token_path: str):
         # Ensure the token_path points to a JSON file.
         if not token_path.endswith(".json"):
@@ -28,6 +23,9 @@ class Client:
         self.gigya_api = self.api_conf.get("GIGYA")
         self.ayla_api = self.api_conf.get("AYLA")
 
+        self.token_agent = self.api_conf["USER_AGENT"]["TOKEN"]
+        self.api_agent = self.api_conf["USER_AGENT"]["API"]
+
         self.token_path = token_path
         # Retrieve or refresh the access token upon initialization.
         self.access_token = self.__get_access_token()
@@ -35,7 +33,7 @@ class Client:
         self.devices = requests.get(
             url=f"{self.ayla_api.get('API_URL')}/devices.json",
             headers={
-                "User-Agent": API_USER_AGENT,
+                "User-Agent": self.api_agent,
                 "Authorization": f"auth_token {self.access_token}",
                 "Accept": "application/json",
             },
@@ -81,7 +79,7 @@ class Client:
         response = requests.post(
             url=f"{self.ayla_api.get('OAUTH_URL')}/users/refresh_token.json",
             headers={
-                "User-Agent": TOKEN_USER_AGENT,
+                "User-Agent": self.token_agent,
                 "Content-Type": "application/json",
             },
             json={"user": {"refresh_token": refresh_token}},

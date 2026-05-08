@@ -10,5 +10,10 @@
     "APP_SECRET": "DeLonghiComfort2-Yg4miiqiNcf0Or-EhJwRh7ACfBY",
     "API_URL": "https://ads-eu.aylanetworks.com/apiv1",
     "OAUTH_URL": "https://user-field-eu.aylanetworks.com"
+  },
+  "USER_AGENT": {
+    "TOKEN": "DeLonghiComfort/3 CFNetwork/1568.300.101 Darwin/24.2.0",
+    "BROWSER": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/79.0.3945.73 Mobile/15E148 Safari/604.1",
+    "API": "datatransport/3.1.2 android/"
   }
 }
