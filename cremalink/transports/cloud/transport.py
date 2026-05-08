@@ -13,9 +13,6 @@ from cremalink.parsing.monitor.decode import build_monitor_snapshot
 from cremalink.transports.base import DeviceTransport
 from cremalink.resources import load_api_config
 
-API_USER_AGENT = "datatransport/3.1.2 android/"
-TOKEN_USER_AGENT = "DeLonghiComfort/3 CFNetwork/1568.300.101 Darwin/24.2.0"
-
 
 class CloudTransport(DeviceTransport):
     """
@@ -38,6 +35,8 @@ class CloudTransport(DeviceTransport):
         self.api_conf = load_api_config()
         self.gigya_api = self.api_conf.get("GIGYA")
         self.ayla_api = self.api_conf.get("AYLA")
+
+        self.api_agent = self.api_conf["USER_AGENT"]["API"]
 
         self.dsn = dsn
         self.access_token = access_token
@@ -71,7 +70,7 @@ class CloudTransport(DeviceTransport):
         response = requests.get(
             url=f"{self.ayla_api.get('API_URL')}/dsns/{self.dsn}{path}",
             headers={
-                "User-Agent": API_USER_AGENT,
+                "User-Agent": self.api_agent,
                 "Authorization": f"auth_token {self.access_token}",
                 "Accept": "application/json",
             },
@@ -84,7 +83,7 @@ class CloudTransport(DeviceTransport):
         response = requests.get(
             url=f"{self.ayla_api.get('API_URL')}/devices/{self.id}{path}",
             headers={
-                "User-Agent": API_USER_AGENT,
+                "User-Agent": self.api_agent,
                 "Authorization": f"auth_token {self.access_token}",
                 "Accept": "application/json",
             },
@@ -97,7 +96,7 @@ class CloudTransport(DeviceTransport):
         response = requests.post(
             url=f"{self.ayla_api.get('API_URL')}/dsns/{self.dsn}{path}",
             headers={
-                "User-Agent": API_USER_AGENT,
+                "User-Agent": self.api_agent,
                 "Authorization": f"auth_token {self.access_token}",
                 "Accept": "application/json",
                 "Content-Type": "application/json",
