@@ -11,7 +11,7 @@ maintainers = [{ name = "Midian Tekle Elfu", email = "developer@midian.tekleelfu
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "requests>=2.32.5",
+    "requests>=2.34.0",
     "pycryptodome==3.23.0",
     "fastapi==0.136.1",
     "uvicorn==0.46.0",
