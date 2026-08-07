@@ -7,5 +7,6 @@ device instances, abstracting away the underlying implementation details.
 """
 from cremalink.domain.device import Device
 from cremalink.domain.factory import create_cloud_device, create_local_device
+from cremalink.domain.model_detection import detect_model_id
 
-__all__ = ["Device", "create_cloud_device", "create_local_device"]
+__all__ = ["Device", "create_cloud_device", "create_local_device", "detect_model_id"]
