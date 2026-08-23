@@ -196,7 +196,9 @@ def test_get_lan_config_raises_after_exhausting_retries(tmp_path, monkeypatch):
         client.get_lan_config("AC000W1")
 
 
-def test_get_statistics_reads_live_a2_response(tmp_path, monkeypatch):
+def test_get_statistics_reads_a2_response(
+    tmp_path, monkeypatch
+):
     client = _make_client(tmp_path, monkeypatch, [])
 
     fixed_time = 1787483540
@@ -211,38 +213,14 @@ def test_get_statistics_reads_live_a2_response(tmp_path, monkeypatch):
         posted.update(kwargs)
         return _FakeResponse(201, {})
 
-    # Real ECAM610 response captured from hardware.
-    native_response = bytes.fromhex(
-        "d041a20f"
-        "0064000ef8a3"
-        "00650000019a"
-        "00690000001e"
-        "006a0029bfa1"
-        "006c00000016"
-        "006d0000d46c"
-        "006f00000012"
-        "0073000010e5"
-        "007400000660"
-        "0bb80000018c"
-        "d572"
+    # Synthetic response: only transport/correlation is tested here.
+    raw_response = (
+        bytes([0xD0, 0x0C, 0xA2, 0x0F])
+        + (100).to_bytes(2, "big")
+        + bytes(6)
+        + (fixed_time + 1).to_bytes(4, "big")
     )
-
-    cloud_response = base64.b64encode(
-        native_response + (fixed_time + 3).to_bytes(4, "big")
-    ).decode()
-
-    def fake_get(*_a, **_kwargs):
-        return _FakeResponse(
-            200,
-            [
-                {
-                    "datapoint": {
-                        "value": cloud_response,
-                        "created_at": "2026-08-23T11:43:51Z",
-                    }
-                }
-            ],
-        )
+    cloud_response = base64.b64encode(raw_response).decode()
 
     monkeypatch.setattr(
         "cremalink.clients.cloud.requests.post",
@@ -250,7 +228,17 @@ def test_get_statistics_reads_live_a2_response(tmp_path, monkeypatch):
     )
     monkeypatch.setattr(
         "cremalink.clients.cloud.requests.get",
-        fake_get,
+        lambda *_a, **_k: _FakeResponse(
+            200,
+            [{"datapoint": {"value": cloud_response}}],
+        ),
+    )
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.parse_statistics_response",
+        lambda _packet: {
+            100: 11,
+            105: 22,
+        },
     )
 
     stats = client.get_statistics(
@@ -261,11 +249,10 @@ def test_get_statistics_reads_live_a2_response(tmp_path, monkeypatch):
         poll_interval=0,
     )
 
-    assert stats[105] == 30
-    assert stats[106] == 2736033
-    assert stats[108] == 22
-    assert stats[115] == 4325
-    assert stats[3000] == 396
+    assert stats == {
+        100: 11,
+        105: 22,
+    }
 
     sent = base64.b64decode(
         posted["json"]["datapoint"]["value"]
@@ -273,7 +260,6 @@ def test_get_statistics_reads_live_a2_response(tmp_path, monkeypatch):
 
     assert sent[:-4].hex() == "0d08a20f00640a2397"
     assert int.from_bytes(sent[-4:], "big") == fixed_time
-
 
 
 def test_get_statistics_continues_polling_after_read_timeout(
@@ -569,17 +555,17 @@ def test_get_ecam610_statistics_preserves_known_unknown_and_raw(
     client = _make_client(tmp_path, monkeypatch, [])
 
     raw = {
-        105: 30,
-        106: 2736033,
-        108: 22,
-        115: 4325,
-        3000: 396,
-        3001: 5231,
-        3002: 2,
-        3003: 180,
-        43000: 4797,
-        43005: 4898,
-        43010: 5809,
+        105: 4,
+        106: 24680,
+        108: 3,
+        115: 11,
+        3000: 12,
+        3001: 20,
+        3002: 5,
+        3003: 7,
+        43000: 91,
+        43005: 92,
+        43010: 44,
     }
 
     monkeypatch.setattr(
@@ -590,67 +576,19 @@ def test_get_ecam610_statistics_preserves_known_unknown_and_raw(
 
     snapshot = client.get_ecam610_statistics("AC000W1")
 
-    assert snapshot["known"]["descale_count"] == 30
-    assert snapshot["known"]["filter_replacements"] == 22
-    assert snapshot["known"]["total_water_l"] == pytest.approx(
-        1368.0165
-    )
-    assert snapshot["known"]["total_milk_beverages"] == 5411
-    assert snapshot["known"]["total_beverages"] == 5809
+    assert snapshot["known"]["descale_count"] == 4
+    assert snapshot["known"]["filter_replacements"] == 3
+    assert snapshot["known"]["grounds_container_clean_count"] == 11
+
+    assert snapshot["known"]["total_water_l"] == pytest.approx(12.34)
+
+    assert snapshot["known"]["total_black_beverages"] == 12
+    assert snapshot["known"]["total_milk_beverages"] == 27
+    assert snapshot["known"]["total_beverages"] == 44
 
     assert snapshot["unknown"] == {
-        43000: 4797,
-        43005: 4898,
-    }
-
-    assert snapshot["raw"] == raw
-
-
-
-def test_get_ecam610_statistics_preserves_known_unknown_and_raw(
-    tmp_path, monkeypatch
-):
-    client = _make_client(tmp_path, monkeypatch, [])
-
-    raw = {
-        105: 30,
-        106: 2736033,
-        108: 22,
-        115: 4325,
-
-        3000: 396,
-        3001: 5231,
-        3002: 2,
-        3003: 180,
-
-        43000: 4797,
-        43005: 4898,
-        43010: 5809,
-    }
-
-    monkeypatch.setattr(
-        client,
-        "get_all_statistics",
-        lambda dsn: raw,
-    )
-
-    snapshot = client.get_ecam610_statistics("AC000W1")
-
-    assert snapshot["known"]["descale_count"] == 30
-    assert snapshot["known"]["filter_replacements"] == 22
-    assert snapshot["known"]["grounds_container_clean_count"] == 4325
-
-    assert snapshot["known"]["total_water_l"] == pytest.approx(
-        1368.0165
-    )
-
-    assert snapshot["known"]["total_black_beverages"] == 396
-    assert snapshot["known"]["total_milk_beverages"] == 5411
-    assert snapshot["known"]["total_beverages"] == 5809
-
-    assert snapshot["unknown"] == {
-        43000: 4797,
-        43005: 4898,
+        43000: 91,
+        43005: 92,
     }
 
     assert snapshot["raw"] == raw

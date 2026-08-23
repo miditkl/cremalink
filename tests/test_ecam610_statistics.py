@@ -10,144 +10,117 @@ from cremalink.devices.ecam610_statistics import (
 )
 
 
-RAW_REAL_ECAM610 = {
-    100: 981155,
-    101: 410,
-    105: 30,
-    106: 2736033,
-    108: 22,
-    109: 54380,
-    111: 18,
-    115: 4325,
-    116: 1632,
+RAW_SYNTHETIC_ECAM610 = {
+    # Maintenance
+    105: 7,
+    106: 24680,
+    108: 3,
+    115: 11,
 
-    3000: 396,
-    3001: 5231,
-    3002: 2,
-    3003: 180,
-    3004: 340,
-    3005: 97,
-    3006: 3,
-    3007: 0,
-    3008: 1,
-    3009: 48,
-    3010: 119,
-    3011: 151,
+    # Beverage categories
+    3000: 12,
+    3001: 34,
+    3002: 5,
+    3003: 6,
+
+    # Individual beverages
+    3004: 9,
+    3005: 4,
+    3006: 2,
+    3007: 1,
+    3008: 3,
+    3009: 2,
+    3010: 7,
+    3011: 8,
     3012: 9,
-    3013: 148,
-    3014: 1,
-    3015: 180,
-    3016: 5,
-    3017: 0,
-    3018: 0,
-    3019: 2,
-    3020: 0,
+    3013: 10,
+    3014: 11,
+    3015: 6,
+    3016: 12,
+    3017: 13,
+    3018: 14,
+    3019: 15,
+    3020: 16,
 
-    3021: 0,
-    3024: 0,
-    3025: 0,
-    3032: 0,
-    3037: 243,
-    3038: 0,
-    3039: 0,
-    3040: 0,
-    3041: 0,
-    3042: 0,
-    3043: 1,
-    3044: 0,
-    3045: 0,
-    3046: 4,
+    # Deliberately unknown statistics
+    23000: 91,
+    23001: 92,
+    43000: 93,
+    43005: 94,
+    43014: 95,
 
-    23000: 152,
-    23001: 21123,
-    23002: 991,
-    23003: 6,
-    23004: 46857,
-    23005: 705876,
-    23006: 1133961,
-    23007: 28495,
-    23008: 28495,
-    23009: 1015,
-
-    43000: 4797,
-    43005: 4898,
-    43010: 5809,
-    43011: 0,
-    43012: 1,
-    43014: 722,
-    43015: 245,
-    43016: 0,
+    # Confirmed aggregate
+    43010: 57,
 }
 
 
-def test_interpret_real_ecam610_statistics():
-    stats = interpret_ecam610_statistics(RAW_REAL_ECAM610)
+def test_interpret_synthetic_ecam610_statistics():
+    stats = interpret_ecam610_statistics(RAW_SYNTHETIC_ECAM610)
 
-    assert stats["descale_count"] == 30
-    assert stats["filter_replacements"] == 22
-    assert stats["grounds_container_clean_count"] == 4325
+    assert stats["descale_count"] == 7
+    assert stats["filter_replacements"] == 3
+    assert stats["grounds_container_clean_count"] == 11
 
-    assert stats["total_water_l"] == pytest.approx(1368.0165)
+    assert stats["total_water_l"] == pytest.approx(12.34)
 
-    assert stats["total_black_beverages"] == 396
-    assert stats["total_milk_coffee_beverages"] == 5231
-    assert stats["total_milk_only_beverages"] == 180
-    assert stats["total_milk_beverages"] == 5411
-    assert stats["total_other_beverages"] == 2
-    assert stats["total_beverages"] == 5809
+    assert stats["total_black_beverages"] == 12
+    assert stats["total_milk_coffee_beverages"] == 34
+    assert stats["total_milk_only_beverages"] == 6
+    assert stats["total_milk_beverages"] == 40
+    assert stats["total_other_beverages"] == 5
+    assert stats["total_beverages"] == 57
 
-    assert stats["total_espressos"] == 340
-    assert stats["espresso"] == 97
-    assert stats["coffee"] == 3
-    assert stats["long_coffee"] == 0
-    assert stats["doppio"] == 1
-    assert stats["americano"] == 48
-    assert stats["cappuccino"] == 119
-    assert stats["latte_macchiato"] == 151
+    assert stats["total_espressos"] == 9
+    assert stats["espresso"] == 4
+    assert stats["coffee"] == 2
+    assert stats["long_coffee"] == 1
+    assert stats["doppio"] == 3
+    assert stats["americano"] == 2
+    assert stats["cappuccino"] == 7
+    assert stats["latte_macchiato"] == 8
     assert stats["caffe_latte"] == 9
-    assert stats["flat_white"] == 148
-    assert stats["espresso_macchiato"] == 1
-    assert stats["hot_milk"] == 180
-    assert stats["cappuccino_doppio"] == 5
-    assert stats["cappuccino_mix"] == 0
-    assert stats["hot_water"] == 0
-    assert stats["tea"] == 2
-    assert stats["coffee_pot"] == 0
+    assert stats["flat_white"] == 10
+    assert stats["espresso_macchiato"] == 11
+    assert stats["hot_milk"] == 6
+    assert stats["cappuccino_doppio"] == 12
+    assert stats["cappuccino_mix"] == 13
+    assert stats["hot_water"] == 14
+    assert stats["tea"] == 15
+    assert stats["coffee_pot"] == 16
 
 
 def test_total_beverages_falls_back_to_category_sum():
     raw = {
-        3000: 396,
-        3001: 5231,
-        3002: 2,
-        3003: 180,
+        3000: 2,
+        3001: 3,
+        3002: 4,
+        3003: 5,
     }
 
     stats = interpret_ecam610_statistics(raw)
 
-    assert stats["total_milk_beverages"] == 5411
-    assert stats["total_beverages"] == 5809
+    assert stats["total_milk_beverages"] == 8
+    assert stats["total_beverages"] == 14
 
 
 def test_snapshot_preserves_unknown_statistics():
     snapshot = build_ecam610_statistics_snapshot(
-        RAW_REAL_ECAM610
+        RAW_SYNTHETIC_ECAM610
     )
 
-    assert snapshot["known"]["total_beverages"] == 5809
+    assert snapshot["known"]["total_beverages"] == 57
 
-    assert snapshot["unknown"][23000] == 152
-    assert snapshot["unknown"][23001] == 21123
-
-    assert snapshot["unknown"][43000] == 4797
-    assert snapshot["unknown"][43005] == 4898
-    assert snapshot["unknown"][43014] == 722
+    assert snapshot["unknown"][23000] == 91
+    assert snapshot["unknown"][23001] == 92
+    assert snapshot["unknown"][43000] == 93
+    assert snapshot["unknown"][43005] == 94
+    assert snapshot["unknown"][43014] == 95
 
     # Confirmed ID must not also be exposed as unknown.
     assert 43010 not in snapshot["unknown"]
 
     # Complete source data must remain losslessly available.
-    assert snapshot["raw"] == RAW_REAL_ECAM610
+    assert snapshot["raw"] == RAW_SYNTHETIC_ECAM610
 
 
 def test_future_unknown_id_is_preserved_automatically():
@@ -178,10 +151,10 @@ def test_observed_unknown_ids_are_documented():
 def test_unknown_statistics_are_not_guessed_as_known():
     stats = interpret_ecam610_statistics(
         {
-            23000: 152,
-            43000: 4797,
-            43005: 4898,
-            43014: 722,
+            23000: 11,
+            43000: 12,
+            43005: 13,
+            43014: 14,
         }
     )
 
