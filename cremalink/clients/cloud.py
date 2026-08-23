@@ -312,12 +312,23 @@ class Client:
         )
 
         while True:
-            response = requests.get(
-                url=response_url,
-                headers=headers,
-                params={"limit": "20"},
-                timeout=REQUEST_TIMEOUT,
-            )
+            try:
+                response = requests.get(
+                    url=response_url,
+                    headers=headers,
+                    params={"limit": "20"},
+                    timeout=REQUEST_TIMEOUT,
+                )
+            except requests.ReadTimeout:
+                if time.monotonic() >= deadline:
+                    raise TimeoutError(
+                        f"No A2 statistics response for start_id={start_id} "
+                        f"within {wait_timeout:g}s"
+                    )
+
+                time.sleep(poll_interval)
+                continue
+
             response.raise_for_status()
 
             for item in response.json():

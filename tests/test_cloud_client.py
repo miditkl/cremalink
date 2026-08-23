@@ -276,6 +276,64 @@ def test_get_statistics_reads_live_a2_response(tmp_path, monkeypatch):
 
 
 
+def test_get_statistics_continues_polling_after_read_timeout(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    fixed_time = 1787483780
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.time.time",
+        lambda: fixed_time,
+    )
+
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.requests.post",
+        lambda *_a, **_k: _FakeResponse(201, {}),
+    )
+
+    raw_response = (
+        bytes([0xD0, 0x0C, 0xA2, 0x0F])
+        + (100).to_bytes(2, "big")
+        + bytes(6)
+        + (fixed_time + 1).to_bytes(4, "big")
+    )
+    cloud_response = base64.b64encode(raw_response).decode()
+
+    responses = iter([
+        requests.ReadTimeout("synthetic read timeout"),
+        _FakeResponse(
+            200,
+            [{"datapoint": {"value": cloud_response}}],
+        ),
+    ])
+
+    def fake_get(*_a, **_k):
+        result = next(responses)
+        if isinstance(result, Exception):
+            raise result
+        return result
+
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.requests.get",
+        fake_get,
+    )
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.parse_statistics_response",
+        lambda _packet: {100: 1},
+    )
+
+    stats = client.get_statistics(
+        "AC000W1",
+        start_id=100,
+        count=1,
+        wait_timeout=1,
+        poll_interval=0,
+    )
+
+    assert stats == {100: 1}
+
+
 def test_get_statistics_accepts_first_available_id_after_start(
     tmp_path, monkeypatch
 ):
