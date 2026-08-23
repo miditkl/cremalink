@@ -398,6 +398,82 @@ def test_get_all_statistics_pages_across_sparse_ids(
     assert stats[3013] == 23
 
 
+def test_get_all_statistics_reduces_page_size_after_timeout_and_resets_per_page(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    calls = []
+    sleeps = []
+
+    def fake_get_statistics(
+        dsn,
+        start_id=100,
+        count=10,
+        **_kwargs,
+    ):
+        calls.append((dsn, start_id, count))
+
+        if start_id == 100:
+            if count > 8:
+                raise TimeoutError("synthetic timeout")
+
+            return {
+                100: 1,
+                101: 2,
+                102: 3,
+                103: 4,
+                104: 5,
+                105: 6,
+                106: 7,
+                107: 8,
+            }
+
+        if start_id == 108:
+            return {
+                108: 9,
+                110: 10,
+                115: 11,
+            }
+
+        raise AssertionError(
+            f"unexpected request start_id={start_id}, count={count}"
+        )
+
+    monkeypatch.setattr(
+        client,
+        "get_statistics",
+        fake_get_statistics,
+    )
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.time.sleep",
+        lambda seconds: sleeps.append(seconds),
+    )
+
+    stats = client.get_all_statistics("AC000W1")
+
+    assert calls == [
+        ("AC000W1", 100, 10),
+        ("AC000W1", 100, 9),
+        ("AC000W1", 100, 8),
+        ("AC000W1", 108, 10),
+    ]
+    assert sleeps == [5, 5]
+    assert stats == {
+        100: 1,
+        101: 2,
+        102: 3,
+        103: 4,
+        104: 5,
+        105: 6,
+        106: 7,
+        107: 8,
+        108: 9,
+        110: 10,
+        115: 11,
+    }
+
+
 def test_get_all_statistics_rejects_invalid_page_size(
     tmp_path, monkeypatch
 ):

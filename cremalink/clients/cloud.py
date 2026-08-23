@@ -391,11 +391,30 @@ class Client:
         next_id = start_id
 
         for _ in range(max_pages):
-            page = self.get_statistics(
-                dsn,
-                start_id=next_id,
-                count=page_size,
-            )
+            request_count = page_size
+
+            while True:
+                try:
+                    page = self.get_statistics(
+                        dsn,
+                        start_id=next_id,
+                        count=request_count,
+                    )
+                    break
+                except TimeoutError:
+                    if request_count == 1:
+                        raise
+
+                    _LOGGER.debug(
+                        "A2 statistics request timed out for start_id=%s "
+                        "with count=%s; retrying with count=%s",
+                        next_id,
+                        request_count,
+                        request_count - 1,
+                    )
+
+                    time.sleep(5)
+                    request_count -= 1
 
             if not page:
                 break
@@ -412,7 +431,9 @@ class Client:
 
             statistics.update(page)
 
-            if len(page) < page_size:
+            # A response shorter than the count that actually succeeded
+            # indicates the end of the sparse statistics table.
+            if len(page) < request_count:
                 return statistics
 
             if last_id == 0xFFFF:
