@@ -13,6 +13,13 @@ def test_decode_monitor_b64_success():
     assert decode_monitor_b64(raw_b64) == raw
 
 
+def test_decode_monitor_b64_accepts_missing_padding():
+    raw = b"hello"
+    raw_b64 = base64.b64encode(raw).decode("utf-8").rstrip("=")
+
+    assert decode_monitor_b64(raw_b64) == raw
+
+
 def test_decode_monitor_b64_failure():
     with pytest.raises(ValueError):
         decode_monitor_b64("not-base64!!!")
