@@ -6,6 +6,7 @@ and FR-014 (bounded retry on transient failures).
 
 from __future__ import annotations
 
+import base64
 import json
 
 import pytest
@@ -193,3 +194,329 @@ def test_get_lan_config_raises_after_exhausting_retries(tmp_path, monkeypatch):
 
     with pytest.raises(requests.ConnectionError):
         client.get_lan_config("AC000W1")
+
+
+def test_get_statistics_reads_live_a2_response(tmp_path, monkeypatch):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    fixed_time = 1787483540
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.time.time",
+        lambda: fixed_time,
+    )
+
+    posted = {}
+
+    def fake_post(*_a, **kwargs):
+        posted.update(kwargs)
+        return _FakeResponse(201, {})
+
+    # Real ECAM610 response captured from hardware.
+    native_response = bytes.fromhex(
+        "d041a20f"
+        "0064000ef8a3"
+        "00650000019a"
+        "00690000001e"
+        "006a0029bfa1"
+        "006c00000016"
+        "006d0000d46c"
+        "006f00000012"
+        "0073000010e5"
+        "007400000660"
+        "0bb80000018c"
+        "d572"
+    )
+
+    cloud_response = base64.b64encode(
+        native_response + (fixed_time + 3).to_bytes(4, "big")
+    ).decode()
+
+    def fake_get(*_a, **_kwargs):
+        return _FakeResponse(
+            200,
+            [
+                {
+                    "datapoint": {
+                        "value": cloud_response,
+                        "created_at": "2026-08-23T11:43:51Z",
+                    }
+                }
+            ],
+        )
+
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.requests.post",
+        fake_post,
+    )
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.requests.get",
+        fake_get,
+    )
+
+    stats = client.get_statistics(
+        "AC000W1",
+        100,
+        10,
+        wait_timeout=1,
+        poll_interval=0,
+    )
+
+    assert stats[105] == 30
+    assert stats[106] == 2736033
+    assert stats[108] == 22
+    assert stats[115] == 4325
+    assert stats[3000] == 396
+
+    sent = base64.b64decode(
+        posted["json"]["datapoint"]["value"]
+    )
+
+    assert sent[:-4].hex() == "0d08a20f00640a2397"
+    assert int.from_bytes(sent[-4:], "big") == fixed_time
+
+
+
+def test_get_statistics_accepts_first_available_id_after_start(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    fixed_time = 1787483780
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.time.time",
+        lambda: fixed_time,
+    )
+
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.requests.post",
+        lambda *_a, **_k: _FakeResponse(201, {}),
+    )
+
+    # Real-style response to a request starting at 43013:
+    # 43013 does not exist, so the machine starts with 43014.
+    native_response = bytes.fromhex(
+        "d017a20f"
+        "a806000002d2"
+        "a807000000f5"
+        "a80800000000"
+        "8d1b"
+    )
+
+    cloud_response = base64.b64encode(
+        native_response + (fixed_time + 1).to_bytes(4, "big")
+    ).decode()
+
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.requests.get",
+        lambda *_a, **_k: _FakeResponse(
+            200,
+            [{"datapoint": {"value": cloud_response}}],
+        ),
+    )
+
+    stats = client.get_statistics(
+        "AC000W1",
+        start_id=43013,
+        count=10,
+        wait_timeout=1,
+        poll_interval=0,
+    )
+
+    assert stats == {
+        43014: 722,
+        43015: 245,
+        43016: 0,
+    }
+
+
+
+def test_get_all_statistics_pages_across_sparse_ids(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    pages = {
+        100: {
+            100: 1,
+            101: 2,
+            105: 3,
+            106: 4,
+            108: 5,
+            109: 6,
+            111: 7,
+            115: 8,
+            116: 9,
+            3000: 10,
+        },
+        3001: {
+            3001: 11,
+            3002: 12,
+            3003: 13,
+            3004: 14,
+            3005: 15,
+            3006: 16,
+            3007: 17,
+            3008: 18,
+            3009: 19,
+            3010: 20,
+        },
+        3011: {
+            3011: 21,
+            3012: 22,
+            3013: 23,
+        },
+    }
+
+    calls = []
+
+    def fake_get_statistics(
+        dsn,
+        start_id=100,
+        count=10,
+        **_kwargs,
+    ):
+        calls.append((dsn, start_id, count))
+        return pages[start_id]
+
+    monkeypatch.setattr(
+        client,
+        "get_statistics",
+        fake_get_statistics,
+    )
+
+    stats = client.get_all_statistics("AC000W1")
+
+    assert calls == [
+        ("AC000W1", 100, 10),
+        ("AC000W1", 3001, 10),
+        ("AC000W1", 3011, 10),
+    ]
+
+    assert len(stats) == 23
+    assert stats[100] == 1
+    assert stats[3000] == 10
+    assert stats[3013] == 23
+
+
+def test_get_all_statistics_rejects_invalid_page_size(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    with pytest.raises(ValueError, match="between 1 and 10"):
+        client.get_all_statistics(
+            "AC000W1",
+            page_size=11,
+        )
+
+
+def test_get_all_statistics_detects_non_progressing_page(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    monkeypatch.setattr(
+        client,
+        "get_statistics",
+        lambda *_a, **_k: {99: 1},
+    )
+
+    with pytest.raises(ValueError, match="did not advance"):
+        client.get_all_statistics(
+            "AC000W1",
+            start_id=100,
+        )
+
+
+
+def test_get_ecam610_statistics_preserves_known_unknown_and_raw(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    raw = {
+        105: 30,
+        106: 2736033,
+        108: 22,
+        115: 4325,
+        3000: 396,
+        3001: 5231,
+        3002: 2,
+        3003: 180,
+        43000: 4797,
+        43005: 4898,
+        43010: 5809,
+    }
+
+    monkeypatch.setattr(
+        client,
+        "get_all_statistics",
+        lambda dsn: raw,
+    )
+
+    snapshot = client.get_ecam610_statistics("AC000W1")
+
+    assert snapshot["known"]["descale_count"] == 30
+    assert snapshot["known"]["filter_replacements"] == 22
+    assert snapshot["known"]["total_water_l"] == pytest.approx(
+        1368.0165
+    )
+    assert snapshot["known"]["total_milk_beverages"] == 5411
+    assert snapshot["known"]["total_beverages"] == 5809
+
+    assert snapshot["unknown"] == {
+        43000: 4797,
+        43005: 4898,
+    }
+
+    assert snapshot["raw"] == raw
+
+
+
+def test_get_ecam610_statistics_preserves_known_unknown_and_raw(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    raw = {
+        105: 30,
+        106: 2736033,
+        108: 22,
+        115: 4325,
+
+        3000: 396,
+        3001: 5231,
+        3002: 2,
+        3003: 180,
+
+        43000: 4797,
+        43005: 4898,
+        43010: 5809,
+    }
+
+    monkeypatch.setattr(
+        client,
+        "get_all_statistics",
+        lambda dsn: raw,
+    )
+
+    snapshot = client.get_ecam610_statistics("AC000W1")
+
+    assert snapshot["known"]["descale_count"] == 30
+    assert snapshot["known"]["filter_replacements"] == 22
+    assert snapshot["known"]["grounds_container_clean_count"] == 4325
+
+    assert snapshot["known"]["total_water_l"] == pytest.approx(
+        1368.0165
+    )
+
+    assert snapshot["known"]["total_black_beverages"] == 396
+    assert snapshot["known"]["total_milk_beverages"] == 5411
+    assert snapshot["known"]["total_beverages"] == 5809
+
+    assert snapshot["unknown"] == {
+        43000: 4797,
+        43005: 4898,
+    }
+
+    assert snapshot["raw"] == raw

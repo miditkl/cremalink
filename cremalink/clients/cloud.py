@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import functools
 import json
 import logging
@@ -9,6 +10,8 @@ import time
 import requests
 
 from cremalink.domain import create_cloud_device
+from cremalink.devices.ecam610_statistics import build_ecam610_statistics_snapshot
+from cremalink.parsing.statistics import build_statistics_request, parse_statistics_response
 from cremalink.resources import load_api_config
 
 _LOGGER = logging.getLogger(__name__)
@@ -259,6 +262,187 @@ class Client:
                     result["lanip_key"] = alt_resp.json().get("local_key")
 
         return result
+
+
+    def get_statistics(
+        self,
+        dsn: str,
+        start_id: int = 100,
+        count: int = 10,
+        *,
+        wait_timeout: float = 20.0,
+        poll_interval: float = 1.0,
+    ) -> dict[int, int]:
+        """Read live ECAM statistics through Ayla data_request/data_response.
+
+        The native 0xA2 ECAM request is wrapped with the four-byte Unix
+        timestamp used by the De'Longhi/Ayla cloud transport.
+
+        This reads the machine's live statistics and does not rely on the
+        potentially stale d5xx/d7xx Ayla property cache.
+        """
+
+        frame = build_statistics_request(start_id, count)
+        sent_at = int(time.time())
+
+        cloud_frame = frame + sent_at.to_bytes(4, "big")
+        encoded = base64.b64encode(cloud_frame).decode()
+
+        headers = {
+            "User-Agent": self.api_agent,
+            "Authorization": f"auth_token {self.access_token}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        base_url = self.ayla_api.get("API_URL")
+
+        resp = requests.post(
+            url=f"{base_url}/dsns/{dsn}/properties/data_request/datapoints.json",
+            headers=headers,
+            json={"datapoint": {"value": encoded}},
+            timeout=REQUEST_TIMEOUT,
+        )
+        resp.raise_for_status()
+
+        deadline = time.monotonic() + wait_timeout
+        response_url = (
+            f"{base_url}/dsns/{dsn}/properties/"
+            "data_response/datapoints.json"
+        )
+
+        while True:
+            response = requests.get(
+                url=response_url,
+                headers=headers,
+                params={"limit": "20"},
+                timeout=REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+
+            for item in response.json():
+                datapoint = item.get("datapoint", {})
+                value = datapoint.get("value")
+
+                if not isinstance(value, str):
+                    continue
+
+                try:
+                    raw = base64.b64decode(value)
+                except (ValueError, TypeError):
+                    continue
+
+                # Native A2 response (minimum 12 bytes) + cloud timestamp.
+                if len(raw) < 16:
+                    continue
+
+                if raw[0] != 0xD0 or raw[2] != 0xA2:
+                    continue
+
+                response_id = int.from_bytes(raw[4:6], "big")
+
+                # A2 returns the first *existing* statistic parameter at or
+                # above start_id. Parameter IDs are sparse, so the response
+                # does not necessarily begin with start_id itself.
+                if response_id < start_id:
+                    continue
+
+                response_timestamp = int.from_bytes(raw[-4:], "big")
+                if response_timestamp < sent_at:
+                    continue
+
+                native_packet = raw[:-4]
+                return parse_statistics_response(native_packet)
+
+            if time.monotonic() >= deadline:
+                raise TimeoutError(
+                    f"No A2 statistics response for start_id={start_id} "
+                    f"within {wait_timeout:g}s"
+                )
+
+            time.sleep(poll_interval)
+
+
+    def get_all_statistics(
+        self,
+        dsn: str,
+        *,
+        start_id: int = 100,
+        page_size: int = 10,
+        max_pages: int = 100,
+    ) -> dict[int, int]:
+        """Read the complete sparse ECAM A2 statistics table.
+
+        A2 responses contain at most ten existing statistic parameters.
+        Parameter IDs are sparse, so each subsequent page starts at the
+        previous page's highest returned ID plus one.
+
+        Paging stops when the machine returns fewer than ``page_size``
+        parameters.
+        """
+
+        if not 1 <= page_size <= 10:
+            raise ValueError("page_size must be between 1 and 10")
+
+        if max_pages < 1:
+            raise ValueError("max_pages must be at least 1")
+
+        statistics: dict[int, int] = {}
+        next_id = start_id
+
+        for _ in range(max_pages):
+            page = self.get_statistics(
+                dsn,
+                start_id=next_id,
+                count=page_size,
+            )
+
+            if not page:
+                break
+
+            # Protect against a malformed or non-progressing response.
+            page_ids = sorted(page)
+            last_id = page_ids[-1]
+
+            if last_id < next_id:
+                raise ValueError(
+                    f"A2 paging did not advance: "
+                    f"requested >= {next_id}, got last ID {last_id}"
+                )
+
+            statistics.update(page)
+
+            if len(page) < page_size:
+                return statistics
+
+            if last_id == 0xFFFF:
+                return statistics
+
+            next_id = last_id + 1
+
+        else:
+            raise RuntimeError(
+                f"A2 statistics paging exceeded {max_pages} pages"
+            )
+
+        return statistics
+
+
+    def get_ecam610_statistics(self, dsn: str) -> dict:
+        """Read a complete live ECAM610 statistics snapshot.
+
+        Returns a lossless structure containing:
+
+        - ``known``: confirmed semantic statistics;
+        - ``unknown``: all unrecognised A2 IDs and their raw values;
+        - ``raw``: the complete A2 table.
+
+        Unknown IDs are deliberately preserved rather than guessed or
+        discarded.
+        """
+
+        raw = self.get_all_statistics(dsn)
+        return build_ecam610_statistics_snapshot(raw)
 
     def __get_access_token(self):
         """
