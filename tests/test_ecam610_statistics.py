@@ -42,10 +42,14 @@ RAW_SYNTHETIC_ECAM610 = {
     3019: 15,
     3020: 16,
 
+    # Newly identified beverage statistics
+    3037: 17,
+    3046: 23,
+    43000: 93,
+
     # Deliberately unknown statistics
     23000: 91,
     23001: 92,
-    43000: 93,
     43005: 94,
     43014: 95,
 
@@ -87,6 +91,9 @@ def test_interpret_synthetic_ecam610_statistics():
     assert stats["hot_water"] == 14
     assert stats["tea"] == 15
     assert stats["coffee_pot"] == 16
+    assert stats["espresso_soul"] == 17
+    assert stats["over_ice"] == 23
+    assert stats["custom_milk_coffee_beverages"] == 93
 
 
 def test_total_beverages_falls_back_to_category_sum():
@@ -112,11 +119,13 @@ def test_snapshot_preserves_unknown_statistics():
 
     assert snapshot["unknown"][23000] == 91
     assert snapshot["unknown"][23001] == 92
-    assert snapshot["unknown"][43000] == 93
     assert snapshot["unknown"][43005] == 94
     assert snapshot["unknown"][43014] == 95
 
-    # Confirmed ID must not also be exposed as unknown.
+    # Confirmed IDs must not also be exposed as unknown.
+    assert 3037 not in snapshot["unknown"]
+    assert 3046 not in snapshot["unknown"]
+    assert 43000 not in snapshot["unknown"]
     assert 43010 not in snapshot["unknown"]
 
     # Complete source data must remain losslessly available.
@@ -138,24 +147,44 @@ def test_future_unknown_id_is_preserved_automatically():
 
 def test_observed_unknown_ids_are_documented():
     assert 23000 in OBSERVED_UNKNOWN_IDS
-    assert 43000 in OBSERVED_UNKNOWN_IDS
     assert 43005 in OBSERVED_UNKNOWN_IDS
 
-    # Confirmed aggregate is deliberately not unknown.
+    # Identified statistics are deliberately no longer unknown.
+    assert 3037 not in OBSERVED_UNKNOWN_IDS
+    assert 3046 not in OBSERVED_UNKNOWN_IDS
+    assert 43000 not in OBSERVED_UNKNOWN_IDS
     assert 43010 not in OBSERVED_UNKNOWN_IDS
 
     assert "Unknown" in get_unknown_statistic_note(23000)
-    assert "with/without milk" in get_unknown_statistic_note(43000)
 
 
 def test_unknown_statistics_are_not_guessed_as_known():
     stats = interpret_ecam610_statistics(
         {
             23000: 11,
-            43000: 12,
             43005: 13,
             43014: 14,
         }
     )
 
     assert stats == {}
+
+
+def test_newly_identified_ecam610_beverage_statistics():
+    """New hardware-verified beverage counters get stable semantics."""
+
+    raw = {
+        3037: 17,
+        3046: 23,
+        43000: 42,
+    }
+
+    snapshot = build_ecam610_statistics_snapshot(raw)
+
+    assert snapshot["known"]["espresso_soul"] == 17
+    assert snapshot["known"]["over_ice"] == 23
+    assert snapshot["known"]["custom_milk_coffee_beverages"] == 42
+
+    assert 3037 not in snapshot["unknown"]
+    assert 3046 not in snapshot["unknown"]
+    assert 43000 not in snapshot["unknown"]

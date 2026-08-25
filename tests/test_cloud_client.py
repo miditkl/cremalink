@@ -586,8 +586,9 @@ def test_get_ecam610_statistics_preserves_known_unknown_and_raw(
     assert snapshot["known"]["total_milk_beverages"] == 27
     assert snapshot["known"]["total_beverages"] == 44
 
+    assert snapshot["known"]["custom_milk_coffee_beverages"] == 91
+
     assert snapshot["unknown"] == {
-        43000: 91,
         43005: 92,
     }
 

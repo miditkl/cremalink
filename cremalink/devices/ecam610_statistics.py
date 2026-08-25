@@ -54,6 +54,11 @@ DIRECT_STATISTICS: dict[int, str] = {
     3019: "tea",
     3020: "coffee_pot",
 
+    # Hardware-verified PrimaDonna Soul beverages / aggregates
+    3037: "espresso_soul",
+    3046: "over_ice",
+    43000: "custom_milk_coffee_beverages",
+
     # Confirmed aggregate:
     #
     #   3000 + 3001 + 3002 + 3003 == 43010
@@ -92,7 +97,6 @@ OBSERVED_UNKNOWN_IDS: frozenset[int] = frozenset(
         3024,
         3025,
         3032,
-        3037,
         3038,
         3039,
         3040,
@@ -101,7 +105,6 @@ OBSERVED_UNKNOWN_IDS: frozenset[int] = frozenset(
         3043,
         3044,
         3045,
-        3046,
 
         23000,
         23001,
@@ -114,7 +117,6 @@ OBSERVED_UNKNOWN_IDS: frozenset[int] = frozenset(
         23008,
         23009,
 
-        43000,
         43005,
         43011,
         43012,
@@ -139,7 +141,6 @@ UNKNOWN_STATISTIC_NOTES: dict[int, str] = {
     3024: "Unknown beverage-related statistic",
     3025: "Unknown beverage-related statistic",
     3032: "Unknown beverage-related statistic",
-    3037: "Unknown beverage/bean-system-related statistic",
     3038: "Unknown beverage/bean-system-related statistic",
     3039: "Unknown beverage/bean-system-related statistic",
     3040: "Unknown beverage/bean-system-related statistic",
@@ -148,11 +149,6 @@ UNKNOWN_STATISTIC_NOTES: dict[int, str] = {
     3043: "Unknown beverage-related statistic",
     3044: "Unknown beverage-related statistic",
     3045: "Unknown beverage-related statistic",
-    3046: (
-        "Unknown beverage-related statistic. Value matched the historical "
-        "Brew Over Ice counter on one machine, but this is not yet proven."
-    ),
-
     23000: "Unknown internal/lifetime statistic",
     23001: "Unknown internal/lifetime statistic",
     23002: "Unknown internal/lifetime statistic",
@@ -164,10 +160,6 @@ UNKNOWN_STATISTIC_NOTES: dict[int, str] = {
     23008: "Unknown internal/lifetime statistic",
     23009: "Unknown internal/lifetime statistic",
 
-    43000: (
-        "Unknown aggregate-like statistic. Do not label as with/without milk "
-        "without a controlled hardware delta test."
-    ),
     43005: (
         "Unknown aggregate-like statistic. Do not label as with/without milk "
         "without a controlled hardware delta test."
