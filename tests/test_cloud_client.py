@@ -648,3 +648,85 @@ def test_get_all_statistics_does_not_infer_eof_from_timeout(
             start_id=100,
             page_size=2,
         )
+
+
+def test_get_all_statistics_reports_live_progress(
+    tmp_path, monkeypatch
+):
+    """Full A2 reads should report page/request progress."""
+
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    pages = {
+        100: {
+            100: 1,
+            105: 2,
+        },
+        106: {
+            106: 3,
+        },
+    }
+
+    def fake_get_statistics(
+        _dsn,
+        start_id=100,
+        count=10,
+        **_kwargs,
+    ):
+        return pages[start_id]
+
+    monkeypatch.setattr(
+        client,
+        "get_statistics",
+        fake_get_statistics,
+    )
+
+    progress = []
+
+    result = client.get_all_statistics(
+        "AC000W1",
+        start_id=100,
+        page_size=2,
+        progress_callback=progress.append,
+    )
+
+    assert result == {
+        100: 1,
+        105: 2,
+        106: 3,
+    }
+
+    assert progress == [
+        {
+            "phase": "request",
+            "page": 1,
+            "start_id": 100,
+            "request_count": 2,
+            "collected_count": 0,
+        },
+        {
+            "phase": "page_complete",
+            "page": 1,
+            "start_id": 100,
+            "request_count": 2,
+            "returned_count": 2,
+            "last_id": 105,
+            "collected_count": 2,
+        },
+        {
+            "phase": "request",
+            "page": 2,
+            "start_id": 106,
+            "request_count": 2,
+            "collected_count": 2,
+        },
+        {
+            "phase": "page_complete",
+            "page": 2,
+            "start_id": 106,
+            "request_count": 2,
+            "returned_count": 1,
+            "last_id": 106,
+            "collected_count": 3,
+        },
+    ]

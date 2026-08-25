@@ -381,6 +381,7 @@ class Client:
         start_id: int = 100,
         page_size: int = 10,
         max_pages: int = 100,
+        progress_callback=None,
     ) -> dict[int, int]:
         """Read the complete sparse ECAM A2 statistics table.
 
@@ -388,8 +389,12 @@ class Client:
         Parameter IDs are sparse, so each subsequent page starts at the
         previous page's highest returned ID plus one.
 
-        Paging stops when the machine returns fewer than ``page_size``
-        parameters.
+        Paging stops only when the machine returns fewer parameters than
+        the request count that actually succeeded.
+
+        ``progress_callback`` is optional and receives small dictionaries
+        describing the current A2 request/page. Callback failures are
+        deliberately isolated from the protocol read itself.
         """
 
         if not 1 <= page_size <= 10:
@@ -398,13 +403,34 @@ class Client:
         if max_pages < 1:
             raise ValueError("max_pages must be at least 1")
 
+        def report_progress(event: dict) -> None:
+            if progress_callback is None:
+                return
+
+            try:
+                progress_callback(dict(event))
+            except Exception:
+                _LOGGER.exception(
+                    "A2 statistics progress callback failed"
+                )
+
         statistics: dict[int, int] = {}
         next_id = start_id
 
-        for _ in range(max_pages):
+        for page_number in range(1, max_pages + 1):
             request_count = page_size
 
             while True:
+                report_progress(
+                    {
+                        "phase": "request",
+                        "page": page_number,
+                        "start_id": next_id,
+                        "request_count": request_count,
+                        "collected_count": len(statistics),
+                    }
+                )
+
                 try:
                     page = self.get_statistics(
                         dsn,
@@ -412,6 +438,7 @@ class Client:
                         count=request_count,
                     )
                     break
+
                 except TimeoutError:
                     if request_count == 1:
                         raise
@@ -430,7 +457,7 @@ class Client:
             if not page:
                 break
 
-            # Protect against a malformed or non-progressing response.
+            # Protect against malformed or non-progressing responses.
             page_ids = sorted(page)
             last_id = page_ids[-1]
 
@@ -442,8 +469,21 @@ class Client:
 
             statistics.update(page)
 
-            # A response shorter than the count that actually succeeded
-            # indicates the end of the sparse statistics table.
+            report_progress(
+                {
+                    "phase": "page_complete",
+                    "page": page_number,
+                    "start_id": next_id,
+                    "request_count": request_count,
+                    "returned_count": len(page),
+                    "last_id": last_id,
+                    "collected_count": len(statistics),
+                }
+            )
+
+            # IMPORTANT:
+            # Timeout is never EOF. Only a genuinely shorter successful
+            # response terminates sparse-table paging.
             if len(page) < request_count:
                 return statistics
 
@@ -460,7 +500,12 @@ class Client:
         return statistics
 
 
-    def get_ecam610_statistics(self, dsn: str) -> dict:
+    def get_ecam610_statistics(
+        self,
+        dsn: str,
+        *,
+        progress_callback=None,
+    ) -> dict:
         """Read a complete live ECAM610 statistics snapshot.
 
         Returns a lossless structure containing:
@@ -473,8 +518,16 @@ class Client:
         discarded.
         """
 
-        raw = self.get_all_statistics(dsn)
+        if progress_callback is None:
+            raw = self.get_all_statistics(dsn)
+        else:
+            raw = self.get_all_statistics(
+                dsn,
+                progress_callback=progress_callback,
+            )
+
         return build_ecam610_statistics_snapshot(raw)
+
 
     def __get_access_token(self):
         """
