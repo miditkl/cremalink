@@ -17,6 +17,8 @@ Cremalink provides a unified interface to interact with smart coffee machines vi
 > [!TIP]
 > For detailed guides, advanced configuration, and developer deep-dives, please visit our **[Project Wiki](https://github.com/miditkl/cremalink/wiki)**.
 
+**Developer documentation:** [ECAM A2 Statistics Protocol](docs/ecam-a2-statistics.md) — live native statistics, sparse paging, confirmed mappings, and reverse-engineering notes.
+
 > [!NOTE] 
 > This project was developed with a result-oriented approach, primarily optimized for the De'Longhi PrimaDonna Soul. While the architecture is designed to be extensible, some logic may currently be tightly coupled to this specific model and might not work seamlessly with others yet.
 >The goal is to make the library fully generic. If you notice parts that are too specific to the PrimaDonna Soul or encounter issues with other machines, we highly encourage contributions! Refactoring and generalizations are very welcome to improve support for a wider range of devices.
