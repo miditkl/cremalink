@@ -592,3 +592,59 @@ def test_get_ecam610_statistics_preserves_known_unknown_and_raw(
     }
 
     assert snapshot["raw"] == raw
+
+
+def test_get_all_statistics_does_not_infer_eof_from_timeout(
+    tmp_path, monkeypatch
+):
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    calls = []
+
+    def fake_get_statistics(
+        dsn,
+        start_id=100,
+        count=10,
+        **kwargs,
+    ):
+        calls.append(
+            (
+                dsn,
+                start_id,
+                count,
+                kwargs.get("wait_timeout"),
+            )
+        )
+
+        if start_id == 100:
+            return {
+                100: 11,
+                101: 12,
+            }
+
+        if start_id == 102:
+            raise TimeoutError("synthetic transient A2 timeout")
+
+        raise AssertionError(
+            f"unexpected request start_id={start_id}, count={count}"
+        )
+
+    monkeypatch.setattr(
+        client,
+        "get_statistics",
+        fake_get_statistics,
+    )
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.time.sleep",
+        lambda _seconds: None,
+    )
+
+    with pytest.raises(
+        TimeoutError,
+        match="synthetic transient A2 timeout",
+    ):
+        client.get_all_statistics(
+            "AC000W1",
+            start_id=100,
+            page_size=2,
+        )

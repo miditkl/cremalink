@@ -57,7 +57,8 @@ class MonitorFrame:
         Raises:
             ValueError: If the data is malformed, too short, or fails the CRC check.
         """
-        raw = base64.b64decode(raw_b64)
+        padded_b64 = raw_b64 + "=" * (-len(raw_b64) % 4)
+        raw = base64.b64decode(padded_b64)
         if len(raw) < 4:
             raise ValueError("Raw data is too short to contain a monitor frame")
         
