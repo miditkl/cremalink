@@ -40,6 +40,35 @@ An ID used by another ECAM model or another reverse-engineering project is not c
 
 ## 3. Why A2 instead of the normal cloud statistics cache?
 
+### Observed cloud-statistics staleness on the tested machine
+
+On the ECAM610.75.MB used for this reverse engineering, the normal Ayla
+service/statistics properties do not appear to be synchronised reliably with
+the machine's current counters. Values exposed through the `d5xx`/`d7xx`
+properties can lag far behind the live native statistics and may remain
+unchanged despite continued machine use.
+
+On this tested machine, this is therefore not merely a theoretical limitation:
+the normal Ayla statistics cache does not provide a usable contemporaneous
+reference for the live A2 statistics.
+
+This is the main reason why the cloud properties cannot currently be used as
+a numerical reference for identifying unknown A2 IDs.
+
+A current A2 snapshot and the corresponding Ayla service properties may
+describe very different points in the machine's lifetime. Consequently:
+
+- differing absolute values do **not** disprove equivalent semantics;
+- matching values do **not** prove an alias;
+- ratios between current A2 values and stale cloud values are meaningless;
+- an A2 ID must not be mapped to a `d5xx`/`d7xx` property unless the cloud
+  property's freshness has first been established independently.
+
+The cloud property names are therefore used only as semantic clues about
+concepts implemented by the firmware. Controlled changes in the live A2 table
+remain the primary evidence for A2 mappings.
+
+
 The Ayla cloud exposes service/statistics properties such as:
 
 ```text
