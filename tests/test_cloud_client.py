@@ -731,3 +731,110 @@ def test_get_all_statistics_reports_live_progress(
             "collected_count": 3,
         },
     ]
+
+
+def test_get_property_values_reads_named_cloud_properties(
+    tmp_path, monkeypatch
+):
+    """Named Ayla properties should be readable without model assumptions."""
+
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    values = {
+        "d550_water_calc_qty": 123456,
+        "d555_water_filter_qty": 23456,
+        "d556_water_hardness": 3,
+        "d512_percentage_to_deca": 42,
+        "d513_percentage_usage_fltr": 57,
+    }
+
+    def fake_get(url, **_kwargs):
+        property_name = url.rsplit("/", 1)[-1].removesuffix(".json")
+
+        if property_name == "missing_property":
+            return _FakeResponse(404, {})
+
+        return _FakeResponse(
+            200,
+            {
+                "property": {
+                    "name": property_name,
+                    "value": values[property_name],
+                }
+            },
+        )
+
+    monkeypatch.setattr(
+        "cremalink.clients.cloud.requests.get",
+        fake_get,
+    )
+
+    result = client.get_property_values(
+        "AC000W1",
+        [
+            "d550_water_calc_qty",
+            "d555_water_filter_qty",
+            "d556_water_hardness",
+            "d512_percentage_to_deca",
+            "d513_percentage_usage_fltr",
+            "missing_property",
+        ],
+    )
+
+    assert result == {
+        "d550_water_calc_qty": 123456,
+        "d555_water_filter_qty": 23456,
+        "d556_water_hardness": 3,
+        "d512_percentage_to_deca": 42,
+        "d513_percentage_usage_fltr": 57,
+        "missing_property": None,
+    }
+
+
+def test_get_ecam_service_properties_reads_relevant_d5xx_values(
+    tmp_path, monkeypatch
+):
+    """ECAM service diagnostics should use the generic property reader."""
+
+    client = _make_client(tmp_path, monkeypatch, [])
+
+    captured = {}
+
+    def fake_get_property_values(dsn, property_names):
+        captured["dsn"] = dsn
+        captured["property_names"] = list(property_names)
+
+        return {
+            "d550_water_calc_qty": 111,
+            "d555_water_filter_qty": 222,
+            "d556_water_hardness": 3,
+            "d512_percentage_to_deca": 44,
+            "d513_percentage_usage_fltr": 55,
+        }
+
+    monkeypatch.setattr(
+        client,
+        "get_property_values",
+        fake_get_property_values,
+    )
+
+    result = client.get_ecam_service_properties("AC000W1")
+
+    assert captured == {
+        "dsn": "AC000W1",
+        "property_names": [
+            "d550_water_calc_qty",
+            "d555_water_filter_qty",
+            "d556_water_hardness",
+            "d512_percentage_to_deca",
+            "d513_percentage_usage_fltr",
+        ],
+    }
+
+    assert result == {
+        "d550_water_calc_qty": 111,
+        "d555_water_filter_qty": 222,
+        "d556_water_hardness": 3,
+        "d512_percentage_to_deca": 44,
+        "d513_percentage_usage_fltr": 55,
+    }

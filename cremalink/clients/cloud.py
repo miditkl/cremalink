@@ -198,6 +198,68 @@ class Client:
         resp.raise_for_status()
         return resp.json().get("property", {}).get("value") or None
 
+    def get_property_values(
+        self,
+        dsn: str,
+        property_names,
+    ) -> dict[str, object | None]:
+        """Read named Ayla property values for one device.
+
+        Missing properties are returned as ``None`` so callers can compare
+        firmware/model variants without special-case exception handling.
+        """
+
+        headers = {
+            "User-Agent": self.api_agent,
+            "Authorization": f"auth_token {self.access_token}",
+            "Accept": "application/json",
+        }
+
+        base_url = self.ayla_api.get("API_URL")
+        result: dict[str, object | None] = {}
+
+        for property_name in property_names:
+            response = requests.get(
+                url=(
+                    f"{base_url}/dsns/{dsn}/properties/"
+                    f"{property_name}.json"
+                ),
+                headers=headers,
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if response.status_code == 404:
+                result[property_name] = None
+                continue
+
+            response.raise_for_status()
+
+            payload = response.json()
+            result[property_name] = (
+                payload.get("property", {}).get("value")
+            )
+
+        return result
+
+
+    def get_ecam_service_properties(
+        self,
+        dsn: str,
+    ) -> dict[str, object | None]:
+        """Read ECAM service/maintenance diagnostics from Ayla properties."""
+
+        return self.get_property_values(
+            dsn,
+            [
+                "d550_water_calc_qty",
+                "d555_water_filter_qty",
+                "d556_water_hardness",
+                "d512_percentage_to_deca",
+                "d513_percentage_usage_fltr",
+            ],
+        )
+
+
     @_retry
     def get_lan_config(self, dsn: str) -> dict:
         """Fetch LAN connectivity details for a device (FR-006).
