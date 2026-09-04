@@ -35,16 +35,13 @@ async def app_client():
     adapter = FakeAdapter(settings=settings, logger=logger)
     app = create_app(settings=settings, device_adapter=adapter, logger=logger)
     transport = httpx.ASGITransport(app=app)
-    await app.router.startup()
-    try:
-        async with httpx.AsyncClient(
-                transport=transport,
-                base_url="http://testserver",
-        ) as client:
-            state = app.state.local_state
-            yield client, state
-    finally:
-        await app.router.shutdown()
+
+    async with httpx.AsyncClient(
+            transport=transport,
+            base_url="http://testserver",
+    ) as client:
+        state = app.state.local_state
+        yield client, state
 
 
 @pytest.mark.asyncio
