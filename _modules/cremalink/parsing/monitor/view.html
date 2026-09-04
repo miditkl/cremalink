@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.parsing.monitor.view &mdash; cremalink 0.1.dev1+g699b2cd67 documentation</title>
+  <title>cremalink.parsing.monitor.view &mdash; cremalink 0.1.dev1+gfe49db8b0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=4df4cb40"></script>
+      <script src="../../../../_static/documentation_options.js?v=7ec88642"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -74,10 +74,10 @@
            <div itemprop="articleBody">
              
   <h1>Source code for cremalink.parsing.monitor.view</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module provides the `MonitorView` class, which offers a high-level,</span>
 <span class="sd">user-friendly interface for accessing data from a `MonitorSnapshot`.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
@@ -91,7 +91,7 @@
 <div class="viewcode-block" id="MonitorView">
 <a class="viewcode-back" href="../../../../api/cremalink.parsing.monitor.view.html#cremalink.parsing.monitor.MonitorView">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MonitorView</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A user-friendly view of a `MonitorSnapshot`, powered by a `MonitorProfile`.</span>
 
 <span class="sd">    This class acts as a wrapper around a `MonitorSnapshot`. It uses a given</span>
@@ -101,17 +101,17 @@
 <span class="sd">    It provides dynamic attribute access (`__getattr__`) to resolve flags and</span>
 <span class="sd">    predicates from the profile on the fly. For example, `view.is_on` or</span>
 <span class="sd">    `view.has_descaling_alarm`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">MonitorSnapshot</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="n">MonitorProfile</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initializes the MonitorView.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            snapshot: The `MonitorSnapshot` containing the data to be viewed.</span>
 <span class="sd">            profile: A `MonitorProfile` or a dictionary to build one from. This</span>
 <span class="sd">                     profile dictates how the raw data is interpreted.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span> <span class="o">=</span> <span class="n">snapshot</span>
         <span class="c1"># Ensure profile is always a MonitorProfile instance.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">MonitorProfile</span><span class="p">)</span> <span class="k">else</span> <span class="n">MonitorProfile</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">profile</span> <span class="ow">or</span> <span class="p">{})</span>
@@ -127,48 +127,48 @@
     <span class="c1"># --- raw accessors ---</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">raw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The raw bytes of the monitor payload.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The raw bytes of the monitor payload."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="o">.</span><span class="n">raw</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">raw_b64</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The base64-encoded string of the monitor payload.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The base64-encoded string of the monitor payload."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="o">.</span><span class="n">raw_b64</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parsed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The dictionary of initially parsed, low-level fields.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The dictionary of initially parsed, low-level fields."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="o">.</span><span class="n">parsed</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">received_at</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The timestamp when the snapshot was received.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The timestamp when the snapshot was received."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="o">.</span><span class="n">received_at</span>
 
     <span class="c1"># --- standard fields ---</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">status_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The raw integer code for the device&#39;s main status.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The raw integer code for the device's main status."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">status</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">action_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The raw integer code for the device&#39;s current action.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The raw integer code for the device's current action."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">action</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">progress_percent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The progress percentage (0-100) of the current action.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The progress percentage (0-100) of the current action."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">progress</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">accessory_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The raw integer code for the currently detected accessory.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The raw integer code for the currently detected accessory."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">accessory</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="c1"># --- enum mapping ---</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_enum_lookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enum_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Looks up an enum name from a code using the profile.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Looks up an enum name from a code using the profile."""</span>
         <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">enums</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">enum_name</span><span class="p">,</span> <span class="p">{})</span>
@@ -177,29 +177,29 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">status_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The human-readable name of the device&#39;s status (e.g., &#39;Standby&#39;).&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enum_lookup</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""The human-readable name of the device's status (e.g., 'Standby')."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enum_lookup</span><span class="p">(</span><span class="s2">"status"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">action_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The human-readable name of the device&#39;s action (e.g., &#39;Brewing&#39;).&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enum_lookup</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_code</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""The human-readable name of the device's action (e.g., 'Brewing')."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enum_lookup</span><span class="p">(</span><span class="s2">"action"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_code</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">accessory_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The human-readable name of the accessory (e.g., &#39;Milk Carafe&#39;).&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enum_lookup</span><span class="p">(</span><span class="s2">&quot;accessory&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">accessory_code</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""The human-readable name of the accessory (e.g., 'Milk Carafe')."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enum_lookup</span><span class="p">(</span><span class="s2">"accessory"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">accessory_code</span><span class="p">)</span>
 
     <span class="c1"># --- flag/predicate helpers ---</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolves a named boolean flag using its definition in the profile.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Resolves a named boolean flag using its definition in the profile."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">flag_def</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">flag_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_def</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         
-        <span class="n">data_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">alarms</span> <span class="k">if</span> <span class="n">flag_def</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;alarms&quot;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">switches</span>
+        <span class="n">data_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">alarms</span> <span class="k">if</span> <span class="n">flag_def</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">"alarms"</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">switches</span>
         <span class="k">if</span> <span class="n">flag_def</span><span class="o">.</span><span class="n">byte</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_bytes</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
         
@@ -208,44 +208,44 @@
         <span class="k">return</span> <span class="ow">not</span> <span class="n">value</span> <span class="k">if</span> <span class="n">flag_def</span><span class="o">.</span><span class="n">invert</span> <span class="k">else</span> <span class="n">value</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_source_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a raw value from the frame by its source name.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Gets a raw value from the frame by its source name."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;alarms&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">alarms</span><span class="p">,</span>
-            <span class="s2">&quot;switches&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">switches</span><span class="p">,</span>
-            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
-            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
-            <span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span>
-            <span class="s2">&quot;accessory&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">accessory</span><span class="p">,</span>
+            <span class="s2">"alarms"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">alarms</span><span class="p">,</span>
+            <span class="s2">"switches"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">switches</span><span class="p">,</span>
+            <span class="s2">"status"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+            <span class="s2">"action"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+            <span class="s2">"progress"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span>
+            <span class="s2">"accessory"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">accessory</span><span class="p">,</span>
         <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_predicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">definition</span><span class="p">:</span> <span class="n">PredicateDefinition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates a named predicate using its definition in the profile.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Evaluates a named predicate using its definition in the profile."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">uses_flag</span><span class="p">():</span>
-                <span class="n">flag_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_flag</span><span class="p">(</span><span class="n">definition</span><span class="o">.</span><span class="n">flag</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">flag_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_flag</span><span class="p">(</span><span class="n">definition</span><span class="o">.</span><span class="n">flag</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">flag_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">None</span>
-                <span class="k">return</span> <span class="n">flag_value</span> <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;flag_true&quot;</span> <span class="k">else</span> <span class="ow">not</span> <span class="n">flag_value</span>
+                <span class="k">return</span> <span class="n">flag_value</span> <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">"flag_true"</span> <span class="k">else</span> <span class="ow">not</span> <span class="n">flag_value</span>
 
             <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">uses_bit_address</span><span class="p">():</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">definition</span><span class="o">.</span><span class="n">source</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">None</span>
-                <span class="n">source_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">alarms</span> <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;alarms&quot;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">switches</span>
+                <span class="n">source_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">alarms</span> <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">"alarms"</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">switches</span>
                 <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">byte</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">definition</span><span class="o">.</span><span class="n">byte</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">source_bytes</span><span class="p">)</span> <span class="ow">or</span> <span class="n">definition</span><span class="o">.</span><span class="n">bit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">None</span>
                 <span class="n">bit_value</span> <span class="o">=</span> <span class="n">get_bit</span><span class="p">(</span><span class="n">source_bytes</span><span class="p">[</span><span class="n">definition</span><span class="o">.</span><span class="n">byte</span><span class="p">],</span> <span class="n">definition</span><span class="o">.</span><span class="n">bit</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">bit_value</span> <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;bit_set&quot;</span> <span class="k">else</span> <span class="ow">not</span> <span class="n">bit_value</span>
+                <span class="k">return</span> <span class="n">bit_value</span> <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">"bit_set"</span> <span class="k">else</span> <span class="ow">not</span> <span class="n">bit_value</span>
 
             <span class="n">source_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_value</span><span class="p">(</span><span class="n">definition</span><span class="o">.</span><span class="n">source</span><span class="p">)</span> <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">source</span> <span class="k">else</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;equals&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">"equals"</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">source_val</span> <span class="o">==</span> <span class="n">definition</span><span class="o">.</span><span class="n">value</span>
-            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;not_equals&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">"not_equals"</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">source_val</span> <span class="o">!=</span> <span class="n">definition</span><span class="o">.</span><span class="n">value</span>
-            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;in_set&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">"in_set"</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">source_val</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">definition</span><span class="o">.</span><span class="n">values</span> <span class="ow">or</span> <span class="p">[])</span>
-            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;not_in_set&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">"not_in_set"</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">source_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">definition</span><span class="o">.</span><span class="n">values</span> <span class="ow">or</span> <span class="p">[])</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -254,24 +254,24 @@
     <span class="c1"># --- dynamic access ---</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">available_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A list of all available dynamic fields (flags and predicates).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""A list of all available dynamic fields (flags and predicates)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">available_fields</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">profile_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A summary of the loaded profile.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""A summary of the loaded profile."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Dynamically resolves flags and predicates from the profile.</span>
 <span class="sd">        This allows for accessing profile-defined fields like `view.is_on`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">flags</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_flag</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">predicates</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_predicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">predicates</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has no attribute &#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has no attribute '</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span></div>
 
 </pre></div>
 

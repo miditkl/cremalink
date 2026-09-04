@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.domain.factory &mdash; cremalink 0.1.dev1+g699b2cd67 documentation</title>
+  <title>cremalink.domain.factory &mdash; cremalink 0.1.dev1+gfe49db8b0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4df4cb40"></script>
+      <script src="../../../_static/documentation_options.js?v=7ec88642"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -74,13 +74,13 @@
            <div itemprop="articleBody">
              
   <h1>Source code for cremalink.domain.factory</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module provides factory functions for creating `Device` instances.</span>
 
 <span class="sd">These factories simplify the process of instantiating a `Device` by handling</span>
 <span class="sd">the setup of the appropriate communication transport (`LocalTransport` or</span>
 <span class="sd">`CloudTransport`) and the subsequent creation of the `Device` object itself.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
@@ -98,15 +98,15 @@
     <span class="n">device_ip</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">server_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">server_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10280</span><span class="p">,</span>
-    <span class="n">device_scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
+    <span class="n">device_scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"http"</span><span class="p">,</span>
     <span class="n">auto_configure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">device_map_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Device</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Creates a `Device` instance configured for local network communication.</span>
 
 <span class="sd">    This factory sets up a `LocalTransport` which requires details about the</span>
-<span class="sd">    local network environment, including the device&#39;s IP and the local server&#39;s</span>
+<span class="sd">    local network environment, including the device's IP and the local server's</span>
 <span class="sd">    address.</span>
 
 <span class="sd">    Args:</span>
@@ -115,13 +115,13 @@
 <span class="sd">        device_ip: The IP address of the coffee machine.</span>
 <span class="sd">        server_host: The hostname or IP address of the local proxy server.</span>
 <span class="sd">        server_port: The port of the local proxy server.</span>
-<span class="sd">        device_scheme: The communication protocol to use with the device (e.g., &#39;http&#39;).</span>
+<span class="sd">        device_scheme: The communication protocol to use with the device (e.g., 'http').</span>
 <span class="sd">        auto_configure: If True, the transport will be configured automatically.</span>
 <span class="sd">        device_map_path: Optional path to a device-specific command map file.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A `Device` instance configured with a `LocalTransport`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">transport</span> <span class="o">=</span> <span class="n">LocalTransport</span><span class="p">(</span>
         <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">,</span>
         <span class="n">lan_key</span><span class="o">=</span><span class="n">lan_key</span><span class="p">,</span>
@@ -151,11 +151,11 @@
     <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">device_map_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Device</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Creates a `Device` instance configured for cloud-based communication.</span>
 
 <span class="sd">    This factory sets up a `CloudTransport`, which communicates with the device</span>
-<span class="sd">    via the manufacturer&#39;s cloud services, requiring an access token.</span>
+<span class="sd">    via the manufacturer's cloud services, requiring an access token.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        dsn: The Device Serial Number.</span>
@@ -164,7 +164,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A `Device` instance configured with a `CloudTransport`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">transport</span> <span class="o">=</span> <span class="n">CloudTransport</span><span class="p">(</span><span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">access_token</span><span class="p">,</span> <span class="n">device_map_path</span><span class="o">=</span><span class="n">device_map_path</span><span class="p">)</span>
     <span class="c1"># After transport initialization, some device attributes might be populated.</span>
     <span class="c1"># We pass these to the Device constructor.</span>
@@ -172,10 +172,10 @@
         <span class="n">transport</span><span class="o">=</span><span class="n">transport</span><span class="p">,</span>
         <span class="n">device_map_path</span><span class="o">=</span><span class="n">device_map_path</span><span class="p">,</span>
         <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">,</span>
-        <span class="n">model</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-        <span class="n">ip</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">&quot;ip&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-        <span class="n">lan_key</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">&quot;lan_key&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-        <span class="n">is_online</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">&quot;is_online&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">model</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">"model"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">ip</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">"ip"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">lan_key</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">"lan_key"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">is_online</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s2">"is_online"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 </pre></div>

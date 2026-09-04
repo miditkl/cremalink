@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.local_server &mdash; cremalink 0.1.dev1+g699b2cd67 documentation</title>
+  <title>cremalink.local_server &mdash; cremalink 0.1.dev1+gfe49db8b0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4df4cb40"></script>
+      <script src="../../_static/documentation_options.js?v=7ec88642"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -74,7 +74,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for cremalink.local_server</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This script is the main entry point for running the local proxy server.</span>
 
 <span class="sd">The local server acts as an intermediary between the `cremalink` library and a</span>
@@ -87,7 +87,7 @@
 
 <span class="sd">Example:</span>
 <span class="sd">`cremalink-server --settings_path /path/to/your/conf.json --ip 0.0.0.0 --port 10280`</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span>
@@ -100,16 +100,16 @@
 <div class="viewcode-block" id="LocalServer">
 <a class="viewcode-back" href="../../api/cremalink.local_server.html#cremalink.LocalServer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LocalServer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper class that encapsulates the Uvicorn server and the web application.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""A wrapper class that encapsulates the Uvicorn server and the web application."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="n">ServerSettings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initializes the server.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            settings: A `ServerSettings` object containing configuration like</span>
 <span class="sd">                      host and port.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
@@ -117,12 +117,12 @@
 <div class="viewcode-block" id="LocalServer.start">
 <a class="viewcode-back" href="../../api/cremalink.local_server.html#cremalink.LocalServer.start">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Starts the Uvicorn server to serve the application.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Starts the Uvicorn server to serve the application."""</span>
         <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_ip</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">server_port</span><span class="p">,</span>
-            <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;info&quot;</span>
+            <span class="n">log_level</span><span class="o">=</span><span class="s2">"info"</span>
         <span class="p">)</span></div>
 </div>
 
@@ -131,37 +131,37 @@
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../api/cremalink.local_server.html#cremalink.main">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Parses command-line arguments and starts the local server.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start the cremalink local proxy server.&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Start the cremalink local proxy server."</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--ip&quot;</span><span class="p">,</span>
+        <span class="s2">"--ip"</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;IP address to bind the local server to.&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"0.0.0.0"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"IP address to bind the local server to."</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--port&quot;</span><span class="p">,</span>
+        <span class="s2">"--port"</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">10280</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Port to run the local server on.&quot;</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Port to run the local server on."</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--advertised_ip&quot;</span><span class="p">,</span>
+        <span class="s2">"--advertised_ip"</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;IP address to advertise to the coffee machine. If not set, the server&#39;s IP is used.&quot;</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"IP address to advertise to the coffee machine. If not set, the server's IP is used."</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--settings_path&quot;</span><span class="p">,</span>
+        <span class="s2">"--settings_path"</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the JSON configuration file containing device credentials (DSN, LAN key, etc.).&quot;</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Path to the JSON configuration file containing device credentials (DSN, LAN key, etc.)."</span>
     <span class="p">)</span>
 
     <span class="c1"># Manually handle --help to avoid argument parsing errors with unknown args.</span>
-    <span class="k">if</span> <span class="s2">&quot;--help&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">"--help"</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
@@ -172,7 +172,7 @@
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="c1"># This allows the script to be executed directly.</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>

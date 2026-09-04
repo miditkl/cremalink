@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.crypto &mdash; cremalink 0.1.dev1+g699b2cd67 documentation</title>
+  <title>cremalink.crypto &mdash; cremalink 0.1.dev1+gfe49db8b0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4df4cb40"></script>
+      <script src="../../_static/documentation_options.js?v=7ec88642"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -74,10 +74,10 @@
            <div itemprop="articleBody">
              
   <h1>Source code for cremalink.crypto</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module provides a set of cryptographic helper functions for handling</span>
 <span class="sd">encryption, decryption, and hashing, primarily using AES and HMAC.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
@@ -89,7 +89,7 @@
 <div class="viewcode-block" id="hmac_for_key_and_data">
 <a class="viewcode-back" href="../../api/cremalink.crypto.html#cremalink.crypto.hmac_for_key_and_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">hmac_for_key_and_data</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Generates an HMAC-SHA256 digest for the given key and data.</span>
 
 <span class="sd">    Args:</span>
@@ -98,7 +98,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The raw HMAC-SHA256 digest as bytes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">mac_hash</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mac_hash</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span></div>
 
@@ -107,7 +107,7 @@
 <div class="viewcode-block" id="pad_zero">
 <a class="viewcode-back" href="../../api/cremalink.crypto.html#cremalink.crypto.pad_zero">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pad_zero</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">block_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Pads data with zero bytes to a multiple of the specified block size.</span>
 
 <span class="sd">    Note: This padding scheme is not reversible if the original data can</span>
@@ -119,16 +119,16 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The zero-padded data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">padding_length</span> <span class="o">=</span> <span class="n">block_size</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">%</span> <span class="n">block_size</span>
-    <span class="k">return</span> <span class="n">data</span> <span class="o">+</span> <span class="p">(</span><span class="n">padding_length</span> <span class="o">*</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">data</span> <span class="o">+</span> <span class="p">(</span><span class="n">padding_length</span> <span class="o">*</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="unpad_zero">
 <a class="viewcode-back" href="../../api/cremalink.crypto.html#cremalink.crypto.unpad_zero">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">unpad_zero</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Removes trailing zero-byte padding from data.</span>
 
 <span class="sd">    This works by finding the first null byte and truncating the rest.</span>
@@ -138,16 +138,16 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The unpadded data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Finds the first occurrence of a null byte and slices the data up to that point.</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="extract_bits">
 <a class="viewcode-back" href="../../api/cremalink.crypto.html#cremalink.crypto.extract_bits">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_bits</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extracts a slice from the hexadecimal representation of raw bytes.</span>
 
 <span class="sd">    Note: The name is a misnomer; it operates on the hex string, not raw bits.</span>
@@ -159,7 +159,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A bytearray corresponding to the specified hex slice.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">strhex</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">strhex</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">])</span></div>
 
@@ -168,7 +168,7 @@
 <div class="viewcode-block" id="aes_encrypt">
 <a class="viewcode-back" href="../../api/cremalink.crypto.html#cremalink.crypto.aes_encrypt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">aes_encrypt</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">iv</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Encrypts a string using AES-128 in CBC mode with zero-padding.</span>
 
 <span class="sd">    Args:</span>
@@ -178,18 +178,18 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A base64-encoded string of the encrypted data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">raw</span> <span class="o">=</span> <span class="n">pad_zero</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
     <span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_CBC</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
     <span class="n">enc</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="aes_decrypt">
 <a class="viewcode-back" href="../../api/cremalink.crypto.html#cremalink.crypto.aes_decrypt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">aes_decrypt</span><span class="p">(</span><span class="n">enc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">iv</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Decrypts a base64-encoded string using AES-128 in CBC mode.</span>
 
 <span class="sd">    Args:</span>
@@ -199,7 +199,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The decrypted data as bytes, after removing zero-padding.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">decoded</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span>
     <span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_CBC</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
     <span class="n">dec</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
@@ -210,7 +210,7 @@
 <div class="viewcode-block" id="rotate_iv_from_ciphertext">
 <a class="viewcode-back" href="../../api/cremalink.crypto.html#cremalink.crypto.rotate_iv_from_ciphertext">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotate_iv_from_ciphertext</span><span class="p">(</span><span class="n">enc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extracts the last 16 bytes from a ciphertext to be used as the next IV.</span>
 
 <span class="sd">    This is a common technique in some protocols to chain IVs.</span>
@@ -220,7 +220,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The last 16 bytes of the raw ciphertext.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">decoded_hex</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
     <span class="c1"># The last 16 bytes are the last 32 characters of the hex string.</span>
     <span class="k">return</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">decoded_hex</span><span class="p">[</span><span class="o">-</span><span class="mi">32</span><span class="p">:])</span></div>
@@ -229,13 +229,13 @@
 
 <span class="c1"># Specifies the public API of this module.</span>
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;aes_decrypt&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;aes_encrypt&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;extract_bits&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;hmac_for_key_and_data&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pad_zero&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;rotate_iv_from_ciphertext&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;unpad_zero&quot;</span><span class="p">,</span>
+    <span class="s2">"aes_decrypt"</span><span class="p">,</span>
+    <span class="s2">"aes_encrypt"</span><span class="p">,</span>
+    <span class="s2">"extract_bits"</span><span class="p">,</span>
+    <span class="s2">"hmac_for_key_and_data"</span><span class="p">,</span>
+    <span class="s2">"pad_zero"</span><span class="p">,</span>
+    <span class="s2">"rotate_iv_from_ciphertext"</span><span class="p">,</span>
+    <span class="s2">"unpad_zero"</span><span class="p">,</span>
 <span class="p">]</span>
 </pre></div>
 

@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.local_server_app.models &mdash; cremalink 0.1.dev1+g699b2cd67 documentation</title>
+  <title>cremalink.local_server_app.models &mdash; cremalink 0.1.dev1+gfe49db8b0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4df4cb40"></script>
+      <script src="../../../_static/documentation_options.js?v=7ec88642"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -74,11 +74,11 @@
            <div itemprop="articleBody">
              
   <h1>Source code for cremalink.local_server_app.models</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module defines the Pydantic data models used for API request and response</span>
 <span class="sd">validation in the local server application. These models ensure type safety</span>
 <span class="sd">and clear contracts for the API endpoints.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
@@ -89,15 +89,15 @@
 <div class="viewcode-block" id="ConfigureRequest">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.models.html#cremalink.local_server_app.models.ConfigureRequest">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigureRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Model for the `/configure` endpoint request body.</span>
 <span class="sd">    It contains all the necessary information to establish a connection</span>
 <span class="sd">    with a local device.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">dsn</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">device_ip</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">lan_key</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">device_scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;https&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The protocol scheme, e.g., &#39;http&#39; or &#39;https&#39;.&quot;</span><span class="p">)</span>
+    <span class="n">device_scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">"https"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"The protocol scheme, e.g., 'http' or 'https'."</span><span class="p">)</span>
     <span class="n">monitor_property_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">data_request_property_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -106,7 +106,7 @@
 <div class="viewcode-block" id="CommandRequest">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.models.html#cremalink.local_server_app.models.CommandRequest">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CommandRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model for the `/command` endpoint request body.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model for the `/command` endpoint request body."""</span>
     <span class="n">command</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
@@ -114,10 +114,10 @@
 <div class="viewcode-block" id="KeyExchange">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.models.html#cremalink.local_server_app.models.KeyExchange">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">KeyExchange</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Represents the data payload for the key exchange process, which is</span>
 <span class="sd">    part of the authentication handshake with the device.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">random_1</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">time_1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span></div>
 
@@ -126,7 +126,7 @@
 <div class="viewcode-block" id="KeyExchangeRequest">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.models.html#cremalink.local_server_app.models.KeyExchangeRequest">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">KeyExchangeRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model for a key exchange request, wrapping the KeyExchange payload.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model for a key exchange request, wrapping the KeyExchange payload."""</span>
     <span class="n">key_exchange</span><span class="p">:</span> <span class="n">KeyExchange</span></div>
 
 
@@ -134,7 +134,7 @@
 <div class="viewcode-block" id="EncPayload">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.models.html#cremalink.local_server_app.models.EncPayload">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EncPayload</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A generic model for a payload that contains encrypted data (`enc`).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""A generic model for a payload that contains encrypted data (`enc`)."""</span>
     <span class="n">enc</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
@@ -142,10 +142,10 @@
 <div class="viewcode-block" id="CommandPollResponse">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.models.html#cremalink.local_server_app.models.CommandPollResponse">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CommandPollResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Model for the response when polling for a command result from the device.</span>
 <span class="sd">    It includes the encrypted response, a signature, and a sequence number.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">enc</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sign</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">seq</span><span class="p">:</span> <span class="nb">int</span></div>
@@ -155,10 +155,10 @@
 <div class="viewcode-block" id="MonitorResponse">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.models.html#cremalink.local_server_app.models.MonitorResponse">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MonitorResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Model for the response from the `/get_monitor` endpoint.</span>
 <span class="sd">    Includes the parsed monitor data, the raw base64 string, and a timestamp.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">monitor</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">monitor_b64</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">received_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -168,10 +168,10 @@
 <div class="viewcode-block" id="PropertiesResponse">
 <a class="viewcode-back" href="../../../api/cremalink.local_server_app.models.html#cremalink.local_server_app.models.PropertiesResponse">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PropertiesResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Model for the response from the `/get_properties` endpoint.</span>
 <span class="sd">    Includes the dictionary of properties and a timestamp.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">properties</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">received_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 

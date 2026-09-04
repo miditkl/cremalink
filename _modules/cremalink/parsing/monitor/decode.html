@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.parsing.monitor.decode &mdash; cremalink 0.1.dev1+g699b2cd67 documentation</title>
+  <title>cremalink.parsing.monitor.decode &mdash; cremalink 0.1.dev1+gfe49db8b0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=4df4cb40"></script>
+      <script src="../../../../_static/documentation_options.js?v=7ec88642"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -74,10 +74,10 @@
            <div itemprop="articleBody">
              
   <h1>Source code for cremalink.parsing.monitor.decode</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module contains the primary functions for decoding a raw monitor payload</span>
 <span class="sd">into a structured `MonitorSnapshot`.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
@@ -91,13 +91,13 @@
 <div class="viewcode-block" id="decode_monitor_b64">
 <a class="viewcode-back" href="../../../../api/cremalink.parsing.monitor.decode.html#cremalink.parsing.monitor.decode_monitor_b64">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">decode_monitor_b64</span><span class="p">(</span><span class="n">raw_b64</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A simple wrapper for base64 decoding that provides a more specific error message.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">raw_b64</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to decode monitor base64: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to decode monitor base64: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 
 
 
@@ -105,10 +105,10 @@
 <a class="viewcode-back" href="../../../../api/cremalink.parsing.monitor.decode.html#cremalink.parsing.monitor.build_monitor_snapshot">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_monitor_snapshot</span><span class="p">(</span>
     <span class="n">payload</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span><span class="p">,</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"local"</span><span class="p">,</span>
     <span class="n">device_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MonitorSnapshot</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Constructs a `MonitorSnapshot` from a raw payload dictionary.</span>
 
 <span class="sd">    This function orchestrates the decoding process:</span>
@@ -120,23 +120,23 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        payload: The raw dictionary payload, typically from the local server or cloud API.</span>
-<span class="sd">        source: The origin of the data (e.g., &#39;local&#39;, &#39;cloud&#39;).</span>
+<span class="sd">        source: The origin of the data (e.g., 'local', 'cloud').</span>
 <span class="sd">        device_id: The identifier of the device.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A populated `MonitorSnapshot` instance.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># The base64 data can be in a few different places depending on the source.</span>
-    <span class="n">raw_b64</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor_b64&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="n">raw_b64</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"monitor_b64"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"monitor"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
     
     <span class="c1"># If no base64 data is found, return an empty snapshot with a warning.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">raw_b64</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">MonitorSnapshot</span><span class="p">(</span>
-            <span class="n">raw</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">raw_b64</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">received_at</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;received_at&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
+            <span class="n">raw</span><span class="o">=</span><span class="sa">b</span><span class="s2">""</span><span class="p">,</span>
+            <span class="n">raw_b64</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+            <span class="n">received_at</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"received_at"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
             <span class="n">parsed</span><span class="o">=</span><span class="p">{},</span>
-            <span class="n">warnings</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;no monitor_b64 in payload&quot;</span><span class="p">],</span>
+            <span class="n">warnings</span><span class="o">=</span><span class="p">[</span><span class="s2">"no monitor_b64 in payload"</span><span class="p">],</span>
             <span class="n">errors</span><span class="o">=</span><span class="p">[],</span>
             <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
             <span class="n">device_id</span><span class="o">=</span><span class="n">device_id</span><span class="p">,</span>
@@ -150,7 +150,7 @@
     <span class="k">return</span> <span class="n">MonitorSnapshot</span><span class="p">(</span>
         <span class="n">raw</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span>
         <span class="n">raw_b64</span><span class="o">=</span><span class="n">raw_b64</span><span class="p">,</span>
-        <span class="n">received_at</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;received_at&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
+        <span class="n">received_at</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"received_at"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
         <span class="n">parsed</span><span class="o">=</span><span class="n">parsed</span><span class="p">,</span>
         <span class="n">warnings</span><span class="o">=</span><span class="n">warnings</span><span class="p">,</span>
         <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>

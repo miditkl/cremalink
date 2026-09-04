@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.parsing.properties.decode &mdash; cremalink 0.1.dev1+g699b2cd67 documentation</title>
+  <title>cremalink.parsing.properties.decode &mdash; cremalink 0.1.dev1+gfe49db8b0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=4df4cb40"></script>
+      <script src="../../../../_static/documentation_options.js?v=7ec88642"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -74,9 +74,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for cremalink.parsing.properties.decode</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module provides classes for handling and decoding device properties.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
@@ -88,7 +88,7 @@
 <a class="viewcode-back" href="../../../../api/cremalink.parsing.properties.decode.html#cremalink.parsing.properties.PropertiesSnapshot">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">PropertiesSnapshot</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A container for a snapshot of device properties at a specific time.</span>
 
 <span class="sd">    This class holds the raw property data as received from the device,</span>
@@ -100,7 +100,7 @@
 <span class="sd">        raw: The raw dictionary of properties from the device.</span>
 <span class="sd">        received_at: The timestamp when the snapshot was taken.</span>
 <span class="sd">        parsed: A dictionary to hold processed or parsed property values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">raw</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
     <span class="n">received_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
     <span class="n">parsed</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
@@ -108,27 +108,27 @@
 <div class="viewcode-block" id="PropertiesSnapshot.get">
 <a class="viewcode-back" href="../../../../api/cremalink.parsing.properties.decode.html#cremalink.parsing.properties.PropertiesSnapshot.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Safely retrieves a property by its name from the raw data.</span>
 
 <span class="sd">        The properties data can come in different formats. This method checks</span>
 <span class="sd">        for the property name as a direct key and also searches within the</span>
-<span class="sd">        nested &#39;property&#39; objects that are common in the API response.</span>
+<span class="sd">        nested 'property' objects that are common in the API response.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: The name of the property to retrieve.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The property dictionary if found, otherwise None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># First, check if the name is a top-level key in the raw dictionary.</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
         <span class="c1"># If not, iterate through the values to find a nested property object.</span>
-        <span class="c1"># This handles the common format: `{&#39;some_id&#39;: {&#39;property&#39;: {&#39;name&#39;: name, ...}}}`</span>
+        <span class="c1"># This handles the common format: `{'some_id': {'property': {'name': name, ...}}}`</span>
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;property&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"property"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">entry</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 </div>
