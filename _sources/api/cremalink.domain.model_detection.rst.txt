@@ -1,0 +1,7 @@
+cremalink.domain.model\_detection module
+========================================
+
+.. automodule:: cremalink.domain.model_detection
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.clients.cloud &mdash; cremalink 0.1.dev1+ga90403dfc documentation</title>
+  <title>cremalink.clients.cloud &mdash; cremalink 0.1.dev1+g9cdf0c181 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=485cf1e3"></script>
+      <script src="../../../_static/documentation_options.js?v=d5b05f08"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -76,13 +76,77 @@
   <h1>Source code for cremalink.clients.cloud</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_cloud_device</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_api_config</span>
+
+<span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Bounded retry for transient cloud API failures (timeouts, 5xx) during</span>
+<span class="c1"># discovery/LAN-lookup, ported from delonghi_coffee's RETRY_COUNT/RETRY_DELAY</span>
+<span class="c1"># convention (constitution Principle IV; spec FR-014).</span>
+<span class="n">RETRY_COUNT</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">RETRY_DELAY</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># seconds; linear backoff between attempts</span>
+<span class="n">REQUEST_TIMEOUT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>  <span class="c1"># (connect, read) seconds; constitution Principle VI</span>
+
+<span class="c1"># OEM identifier prefixes known to denote a *non*-coffee De'Longhi appliance</span>
+<span class="c1"># on the same Ayla/cloud platform (e.g. the Pinguino air conditioner exposes</span>
+<span class="c1"># oem_model "DL-pac" — confirmed in delonghi_coffee's is_coffee_oem_model).</span>
+<span class="c1"># Unknown/empty models default to True — benefit of the doubt for a genuine</span>
+<span class="c1"># but not-yet-mapped coffee maker (mirrors delonghi_coffee; spec FR-002).</span>
+<span class="n">NON_COFFEE_OEM_PREFIXES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"DL-pac"</span><span class="p">,)</span>
+
+
+<div class="viewcode-block" id="is_coffee_device">
+<a class="viewcode-back" href="../../../api/cremalink.clients.cloud.html#cremalink.is_coffee_device">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_coffee_device</span><span class="p">(</span><span class="n">oem_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return True if the OEM model string denotes a coffee machine."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">oem_model</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">oem_model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">NON_COFFEE_OEM_PREFIXES</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_retry</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Retry decorator: bounded attempts with linear backoff on transient errors.</span>
+
+<span class="sd">    Applied only to read-only discovery/LAN-lookup calls (FR-014). 4xx client</span>
+<span class="sd">    errors other than 429 (rate limited) are not retried.</span>
+<span class="sd">    """</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">last_err</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">RETRY_COUNT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">requests</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">)</span> <span class="ow">and</span> <span class="n">err</span><span class="o">.</span><span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="n">err</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+                    <span class="k">if</span> <span class="mi">400</span> <span class="o">&lt;=</span> <span class="n">status</span> <span class="o">&lt;</span> <span class="mi">500</span> <span class="ow">and</span> <span class="n">status</span> <span class="o">!=</span> <span class="mi">429</span><span class="p">:</span>
+                        <span class="k">raise</span>
+                <span class="n">last_err</span> <span class="o">=</span> <span class="n">err</span>
+                <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">RETRY_COUNT</span><span class="p">:</span>
+                    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">"Attempt </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2"> failed for </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> — retrying in </span><span class="si">%d</span><span class="s2">s"</span><span class="p">,</span>
+                        <span class="n">attempt</span><span class="p">,</span>
+                        <span class="n">RETRY_COUNT</span><span class="p">,</span>
+                        <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                        <span class="n">err</span><span class="p">,</span>
+                        <span class="n">RETRY_DELAY</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">RETRY_DELAY</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">last_err</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+
 
 <div class="viewcode-block" id="Client">
 <a class="viewcode-back" href="../../../api/cremalink.clients.cloud.html#cremalink.Client">[docs]</a>
@@ -91,6 +155,7 @@
 <span class="sd">    Client for interacting with the Ayla IoT cloud platform.</span>
 <span class="sd">    Manages authentication (access and refresh tokens) and device discovery.</span>
 <span class="sd">    """</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># Ensure the token_path points to a JSON file.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">token_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".json"</span><span class="p">):</span>
@@ -147,8 +212,148 @@
 <span class="sd">        """</span>
         <span class="k">for</span> <span class="n">device_dsn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_devices</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">device_dsn</span> <span class="o">==</span> <span class="n">dsn</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">create_cloud_device</span><span class="p">(</span><span class="n">device_dsn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span> <span class="n">device_map_path</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">create_cloud_device</span><span class="p">(</span>
+                    <span class="n">device_dsn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span> <span class="n">device_map_path</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Client.list_account_devices">
+<a class="viewcode-back" href="../../../api/cremalink.clients.cloud.html#cremalink.Client.list_account_devices">[docs]</a>
+    <span class="nd">@_retry</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_account_devices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Discover coffee-machine devices on the account (cloud-assisted onboarding).</span>
+
+<span class="sd">        Unlike :meth:`get_devices` (kept unchanged for backward compatibility),</span>
+<span class="sd">        this re-fetches ``/devices.json`` and returns one enriched dict per</span>
+<span class="sd">        *coffee-machine* device only — non-coffee appliances (e.g. a Pinguino</span>
+<span class="sd">        A/C on the same account) are excluded, not just flagged (FR-002).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[dict]: Each with ``dsn``, ``product_name``, ``oem_model``,</span>
+<span class="sd">            ``lan_enabled``, ``connection_status``.</span>
+<span class="sd">        """</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'API_URL'</span><span class="p">)</span><span class="si">}</span><span class="s2">/devices.json"</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"User-Agent"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span><span class="p">,</span>
+                <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"auth_token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="s2">"Accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">REQUEST_TIMEOUT</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="n">raw_devices</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s2">"device"</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"device"</span><span class="p">:</span> <span class="n">d</span><span class="p">}</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">raw_devices</span><span class="p">]</span>
+
+        <span class="n">discovered</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">raw_devices</span><span class="p">:</span>
+            <span class="n">oem_model</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"oem_model"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"model"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_coffee_device</span><span class="p">(</span><span class="n">oem_model</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">discovered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">"dsn"</span><span class="p">:</span> <span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dsn"</span><span class="p">),</span>
+                    <span class="s2">"product_name"</span><span class="p">:</span> <span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"product_name"</span><span class="p">),</span>
+                    <span class="s2">"oem_model"</span><span class="p">:</span> <span class="n">oem_model</span><span class="p">,</span>
+                    <span class="s2">"lan_enabled"</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"lan_enabled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)),</span>
+                    <span class="s2">"connection_status"</span><span class="p">:</span> <span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"connection_status"</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">discovered</span></div>
+
+
+<div class="viewcode-block" id="Client.get_serial_number">
+<a class="viewcode-back" href="../../../api/cremalink.clients.cloud.html#cremalink.Client.get_serial_number">[docs]</a>
+    <span class="nd">@_retry</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_serial_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Fetch the raw ``d270_serialnumber`` property for a device.</span>
+
+<span class="sd">        Used as an input to model detection (FR-004); returns ``None`` if the</span>
+<span class="sd">        property is absent rather than raising, so callers can safely fall</span>
+<span class="sd">        through to the next detection tier.</span>
+<span class="sd">        """</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'API_URL'</span><span class="p">)</span><span class="si">}</span><span class="s2">/dsns/</span><span class="si">{</span><span class="n">dsn</span><span class="si">}</span><span class="s2">/properties/d270_serialnumber.json"</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"User-Agent"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span><span class="p">,</span>
+                <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"auth_token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="s2">"Accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">REQUEST_TIMEOUT</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"property"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Client.get_lan_config">
+<a class="viewcode-back" href="../../../api/cremalink.clients.cloud.html#cremalink.Client.get_lan_config">[docs]</a>
+    <span class="nd">@_retry</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_lan_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Fetch LAN connectivity details for a device (FR-006).</span>
+
+<span class="sd">        Ported from ``delonghi_coffee``'s ``api.get_lan_config`` — same Ayla</span>
+<span class="sd">        platform, same account. Never raises just because LAN is disabled;</span>
+<span class="sd">        returns ``lan_enabled: False`` with the other fields ``None`` instead</span>
+<span class="sd">        (FR-008).</span>
+<span class="sd">        """</span>
+        <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"lan_enabled"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">"lanip_key"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"lan_ip"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"status"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'API_URL'</span><span class="p">)</span><span class="si">}</span><span class="s2">/dsns/</span><span class="si">{</span><span class="n">dsn</span><span class="si">}</span><span class="s2">.json"</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"User-Agent"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span><span class="p">,</span>
+                <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"auth_token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="s2">"Accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">REQUEST_TIMEOUT</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"device"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"lan_enabled"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"lan_enabled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"lan_ip"</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"lan_ip"</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"connection_status"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">"lan_enabled"</span><span class="p">]:</span>
+            <span class="n">lan_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'API_URL'</span><span class="p">)</span><span class="si">}</span><span class="s2">/devices/</span><span class="si">{</span><span class="n">dsn</span><span class="si">}</span><span class="s2">/lan.json"</span><span class="p">,</span>
+                <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">"User-Agent"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span><span class="p">,</span>
+                    <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"auth_token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                    <span class="s2">"Accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="n">REQUEST_TIMEOUT</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">lan_resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">404</span><span class="p">:</span>
+                <span class="n">lan_resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="n">lanip</span> <span class="o">=</span> <span class="n">lan_resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"lanip"</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"lanip_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lanip</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"lanip_key"</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="s2">"lanip_key"</span><span class="p">]:</span>
+                <span class="c1"># Fallback endpoint — some accounts/devices expose the LAN</span>
+                <span class="c1"># key here instead (ported from delonghi_coffee's</span>
+                <span class="c1"># get_lan_config alternate-endpoint fallback).</span>
+                <span class="n">alt_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'API_URL'</span><span class="p">)</span><span class="si">}</span><span class="s2">/devices/</span><span class="si">{</span><span class="n">dsn</span><span class="si">}</span><span class="s2">/connection_config.json"</span><span class="p">,</span>
+                    <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s2">"User-Agent"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_agent</span><span class="p">,</span>
+                        <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"auth_token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                        <span class="s2">"Accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="n">REQUEST_TIMEOUT</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">alt_resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">404</span><span class="p">:</span>
+                    <span class="n">alt_resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s2">"lanip_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">alt_resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"local_key"</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__get_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -159,7 +364,9 @@
         <span class="c1"># If no refresh token is found, prompt the user to provide one.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">refresh_token</span> <span class="ow">or</span> <span class="n">refresh_token</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__set_refresh_token</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No refresh token found. Open </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="si">}</span><span class="s2"> and add a valid refresh token."</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"No refresh token found. Open </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="si">}</span><span class="s2"> and add a valid refresh token."</span>
+            <span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ayla_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'OAUTH_URL'</span><span class="p">)</span><span class="si">}</span><span class="s2">/users/refresh_token.json"</span><span class="p">,</span>
             <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
@@ -178,7 +385,9 @@
             <span class="k">return</span> <span class="n">new_access_token</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Raise an error if access token retrieval fails.</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to get access token: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Failed to get access token: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__get_refresh_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>

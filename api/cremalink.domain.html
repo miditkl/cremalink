@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.domain package &mdash; cremalink 0.1.dev1+ga90403dfc documentation</title>
+  <title>cremalink.domain package &mdash; cremalink 0.1.dev1+g9cdf0c181 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=485cf1e3"></script>
+      <script src="../_static/documentation_options.js?v=d5b05f08"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -54,9 +54,11 @@
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.LocalServer"><code class="docutils literal notranslate"><span class="pre">LocalServer</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.ServerSettings"><code class="docutils literal notranslate"><span class="pre">ServerSettings</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.authenticate_cloud"><code class="docutils literal notranslate"><span class="pre">authenticate_cloud()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.create_app"><code class="docutils literal notranslate"><span class="pre">create_app()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.create_cloud_device"><code class="docutils literal notranslate"><span class="pre">create_cloud_device()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.create_local_device"><code class="docutils literal notranslate"><span class="pre">create_local_device()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.detect_model_id"><code class="docutils literal notranslate"><span class="pre">detect_model_id()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.device_map"><code class="docutils literal notranslate"><span class="pre">device_map()</span></code></a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="cremalink.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cremalink.clients.html">cremalink.clients package</a></li>
@@ -67,6 +69,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#cremalink.domain.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cremalink.domain.create_cloud_device"><code class="docutils literal notranslate"><span class="pre">create_cloud_device()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cremalink.domain.create_local_device"><code class="docutils literal notranslate"><span class="pre">create_local_device()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cremalink.domain.detect_model_id"><code class="docutils literal notranslate"><span class="pre">detect_model_id()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -570,6 +573,26 @@ address.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="cremalink.domain.detect_model_id">
+<span class="sig-prename descclassname"><span class="pre">cremalink.domain.</span></span><span class="sig-name descname"><span class="pre">detect_model_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_serial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloud_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">oem_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/cremalink/domain/model_detection.html#detect_model_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.domain.detect_model_id" title="Link to this definition"></a></dt>
+<dd><p>Resolve a discovered device to an existing <cite>cremalink</cite> device-map id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raw_serial</strong> – The device’s raw serial number string, if known.</p></li>
+<li><p><strong>cloud_metadata</strong> – Additional cloud-reported fields (e.g.
+<code class="docutils literal notranslate"><span class="pre">product_name</span></code>, <code class="docutils literal notranslate"><span class="pre">model</span></code>), if any.</p></li>
+<li><p><strong>oem_model</strong> – The Ayla <code class="docutils literal notranslate"><span class="pre">oem_model</span></code>/<code class="docutils literal notranslate"><span class="pre">model</span></code> identifier, if known.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A valid <cite>cremalink</cite> device-map id, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if no detection tier
+yielded a recognized model. Never returns a guessed or default id.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
@@ -629,6 +652,10 @@ address.</p>
 <li class="toctree-l1"><a class="reference internal" href="cremalink.domain.factory.html">cremalink.domain.factory module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.domain.factory.html#cremalink.domain.factory.create_cloud_device"><code class="docutils literal notranslate"><span class="pre">create_cloud_device()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.domain.factory.html#cremalink.domain.factory.create_local_device"><code class="docutils literal notranslate"><span class="pre">create_local_device()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cremalink.domain.model_detection.html">cremalink.domain.model_detection module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.domain.model_detection.html#cremalink.domain.model_detection.detect_model_id"><code class="docutils literal notranslate"><span class="pre">detect_model_id()</span></code></a></li>
 </ul>
 </li>
 </ul>

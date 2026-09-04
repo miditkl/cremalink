@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.clients.auth &mdash; cremalink 0.1.dev1+ga90403dfc documentation</title>
+  <title>cremalink.clients.auth &mdash; cremalink 0.1.dev1+g9cdf0c181 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=485cf1e3"></script>
+      <script src="../../../_static/documentation_options.js?v=d5b05f08"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -85,7 +85,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">cremalink.resources.lang</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_lang_config</span>
 
 <div class="viewcode-block" id="CloudToken">
-<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.clients.auth.CloudToken">[docs]</a>
+<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.CloudToken">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CloudToken</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Responsible for handling authentication with the Ayla IoT cloud platform.</span>
@@ -104,7 +104,7 @@
 <span class="sd">        str: The absolute path to the saved token file.</span>
 <span class="sd">    """</span>
 <div class="viewcode-block" id="CloudToken.save">
-<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.clients.auth.CloudToken.save">[docs]</a>
+<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.CloudToken.save">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"token.json"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -130,7 +130,7 @@
 
 
 <div class="viewcode-block" id="authenticate_cloud">
-<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.clients.auth.authenticate_cloud">[docs]</a>
+<a class="viewcode-back" href="../../../api/cremalink.clients.auth.html#cremalink.authenticate_cloud">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">authenticate_cloud</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"en"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudToken</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Performs the multi-step authentication flow to obtain a refresh token for the Ayla IoT cloud platform.</span>

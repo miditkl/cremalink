@@ -14,3 +14,4 @@ Submodules
 
    cremalink.domain.device
    cremalink.domain.factory
+   cremalink.domain.model_detection

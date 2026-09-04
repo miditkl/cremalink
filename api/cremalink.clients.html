@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.clients package &mdash; cremalink 0.1.dev1+ga90403dfc documentation</title>
+  <title>cremalink.clients package &mdash; cremalink 0.1.dev1+g9cdf0c181 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=485cf1e3"></script>
+      <script src="../_static/documentation_options.js?v=d5b05f08"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -54,9 +54,11 @@
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.LocalServer"><code class="docutils literal notranslate"><span class="pre">LocalServer</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.ServerSettings"><code class="docutils literal notranslate"><span class="pre">ServerSettings</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.authenticate_cloud"><code class="docutils literal notranslate"><span class="pre">authenticate_cloud()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.create_app"><code class="docutils literal notranslate"><span class="pre">create_app()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.create_cloud_device"><code class="docutils literal notranslate"><span class="pre">create_cloud_device()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.create_local_device"><code class="docutils literal notranslate"><span class="pre">create_local_device()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.detect_model_id"><code class="docutils literal notranslate"><span class="pre">detect_model_id()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.html#cremalink.device_map"><code class="docutils literal notranslate"><span class="pre">device_map()</span></code></a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="cremalink.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">cremalink.clients package</a><ul>
@@ -150,6 +152,44 @@ Manages authentication (access and refresh tokens) and device discovery.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.clients.Client.get_lan_config">
+<span class="sig-name descname"><span class="pre">get_lan_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/cremalink/clients/cloud.html#Client.get_lan_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.clients.Client.get_lan_config" title="Link to this definition"></a></dt>
+<dd><p>Fetch LAN connectivity details for a device (FR-006).</p>
+<p>Ported from <code class="docutils literal notranslate"><span class="pre">delonghi_coffee</span></code>’s <code class="docutils literal notranslate"><span class="pre">api.get_lan_config</span></code> — same Ayla
+platform, same account. Never raises just because LAN is disabled;
+returns <code class="docutils literal notranslate"><span class="pre">lan_enabled:</span> <span class="pre">False</span></code> with the other fields <code class="docutils literal notranslate"><span class="pre">None</span></code> instead
+(FR-008).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.clients.Client.get_serial_number">
+<span class="sig-name descname"><span class="pre">get_serial_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/cremalink/clients/cloud.html#Client.get_serial_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.clients.Client.get_serial_number" title="Link to this definition"></a></dt>
+<dd><p>Fetch the raw <code class="docutils literal notranslate"><span class="pre">d270_serialnumber</span></code> property for a device.</p>
+<p>Used as an input to model detection (FR-004); returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if the
+property is absent rather than raising, so callers can safely fall
+through to the next detection tier.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cremalink.clients.Client.list_account_devices">
+<span class="sig-name descname"><span class="pre">list_account_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/cremalink/clients/cloud.html#Client.list_account_devices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cremalink.clients.Client.list_account_devices" title="Link to this definition"></a></dt>
+<dd><p>Discover coffee-machine devices on the account (cloud-assisted onboarding).</p>
+<p>Unlike <a class="reference internal" href="#cremalink.clients.Client.get_devices" title="cremalink.clients.Client.get_devices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_devices()</span></code></a> (kept unchanged for backward compatibility),
+this re-fetches <code class="docutils literal notranslate"><span class="pre">/devices.json</span></code> and returns one enriched dict per
+<em>coffee-machine</em> device only — non-coffee appliances (e.g. a Pinguino
+A/C on the same account) are excluded, not just flagged (FR-002).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Each with <code class="docutils literal notranslate"><span class="pre">dsn</span></code>, <code class="docutils literal notranslate"><span class="pre">product_name</span></code>, <code class="docutils literal notranslate"><span class="pre">oem_model</span></code>,
+<code class="docutils literal notranslate"><span class="pre">lan_enabled</span></code>, <code class="docutils literal notranslate"><span class="pre">connection_status</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <section id="submodules">
@@ -168,8 +208,12 @@ Manages authentication (access and refresh tokens) and device discovery.</p>
 <li class="toctree-l2"><a class="reference internal" href="cremalink.clients.cloud.html#cremalink.clients.cloud.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="cremalink.clients.cloud.html#cremalink.clients.cloud.Client.get_device"><code class="docutils literal notranslate"><span class="pre">Client.get_device()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="cremalink.clients.cloud.html#cremalink.clients.cloud.Client.get_devices"><code class="docutils literal notranslate"><span class="pre">Client.get_devices()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.clients.cloud.html#cremalink.clients.cloud.Client.get_lan_config"><code class="docutils literal notranslate"><span class="pre">Client.get_lan_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.clients.cloud.html#cremalink.clients.cloud.Client.get_serial_number"><code class="docutils literal notranslate"><span class="pre">Client.get_serial_number()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cremalink.clients.cloud.html#cremalink.clients.cloud.Client.list_account_devices"><code class="docutils literal notranslate"><span class="pre">Client.list_account_devices()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="cremalink.clients.cloud.html#cremalink.clients.cloud.is_coffee_device"><code class="docutils literal notranslate"><span class="pre">is_coffee_device()</span></code></a></li>
 </ul>
 </li>
 </ul>
