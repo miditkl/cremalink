@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cremalink.domain.model_detection &mdash; cremalink 0.1.dev1+g9cdf0c181 documentation</title>
+  <title>cremalink.domain.model_detection &mdash; cremalink 0.1.dev1+g566a18eed documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=d5b05f08"></script>
+      <script src="../../../_static/documentation_options.js?v=90b4e557"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -117,6 +117,7 @@
 <span class="c1"># reverse-engineering of ECAM610-specific commands.</span>
 <span class="n">SKU_TO_DEVICE_MAP</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"217055"</span><span class="p">:</span> <span class="s2">"ECAM610"</span><span class="p">,</span>
+    <span class="s2">"217100"</span><span class="p">:</span> <span class="s2">"ECAM612"</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="c1"># OEM identifier -&gt; device_map() id, from delonghi_coffee's confirmed</span>
@@ -127,6 +128,7 @@
 <span class="n">OEM_TO_DEVICE_MAP</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"DL-pd-soul"</span><span class="p">:</span> <span class="s2">"ECAM612"</span><span class="p">,</span>
     <span class="s2">"DL-millcore"</span><span class="p">:</span> <span class="s2">"ECAM610"</span><span class="p">,</span>
+    <span class="s2">"DL-striker-cb"</span><span class="p">:</span> <span class="s2">"ECAM452"</span>
 <span class="p">}</span>
 
 <span class="n">_PLAINTEXT_MODEL_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"ECAM\d+"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
