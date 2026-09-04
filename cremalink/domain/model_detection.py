@@ -41,6 +41,7 @@ from cremalink.devices import get_device_maps
 # reverse-engineering of ECAM610-specific commands.
 SKU_TO_DEVICE_MAP: dict[str, str] = {
     "217055": "ECAM610",
+    "217100": "ECAM612",
 }
 
 # OEM identifier -> device_map() id, from delonghi_coffee's confirmed
@@ -51,6 +52,7 @@ SKU_TO_DEVICE_MAP: dict[str, str] = {
 OEM_TO_DEVICE_MAP: dict[str, str] = {
     "DL-pd-soul": "ECAM612",
     "DL-millcore": "ECAM610",
+    "DL-striker-cb": "ECAM452"
 }
 
 _PLAINTEXT_MODEL_RE = re.compile(r"ECAM\d+", re.IGNORECASE)
