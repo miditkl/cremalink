@@ -43,6 +43,7 @@ class DeviceAdapter:
             self._client = httpx.AsyncClient(
                 timeout=self.settings.device_register_timeout,
                 verify=self.settings.device_register_ca_path or self.settings.device_register_verify,
+                trust_env=False
             )
         return self._client
 

@@ -61,16 +61,22 @@ def create_app(
     print(f"Starting cremalink local server on http://{settings.server_ip}:{settings.server_port}...")
     print(f"IP address advertised to the coffee machine: {settings.advertised_ip}")
 
-    # Define the application lifespan context manager for startup/shutdown events.
     @asynccontextmanager
-    async def lifespan(app_: FastAPI) -> AsyncIterator[None]:
-        await app_.router.startup()
+    async def lifespan(app_: FastAPI):
+        if settings.enable_nudger_job:
+            jobs.start(nudger_job(state, adapter, settings, stop_event), name="nudger")
+        if settings.enable_monitor_job:
+            jobs.start(monitor_job(state, settings, stop_event), name="monitor")
+        if settings.enable_rekey_job:
+            jobs.start(rekey_job(state, adapter, settings, stop_event), name="rekey")
         try:
             yield
         finally:
-            await app_.router.shutdown()
+            stop_event.set()
+            await jobs.stop()
+            await adapter.close()
 
-    app = FastAPI(title="cremalink Local Server", version="2.0.0")
+    app = FastAPI(title="cremalink Local Server", version="2.0.0", lifespan=lifespan)
     app.state.local_state = state
     app.state.settings = settings
     app.state.adapter = adapter
@@ -255,22 +261,5 @@ def create_app(
         return PlainTextResponse("registered")
 
     app.include_router(router)
-
-    async def startup_event():
-        if settings.enable_nudger_job:
-            jobs.start(nudger_job(state, adapter, settings, stop_event), name="nudger")
-        if settings.enable_monitor_job:
-            jobs.start(monitor_job(state, settings, stop_event), name="monitor")
-        if settings.enable_rekey_job:
-            jobs.start(rekey_job(state, adapter, settings, stop_event), name="rekey")
-
-    app.add_event_handler("startup", startup_event)
-
-    async def shutdown_event():
-        stop_event.set()
-        await jobs.stop()
-        await adapter.close()
-
-    app.add_event_handler("shutdown", shutdown_event)
 
     return app
