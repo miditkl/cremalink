@@ -5,21 +5,30 @@ This top-level package exposes the primary user-facing classes and functions
 for easy access, including the main `Client`, the `Device` model, and factory
 functions for creating device instances.
 """
-from cremalink.clients.cloud import Client
-from cremalink.domain import Device, create_cloud_device, create_local_device
-from cremalink.local_server_app import create_app, ServerSettings
-from cremalink.local_server import LocalServer
-from cremalink.devices import device_map
 from importlib.metadata import PackageNotFoundError, version
+
+from cremalink.clients.auth import authenticate_cloud
+from cremalink.clients.cloud import Client
+from cremalink.devices import device_map
+from cremalink.domain import (
+    Device,
+    create_cloud_device,
+    create_local_device,
+    detect_model_id,
+)
+from cremalink.local_server import LocalServer
+from cremalink.local_server_app import ServerSettings, create_app
 
 __all__ = [
     "Client",
     "Device",
-    "create_local_device",
-    "create_cloud_device",
     "LocalServer",
-    "create_app",
     "ServerSettings",
+    "authenticate_cloud",
+    "create_app",
+    "create_cloud_device",
+    "create_local_device",
+    "detect_model_id",
     "device_map",
 ]
 
