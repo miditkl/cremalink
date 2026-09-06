@@ -9,5 +9,4 @@ notebook>=7.5.5
 ipykernel>=7.2.0
 pytest>=9.1.1
 pytest-asyncio>=1.4.0
-# starlette>=0.52.0, <1.0.0
 starlette==1.6.0

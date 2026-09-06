@@ -17,8 +17,6 @@ Cremalink provides a unified interface to interact with smart coffee machines vi
 > [!TIP]
 > For detailed guides, advanced configuration, and developer deep-dives, please visit our **[Project Wiki](https://github.com/miditkl/cremalink/wiki)**.
 
-**Developer documentation:** [ECAM A2 Statistics Protocol](docs/ecam-a2-statistics.md) — live native statistics, sparse paging, confirmed mappings, and reverse-engineering notes.
-
 > [!NOTE] 
 > This project was developed with a result-oriented approach, primarily optimized for the De'Longhi PrimaDonna Soul. While the architecture is designed to be extensible, some logic may currently be tightly coupled to this specific model and might not work seamlessly with others yet.
 >The goal is to make the library fully generic. If you notice parts that are too specific to the PrimaDonna Soul or encounter issues with other machines, we highly encourage contributions! Refactoring and generalizations are very welcome to improve support for a wider range of devices.
@@ -46,25 +44,6 @@ pip install "cremalink[test]"  # For running pytest suites
 
 ---
 
-## 🛠 Usage
-
-### Integrated API Server
-
-Cremalink includes a FastAPI-based server for headless environments:
-
-```bash
-# Start the server
-cremalink-server --ip 0.0.0.0 --port 10280 --settings_path "conf.json"
-```
-> More information: [Local Server Setup](https://github.com/miditkl/cremalink/wiki/3.-Local-Server-Setup)
-
-### Python API (Local Control)
-
-Connect to your machine directly via your local network for the lowest latency.
-
-> More information: [Local Device Usage](https://github.com/miditkl/cremalink/wiki/4.-Local-Device-Usage)
-
----
 
 ## 🛠 Development
 
@@ -84,7 +63,7 @@ Contributions are welcome! If you have a machine profile not yet supported, plea
 Currently supported devices:
 
 - `De'Longhi PrimaDonna Soul (ECAM612)`
-- `De'Longhi Eletta Explore (ECAM452) (not tested yet)`
+- `De'Longhi Eletta Explore (ECAM452)`
 ---
 
 ## ☕ Credits
