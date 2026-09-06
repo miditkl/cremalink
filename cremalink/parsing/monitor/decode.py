@@ -17,7 +17,8 @@ def decode_monitor_b64(raw_b64: str) -> bytes:
     A simple wrapper for base64 decoding that provides a more specific error message.
     """
     try:
-        return base64.b64decode(raw_b64)
+        padded_b64 = raw_b64 + "=" * (-len(raw_b64) % 4)
+        return base64.b64decode(padded_b64)
     except Exception as exc:
         raise ValueError(f"Failed to decode monitor base64: {exc}") from exc
 

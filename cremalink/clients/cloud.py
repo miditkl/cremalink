@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import functools
 import json
 import logging
@@ -9,6 +10,8 @@ import time
 import requests
 
 from cremalink.domain import create_cloud_device
+from cremalink.devices.ecam610_statistics import build_ecam610_statistics_snapshot
+from cremalink.parsing.statistics import build_statistics_request, parse_statistics_response
 from cremalink.resources import load_api_config
 
 _LOGGER = logging.getLogger(__name__)
@@ -195,6 +198,68 @@ class Client:
         resp.raise_for_status()
         return resp.json().get("property", {}).get("value") or None
 
+    def get_property_values(
+        self,
+        dsn: str,
+        property_names,
+    ) -> dict[str, object | None]:
+        """Read named Ayla property values for one device.
+
+        Missing properties are returned as ``None`` so callers can compare
+        firmware/model variants without special-case exception handling.
+        """
+
+        headers = {
+            "User-Agent": self.api_agent,
+            "Authorization": f"auth_token {self.access_token}",
+            "Accept": "application/json",
+        }
+
+        base_url = self.ayla_api.get("API_URL")
+        result: dict[str, object | None] = {}
+
+        for property_name in property_names:
+            response = requests.get(
+                url=(
+                    f"{base_url}/dsns/{dsn}/properties/"
+                    f"{property_name}.json"
+                ),
+                headers=headers,
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if response.status_code == 404:
+                result[property_name] = None
+                continue
+
+            response.raise_for_status()
+
+            payload = response.json()
+            result[property_name] = (
+                payload.get("property", {}).get("value")
+            )
+
+        return result
+
+
+    def get_ecam_service_properties(
+        self,
+        dsn: str,
+    ) -> dict[str, object | None]:
+        """Read ECAM service/maintenance diagnostics from Ayla properties."""
+
+        return self.get_property_values(
+            dsn,
+            [
+                "d550_water_calc_qty",
+                "d555_water_filter_qty",
+                "d556_water_hardness",
+                "d512_percentage_to_deca",
+                "d513_percentage_usage_fltr",
+            ],
+        )
+
+
     @_retry
     def get_lan_config(self, dsn: str) -> dict:
         """Fetch LAN connectivity details for a device (FR-006).
@@ -259,6 +324,272 @@ class Client:
                     result["lanip_key"] = alt_resp.json().get("local_key")
 
         return result
+
+
+    def get_statistics(
+        self,
+        dsn: str,
+        start_id: int = 100,
+        count: int = 10,
+        *,
+        wait_timeout: float = 20.0,
+        poll_interval: float = 1.0,
+    ) -> dict[int, int]:
+        """Read live ECAM statistics through Ayla data_request/data_response.
+
+        The native 0xA2 ECAM request is wrapped with the four-byte Unix
+        timestamp used by the De'Longhi/Ayla cloud transport.
+
+        This reads the machine's live statistics and does not rely on the
+        potentially stale d5xx/d7xx Ayla property cache.
+        """
+
+        frame = build_statistics_request(start_id, count)
+        sent_at = int(time.time())
+
+        cloud_frame = frame + sent_at.to_bytes(4, "big")
+        encoded = base64.b64encode(cloud_frame).decode()
+
+        headers = {
+            "User-Agent": self.api_agent,
+            "Authorization": f"auth_token {self.access_token}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        base_url = self.ayla_api.get("API_URL")
+
+        resp = requests.post(
+            url=f"{base_url}/dsns/{dsn}/properties/data_request/datapoints.json",
+            headers=headers,
+            json={"datapoint": {"value": encoded}},
+            timeout=REQUEST_TIMEOUT,
+        )
+        resp.raise_for_status()
+
+        deadline = time.monotonic() + wait_timeout
+        response_url = (
+            f"{base_url}/dsns/{dsn}/properties/"
+            "data_response/datapoints.json"
+        )
+
+        while True:
+            try:
+                response = requests.get(
+                    url=response_url,
+                    headers=headers,
+                    params={"limit": "20"},
+                    timeout=REQUEST_TIMEOUT,
+                )
+            except requests.ReadTimeout:
+                if time.monotonic() >= deadline:
+                    raise TimeoutError(
+                        f"No A2 statistics response for start_id={start_id} "
+                        f"within {wait_timeout:g}s"
+                    )
+
+                time.sleep(poll_interval)
+                continue
+
+            response.raise_for_status()
+
+            for item in response.json():
+                datapoint = item.get("datapoint", {})
+                value = datapoint.get("value")
+
+                if not isinstance(value, str):
+                    continue
+
+                try:
+                    raw = base64.b64decode(value)
+                except (ValueError, TypeError):
+                    continue
+
+                # Native A2 response (minimum 12 bytes) + cloud timestamp.
+                if len(raw) < 16:
+                    continue
+
+                if raw[0] != 0xD0 or raw[2] != 0xA2:
+                    continue
+
+                response_id = int.from_bytes(raw[4:6], "big")
+
+                # A2 returns the first *existing* statistic parameter at or
+                # above start_id. Parameter IDs are sparse, so the response
+                # does not necessarily begin with start_id itself.
+                if response_id < start_id:
+                    continue
+
+                response_timestamp = int.from_bytes(raw[-4:], "big")
+                if response_timestamp < sent_at:
+                    continue
+
+                native_packet = raw[:-4]
+                return parse_statistics_response(native_packet)
+
+            if time.monotonic() >= deadline:
+                raise TimeoutError(
+                    f"No A2 statistics response for start_id={start_id} "
+                    f"within {wait_timeout:g}s"
+                )
+
+            time.sleep(poll_interval)
+
+
+    def get_all_statistics(
+        self,
+        dsn: str,
+        *,
+        start_id: int = 100,
+        page_size: int = 10,
+        max_pages: int = 100,
+        progress_callback=None,
+    ) -> dict[int, int]:
+        """Read the complete sparse ECAM A2 statistics table.
+
+        A2 responses contain at most ten existing statistic parameters.
+        Parameter IDs are sparse, so each subsequent page starts at the
+        previous page's highest returned ID plus one.
+
+        Paging stops only when the machine returns fewer parameters than
+        the request count that actually succeeded.
+
+        ``progress_callback`` is optional and receives small dictionaries
+        describing the current A2 request/page. Callback failures are
+        deliberately isolated from the protocol read itself.
+        """
+
+        if not 1 <= page_size <= 10:
+            raise ValueError("page_size must be between 1 and 10")
+
+        if max_pages < 1:
+            raise ValueError("max_pages must be at least 1")
+
+        def report_progress(event: dict) -> None:
+            if progress_callback is None:
+                return
+
+            try:
+                progress_callback(dict(event))
+            except Exception:
+                _LOGGER.exception(
+                    "A2 statistics progress callback failed"
+                )
+
+        statistics: dict[int, int] = {}
+        next_id = start_id
+
+        for page_number in range(1, max_pages + 1):
+            request_count = page_size
+
+            while True:
+                report_progress(
+                    {
+                        "phase": "request",
+                        "page": page_number,
+                        "start_id": next_id,
+                        "request_count": request_count,
+                        "collected_count": len(statistics),
+                    }
+                )
+
+                try:
+                    page = self.get_statistics(
+                        dsn,
+                        start_id=next_id,
+                        count=request_count,
+                    )
+                    break
+
+                except TimeoutError:
+                    if request_count == 1:
+                        raise
+
+                    _LOGGER.debug(
+                        "A2 statistics request timed out for start_id=%s "
+                        "with count=%s; retrying with count=%s",
+                        next_id,
+                        request_count,
+                        request_count - 1,
+                    )
+
+                    time.sleep(5)
+                    request_count -= 1
+
+            if not page:
+                break
+
+            # Protect against malformed or non-progressing responses.
+            page_ids = sorted(page)
+            last_id = page_ids[-1]
+
+            if last_id < next_id:
+                raise ValueError(
+                    f"A2 paging did not advance: "
+                    f"requested >= {next_id}, got last ID {last_id}"
+                )
+
+            statistics.update(page)
+
+            report_progress(
+                {
+                    "phase": "page_complete",
+                    "page": page_number,
+                    "start_id": next_id,
+                    "request_count": request_count,
+                    "returned_count": len(page),
+                    "last_id": last_id,
+                    "collected_count": len(statistics),
+                }
+            )
+
+            # IMPORTANT:
+            # Timeout is never EOF. Only a genuinely shorter successful
+            # response terminates sparse-table paging.
+            if len(page) < request_count:
+                return statistics
+
+            if last_id == 0xFFFF:
+                return statistics
+
+            next_id = last_id + 1
+
+        else:
+            raise RuntimeError(
+                f"A2 statistics paging exceeded {max_pages} pages"
+            )
+
+        return statistics
+
+
+    def get_ecam610_statistics(
+        self,
+        dsn: str,
+        *,
+        progress_callback=None,
+    ) -> dict:
+        """Read a complete live ECAM610 statistics snapshot.
+
+        Returns a lossless structure containing:
+
+        - ``known``: confirmed semantic statistics;
+        - ``unknown``: all unrecognised A2 IDs and their raw values;
+        - ``raw``: the complete A2 table.
+
+        Unknown IDs are deliberately preserved rather than guessed or
+        discarded.
+        """
+
+        if progress_callback is None:
+            raw = self.get_all_statistics(dsn)
+        else:
+            raw = self.get_all_statistics(
+                dsn,
+                progress_callback=progress_callback,
+            )
+
+        return build_ecam610_statistics_snapshot(raw)
+
 
     def __get_access_token(self):
         """

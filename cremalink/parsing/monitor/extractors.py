@@ -43,7 +43,8 @@ def extract_fields_from_b64(
         errors.append(f"parse_failed: {exc}")
         try:
             # As a fallback, try to at least record the length of the raw data.
-            raw = base64.b64decode(raw_b64)
+            padded_b64 = raw_b64 + "=" * (-len(raw_b64) % 4)
+            raw = base64.b64decode(padded_b64)
             parsed["raw_length"] = len(raw)
         except Exception:
             pass
