@@ -25,6 +25,7 @@ from typing import Any
 
 DIRECT_STATISTICS: dict[int, str] = {
     # Maintenance
+    100: "descale_load_raw",
     105: "descale_count",
     108: "filter_replacements",
     115: "grounds_container_clean_count",
@@ -70,9 +71,10 @@ DIRECT_STATISTICS: dict[int, str] = {
 }
 
 
-# ID 106 is handled separately because it requires conversion to litres.
+# IDs 106 and 109 are handled separately because they require
+# conversion to litres.
 KNOWN_STATISTIC_IDS: frozenset[int] = frozenset(
-    set(DIRECT_STATISTICS) | {106}
+    set(DIRECT_STATISTICS) | {106, 109}
 )
 
 
@@ -87,9 +89,7 @@ KNOWN_STATISTIC_IDS: frozenset[int] = frozenset(
 # is automatically retained by build_ecam610_statistics_snapshot().
 OBSERVED_UNKNOWN_IDS: frozenset[int] = frozenset(
     {
-        100,
         101,
-        109,
         111,
         116,
 
@@ -128,9 +128,7 @@ OBSERVED_UNKNOWN_IDS: frozenset[int] = frozenset(
 
 
 UNKNOWN_STATISTIC_NOTES: dict[int, str] = {
-    100: "Unknown ECAM lifetime statistic",
     101: "Unknown ECAM lifetime statistic",
-    109: "Unknown maintenance/lifetime statistic",
     111: (
         "Unknown on ECAM610.75. Other reverse-engineering work assigns "
         "different meanings on other firmware; do not assume equivalence."
@@ -188,12 +186,28 @@ def interpret_ecam610_statistics(
         if statistic_id in raw:
             result[name] = int(raw[statistic_id])
 
-    # ID 106 = lifetime water quantity.
+    # ID 106 = counted operating-water quantity.
     #
-    # Real hardware:
-    #   2,736,033 / 2000 = 1368.0165 litres
+    # Conversion:
+    #   raw / 2000 = litres
+    #
+    # Controlled ECAM610.75.MB hardware testing showed that ordinary
+    # rinses and filter-activation water increment this counter, while a
+    # complete descaling programme itself does not. It therefore does not
+    # represent every physical litre ever pumped by the machine.
     if 106 in raw:
         result["total_water_l"] = int(raw[106]) / 2000.0
+
+    # ID 109 = counted water since the last completed filter replacement.
+    #
+    # Controlled hardware testing showed:
+    # - normal rinse: delta(109) == delta(106)
+    # - completed filter replacement: ID 109 resets to zero
+    # - first normal rinse afterwards: both counters increased by 245
+    #
+    # The same raw-to-litre conversion as ID 106 therefore applies.
+    if 109 in raw:
+        result["water_since_filter_change_l"] = int(raw[109]) / 2000.0
 
     # PrimaDonna Soul display statistic "with milk":
     #

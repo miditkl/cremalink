@@ -410,22 +410,162 @@ These mappings are currently considered confirmed on the tested PrimaDonna Soul 
 
 They should not automatically be treated as universal ECAM mappings.
 
-### 11.1 Maintenance and lifetime statistics
+### 11.1 Maintenance and water statistics
+
+The following mappings are confirmed on the tested ECAM610.75.MB by
+controlled before/after hardware tests.
 
 | A2 ID | Semantic key | Meaning |
 |---:|---|---|
+| 100 | `descale_load_raw` | weighted descale/load accumulator, raw unit |
 | 105 | `descale_count` | completed descale cycles |
-| 106 | `total_water_l` | lifetime water quantity |
-| 108 | `filter_replacements` | filter replacements |
+| 106 | `total_water_l` | counted operating-water quantity |
+| 108 | `filter_replacements` | completed filter replacements |
+| 109 | `water_since_filter_change_l` | counted water since the last completed filter replacement |
 | 115 | `grounds_container_clean_count` | grounds-container clean/empty count |
 
-ID 106 is converted as:
+IDs 106 and 109 use the same empirically validated conversion:
+
+```python
+litres = raw_value / 2000.0
+```
+
+#### ID 100 — weighted descale/load accumulator
+
+ID 100 is not a physical water-volume counter.
+
+Controlled testing showed that it:
+
+- increases during ordinary water use;
+- resets to exactly zero after a successfully completed descale cycle;
+- does not use a fixed conversion relative to physical water volume.
+
+Two otherwise identical manual rinses each increased ID 106 by 245 raw
+units, corresponding to 0.1225 litres. Before a filter replacement the
+same rinse increased ID 100 by 2450, while after the filter replacement
+it increased ID 100 by 1715.
+
+Thus the observed weighting changed from:
+
+```text
+2450 / 245 = 10
+```
+
+to:
+
+```text
+1715 / 245 = 7
+```
+
+The exact weighting formula is not yet established. Filter state clearly
+changes the observed relationship. The configured water-hardness setting
+is also a plausible firmware input, but has not yet been isolated in a
+controlled test.
+
+For that reason the production API exposes only:
+
+```text
+descale_load_raw
+```
+
+No unit, percentage, hardness conversion, or calculated descale progress
+is assigned.
+
+#### ID 105 — completed descale cycles
+
+A complete controlled descale cycle produced:
+
+```text
+ID 105: +1
+ID 100: reset to 0
+ID 106: unchanged
+ID 109: unchanged
+```
+
+The counter increment occurred only after successful completion of the
+full descale programme, not at programme start or during intermediate
+descale/rinse stages.
+
+#### ID 106 — counted operating water
+
+ID 106 is converted using:
 
 ```python
 total_water_l = raw[106] / 2000.0
 ```
 
-This scaling has been empirically validated on the tested hardware.
+Controlled testing showed:
+
+```text
+manual rinse:
+    delta(106) = +245
+    water      = 0.1225 L
+
+filter activation:
+    delta(106) = +1000
+    water      = 0.5000 L
+
+complete descale programme:
+    delta(106) = 0
+```
+
+Therefore ID 106 must not be described as every physical litre ever
+pumped by the machine. Maintenance water used by the descale programme
+is excluded on the tested firmware.
+
+The existing semantic key `total_water_l` is retained for API
+compatibility, but its meaning is more precisely **counted operating
+water**.
+
+#### ID 108 — completed filter replacements
+
+A controlled filter replacement changed:
+
+```text
+ID 108: 22 -> 23
+```
+
+This confirms the existing `filter_replacements` mapping.
+
+#### ID 109 — water since filter replacement
+
+ID 109 behaves as a water accumulator with a filter-replacement reset
+horizon.
+
+Controlled testing showed:
+
+```text
+before filter replacement:
+    ID 109 = 119099
+
+completed filter replacement:
+    ID 109 = 0
+
+first manual rinse afterwards:
+    ID 106: +245
+    ID 109: +245
+```
+
+Across controlled ordinary rinses:
+
+```text
+delta(109) == delta(106)
+```
+
+Therefore the same conversion applies:
+
+```python
+water_since_filter_change_l = raw[109] / 2000.0
+```
+
+The filter-activation rinse itself increased ID 106 by 1000 raw units but
+left the newly reset ID 109 at zero. The filter-use accumulator therefore
+starts after successful completion of the filter-replacement procedure.
+
+A stale Ayla filter-usage property was numerically compatible with a
+percentage interpretation of ID 109, but that is not required for the
+confirmed mapping and is deliberately not exposed as a production
+percentage sensor.
 
 ### 11.2 Top-level beverage categories
 
@@ -507,9 +647,7 @@ ID 43005 also changed during the relevant test windows, but its exact scope rema
 The following IDs have been observed on the tested ECAM610.75.MB and intentionally remain unmapped:
 
 ```text
-100
 101
-109
 111
 116
 
@@ -549,56 +687,19 @@ This list is documentation, not an exhaustive whitelist.
 
 Any future raw ID without confirmed semantics is automatically retained in `unknown`.
 
-### 12.1 ID 100
-
-**Status: hypothesis only.**
-
-ID 100 behaves like a maintenance/load accumulator.
-
-In controlled rinse tests it increased in a stable relationship to the live water counter. During clean rinse-only observations:
-
-```text
-delta(100) = 7 × delta(106_raw)
-```
-
-That relationship does **not** behave like a universal water-volume conversion during beverage operations.
-
-Therefore:
-
-- it is not exposed as water volume;
-- it is not mapped to `d550_water_calc_qty`;
-- no unit is assigned;
-- a descale/water-load interpretation remains plausible but unconfirmed.
-
-### 12.2 ID 109
-
-**Status: strong behavioral observation; semantics unknown.**
-
-Across multiple controlled rinse/water operations:
-
-```text
-delta(109) == delta(106_raw)
-```
-
-This has been reproducible.
-
-A second water accumulator with a different reset horizon or maintenance context is plausible, but not established.
-
-It must not be labelled `water through filter` merely because `d555_water_filter_qty` exists in Ayla.
-
-### 12.3 ID 111
+### 12.1 ID 111
 
 Unknown. Mappings from other De'Longhi firmware must not be imported simply because the same numeric ID appears elsewhere.
 
-### 12.4 ID 3043
+### 12.2 ID 3043
 
 Beverage-related residual, but not identified. UI menu ordering is not evidence for its identity.
 
-### 12.5 IDs 23000–23009
+### 12.3 IDs 23000–23009
 
 Internal/lifetime statistics. Several change during beverage operations, but units and meanings have not yet been isolated.
 
-### 12.6 ID 43005
+### 12.4 ID 43005
 
 Aggregate-like statistic. It has been observed to change alongside custom beverage activity, including ID 43000, but the exact set represented by 43005 has not been established.
 
@@ -707,18 +808,33 @@ The safe rule is:
 
 > **Treat the property name as evidence for a firmware concept, not as proof of unit, scaling, freshness, or direct A2 equivalence.**
 
-### 14.3 A2 100/109 are not established d550/d555 aliases
+### 14.3 A2 100/109 and cloud service properties
 
-No direct mapping is assigned:
+Controlled hardware testing now establishes independent live semantics
+for A2 IDs 100 and 109:
 
 ```text
-A2 100 -> unknown
-A2 109 -> unknown
+A2 100 -> descale_load_raw
+A2 109 -> water_since_filter_change_l
 ```
 
-Neither is named after its superficially similar cloud property.
+These mappings come from reset behavior and controlled deltas, not from
+the Ayla property values.
 
-Because the corresponding cloud values may themselves be stale, no numeric scaling should be derived from a one-time comparison either.
+The cloud names remain useful firmware clues:
+
+```text
+d550_water_calc_qty
+d555_water_filter_qty
+d513_percentage_usage_fltr
+```
+
+but the corresponding cloud values on the tested machine have been
+observed to remain stale while A2 already reflects completed maintenance
+operations.
+
+Therefore no direct A2/cloud alias, raw scaling, or percentage conversion
+is inferred solely from numerical similarity.
 
 ### 14.4 Useful future service diagnostics
 
@@ -1029,9 +1145,7 @@ None should be documented as the confirmed root cause without additional evidenc
 Still unresolved:
 
 ```text
-100
 101
-109
 111
 116
 3021
@@ -1048,11 +1162,9 @@ Still unresolved:
 43016
 ```
 
-Particularly interesting:
+Particularly interesting remaining candidates:
 
 ```text
-100    maintenance/descale-load candidate
-109    mirrors raw water deltas during controlled rinses
 3043   beverage-related residual
 43005  aggregate/custom-related candidate
 230xx  internal usage/quantity counters

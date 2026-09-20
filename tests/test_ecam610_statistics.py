@@ -12,9 +12,11 @@ from cremalink.devices.ecam610_statistics import (
 
 RAW_SYNTHETIC_ECAM610 = {
     # Maintenance
+    100: 7000,
     105: 7,
     106: 24680,
     108: 3,
+    109: 1234,
     115: 11,
 
     # Beverage categories
@@ -61,11 +63,13 @@ RAW_SYNTHETIC_ECAM610 = {
 def test_interpret_synthetic_ecam610_statistics():
     stats = interpret_ecam610_statistics(RAW_SYNTHETIC_ECAM610)
 
+    assert stats["descale_load_raw"] == 7000
     assert stats["descale_count"] == 7
     assert stats["filter_replacements"] == 3
     assert stats["grounds_container_clean_count"] == 11
 
     assert stats["total_water_l"] == pytest.approx(12.34)
+    assert stats["water_since_filter_change_l"] == pytest.approx(0.617)
 
     assert stats["total_black_beverages"] == 12
     assert stats["total_milk_coffee_beverages"] == 34
@@ -123,6 +127,8 @@ def test_snapshot_preserves_unknown_statistics():
     assert snapshot["unknown"][43014] == 95
 
     # Confirmed IDs must not also be exposed as unknown.
+    assert 100 not in snapshot["unknown"]
+    assert 109 not in snapshot["unknown"]
     assert 3037 not in snapshot["unknown"]
     assert 3046 not in snapshot["unknown"]
     assert 43000 not in snapshot["unknown"]
@@ -150,6 +156,8 @@ def test_observed_unknown_ids_are_documented():
     assert 43005 in OBSERVED_UNKNOWN_IDS
 
     # Identified statistics are deliberately no longer unknown.
+    assert 100 not in OBSERVED_UNKNOWN_IDS
+    assert 109 not in OBSERVED_UNKNOWN_IDS
     assert 3037 not in OBSERVED_UNKNOWN_IDS
     assert 3046 not in OBSERVED_UNKNOWN_IDS
     assert 43000 not in OBSERVED_UNKNOWN_IDS
