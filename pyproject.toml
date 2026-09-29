@@ -14,7 +14,7 @@ dependencies = [
     "requests>=2.34.0",
     "pycryptodome==3.23.0",
     "fastapi==0.141.1",
-    "uvicorn==0.52.4",
+    "uvicorn==0.54.0",
     "httpx==0.28.1",
     "pydantic>=2.13.5",
     "pydantic-settings>=2.15.0",
