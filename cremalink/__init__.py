@@ -5,6 +5,7 @@ This top-level package exposes the primary user-facing classes and functions
 for easy access, including the main `Client`, the `Device` model, and factory
 functions for creating device instances.
 """
+from importlib import import_module
 from importlib.metadata import PackageNotFoundError, version
 
 from cremalink.clients.auth import authenticate_cloud
@@ -16,8 +17,34 @@ from cremalink.domain import (
     create_local_device,
     detect_model_id,
 )
-from cremalink.local_server import LocalServer
-from cremalink.local_server_app import ServerSettings, create_app
+
+# The server entry points are imported lazily (PEP 562): they need the
+# `server` extra (FastAPI/uvicorn), which a client-only install — such as the
+# Home Assistant integration — neither has nor needs.
+_SERVER_EXPORTS = {
+    "LocalServer": "cremalink.local_server",
+    "ServerSettings": "cremalink.local_server_app",
+    "create_app": "cremalink.local_server_app",
+}
+
+
+def __getattr__(name):
+    """Resolve server-side exports on first access."""
+    module_path = _SERVER_EXPORTS.get(name)
+    if module_path is None:
+        raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+    try:
+        return getattr(import_module(module_path), name)
+    except ImportError as exc:  # pragma: no cover - depends on the install
+        raise ImportError(
+            f"'{name}' requires the local server dependencies. "
+            "Install them with: pip install 'cremalink[server]'"
+        ) from exc
+
+
+def __dir__():
+    return sorted(__all__)
+
 
 __all__ = [
     "Client",

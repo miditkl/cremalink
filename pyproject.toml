@@ -2,6 +2,10 @@
 requires = ["setuptools>=80.9.0", "setuptools-scm[simple]>=9.2.2"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools_scm]
+# Installing straight from a source archive (no .git) must still yield a version.
+fallback_version = "0.1.0b29"
+
 [project]
 name = "cremalink"
 dynamic = ["version"]
@@ -10,19 +14,13 @@ authors = [{ name = "Midian Tekle Elfu", email = "developer@midian.tekleelfu.de"
 maintainers = [{ name = "Midian Tekle Elfu", email = "developer@midian.tekleelfu.de"}]
 readme = "README.md"
 requires-python = ">=3.13"
+# Runtime dependencies for the client only. The local server stack
+# (FastAPI/uvicorn/starlette) lives in the `server` extra: pulling it into
+# every install also pulls it into the Home Assistant environment, where the
+# pinned versions clash with what is already there.
 dependencies = [
     "requests>=2.34.0",
     "pycryptodome==3.23.0",
-    "fastapi==0.141.1",
-    "uvicorn==0.52.4",
-    "httpx==0.28.1",
-    "pydantic>=2.13.5",
-    "pydantic-settings>=2.15.0",
-    # "starlette>=0.52.1, <1.0.0",
-    "starlette==1.6.0",
-    "ipykernel>=7.3.0",
-    "pytest-asyncio==1.4.0",
-    "pytest==9.1.1",
 ]
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
@@ -47,7 +45,17 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
+# Everything needed to run `cremalink-server`.
+# starlette is deliberately left unpinned so that fastapi picks a matching one.
+server = [
+    "fastapi>=0.141.1",
+    "uvicorn>=0.52.4",
+    "httpx>=0.28.1",
+    "pydantic>=2.13.5",
+    "pydantic-settings>=2.15.0",
+]
 dev = [
+    "cremalink[server]",
     "cremalink[test]",
     "cremalink[docs]",
     "ipykernel>=7.3.0",
