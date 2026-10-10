@@ -126,11 +126,6 @@
         "byte": 0,
         "source": "switches"
       },
-      "is_watertank_empty": {
-        "bit": 0,
-        "byte": 0,
-        "source": "alarms"
-      },
       "is_watertank_open": {
         "bit": 5,
         "byte": 1,
@@ -139,14 +134,17 @@
     },
     "predicates": {
       "is_busy": {
-        "kind": "not_equals",
-        "source": "action",
-        "value": 0
+        "kind": "not_in_set",
+        "source": "status",
+        "values": [
+          0,
+          7
+        ]
       },
       "is_idle": {
         "kind": "equals",
-        "source": "action",
-        "value": 0
+        "source": "status",
+        "value": 7
       }
     }
   },
