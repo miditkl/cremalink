@@ -12,7 +12,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "requests>=2.34.0",
-    "pycryptodome==3.23.0",
+    "pycryptodome==4.0.0",
     "fastapi==0.141.1",
     "uvicorn==0.52.4",
     "httpx==0.28.1",
