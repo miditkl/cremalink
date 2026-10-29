@@ -21,7 +21,7 @@ dependencies = [
     # "starlette>=0.52.1, <1.0.0",
     "starlette==1.6.0",
     "ipykernel>=7.3.0",
-    "pytest-asyncio==1.4.0",
+    "pytest-asyncio==1.4.1",
     "pytest==9.1.1",
 ]
 license = "AGPL-3.0-or-later"
@@ -55,7 +55,7 @@ dev = [
 ]
 test = [
     "pytest>=9.1.1",
-    "pytest-asyncio==1.4.0",
+    "pytest-asyncio==1.4.1",
 ]
 docs = [
     "sphinx==9.1.0",
